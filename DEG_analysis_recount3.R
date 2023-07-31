@@ -327,11 +327,11 @@ volcano_plot_ois=volcano_function(degs=arrest_degs_merged_ois,
 save_p(plot=volcano_plot_rs/volcano_plot_sips/volcano_plot_ois,
        file_name = 'volcano_all_cs',save_dir = save_dir_figure,p_height=15)
 
-arrest_degs_merged_contact=arrest_degs_merged_cs[arrest_degs_merged_cq$group_1=='Contact-inhibited CQ',]
+arrest_degs_merged_contact=arrest_degs_merged_cq[arrest_degs_merged_cq$group_1=='Contact-inhibited CQ',]
 volcano_plot_contact=volcano_function(degs=arrest_degs_merged_contact,
                                  gene_col='gene',title = 'Contact-inhibited CQ')
 
-arrest_degs_merged_serum=arrest_degs_merged_cs[arrest_degs_merged_cq$group_1=='Serum-starved CQ',]
+arrest_degs_merged_serum=arrest_degs_merged_cq[arrest_degs_merged_cq$group_1=='Serum-starved CQ',]
 volcano_plot_serum=volcano_function(degs=arrest_degs_merged_serum,
                                       gene_col='gene',title = 'Serum-starved CQ')
 save_p(plot=volcano_plot_contact/volcano_plot_serum,

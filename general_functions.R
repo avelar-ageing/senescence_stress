@@ -128,6 +128,7 @@ volcano_function=function(degs,
                               title=title,
                               FCcutoff=fc_cutoff)
   }else{
+    degs[[custom_labs]]=as.character(degs[[custom_labs]])
     temp_lab=degs[[custom_labs]]
     unique_group=unique(temp_lab)
     newCols <- colorRampPalette(grDevices::rainbow(length(unique_group)))
