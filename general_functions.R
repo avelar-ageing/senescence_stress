@@ -114,6 +114,230 @@ download_studies=function(
   return(rse)
 }
 
+#function to calculate pi score to rank genes
+rank_genelist <- function(genes,
+                          gene_col='gene',
+                          pval_col=NULL,
+                          log2fc_col=NULL,
+                          rank_type = c("pval", "fc", "both"),
+                          background=NULL) {
+  rank_type=match.arg(rank_type)
+  if(!is.null(background)){
+    genes=genes[genes[[gene_col]]%in%background,]
+  }
+  rownames(genes)=NULL
+  rownames(genes)=genes[[gene_col]]
+  
+  if(!is.null(pval_col)){
+    genes[[pval_col]]=as.numeric(as.character(genes[[pval_col]]))
+    
+    #add minimum point value for R
+    genes[[pval_col]]=genes[[pval_col]]+.Machine$double.xmin
+  }
+  if(!is.null(log2fc_col)){
+    genes[[log2fc_col]]=as.numeric(as.character(genes[[log2fc_col]]))
+    # genes[[log2fc_col]]=genes[[log2fc_col]]+.Machine$double.xmin
+  }
+  
+  # Initialize an empty vector for the ranking score
+  ranking_score <- numeric(nrow(genes))
+  
+  if (rank_type == "pval") {
+    # Rank based on p-value (in ascending order) and consider the sign of log2FC
+    ranking_score <- -log10(genes[[pval_col]]) * sign(genes[[log2fc_col]])
+    rank_label='pval'
+  } else if (rank_type == "fc") {
+    # Rank based on log2 fold change (considering both up and down regulation)
+    ranking_score <- genes[[log2fc_col]]
+    rank_label='fc'
+  } else if (rank_type == "both") {
+    # Rank based on a combination of p-value and log2 fold change
+    ranking_score <- genes[[log2fc_col]] * -log10(genes[[pval_col]])
+    rank_label='pi'
+  }
+  
+  # Create a data frame with the ranking score
+  ranked_genes <- data.frame(gene = rownames(genes), 
+                             ranking_score = ranking_score)
+  
+  if(!is.null(log2fc_col)){
+    ranked_genes[[log2fc_col]]=genes[[log2fc_col]]
+  }
+  log2FC = genes[[log2fc_col]]
+  if(!is.null(pval_col)){
+    ranked_genes[[pval_col]]=genes[[pval_col]]
+  }
+  ranked_genes[['rank_method']]=rank_label
+  
+  # Sort the data frame based on the ranking score
+  ranked_genes <- ranked_genes[order(-ranking_score), ]
+  return(ranked_genes)
+}
+
+#wrapper for rank_genelist
+rank_genelist_wrapper=function(genes,
+                               condition_col,
+                               gene_col='gene',
+                               rank_type=c("pval", "fc", "both"),
+                               pval_col=NULL,
+                               log2fc_col=NULL,
+                               background=NULL){
+  rank_type <- match.arg(rank_type)
+  all_condition=unique(genes[[condition_col]])
+  all_rank=do.call('rbind',lapply(all_condition,function(get_rank){
+    per_condition_df=genes[genes[[condition_col]]==get_rank,]
+    temp_rank=rank_genelist(genes = per_condition_df,
+                            gene_col = gene_col,
+                            rank_type=rank_type,
+                            pval_col = pval_col,
+                            log2fc_col = log2fc_col,
+                            background = background)
+    temp_rank[[condition_col]]=get_rank
+    return(temp_rank)
+  }))
+  return(all_rank)
+}
+
+#Function to perform gsea on a single condition
+gsea_func=function(rank,
+                   rank_gene_col='gene',
+                   rank_score_col='ranking_score',
+                   minGSSize = 1,
+                   maxGSSize = Inf,
+                   gene_list,
+                   gene_list_gene_col,
+                   gene_list_col_subset=NULL){
+  #prep gene list
+  if(is.null(gene_list_col_subset)){
+    gene_list$group='group'
+  }else{
+    gene_list[['group']]=gene_list[[gene_list_col_subset]]
+  }
+  gene_list$gene_col=gene_list[[gene_list_gene_col]]
+  gene_list=gene_list%>%dplyr::select_('group','gene_col')
+  
+  #prep rankings
+  temp_rankings=rank[[rank_score_col]]
+  names(temp_rankings)=rank[[rank_gene_col]]
+  temp_rankings=temp_rankings[order(-temp_rankings)]
+  enrich_plot=GSEA(geneList = temp_rankings,
+                   TERM2GENE=gene_list,
+                   pvalueCutoff = 1,
+                   pAdjustMethod = 'BH',
+                   minGSSize = 1,
+                   maxGSSize = Inf)
+  enrich_plot=data.frame(enrich_plot)
+  return(enrich_plot)
+}
+
+#wrapper for gsea_func
+gsea_func_groups=function(rank,
+                          rank_group_col,
+                          rank_gene_col='gene',
+                          rank_score_col='ranking_score',
+                          minGSSize = 1,
+                          maxGSSize = Inf,
+                          gene_list,
+                          gene_list_gene_col,
+                          gene_list_col_subset=NULL){
+  all_group=unique(rank[[rank_group_col]])
+  do.call('rbind',lapply(all_group,function(per_condition){
+    temp_df=rank[rank[[rank_group_col]]==per_condition,]
+    
+    temp_enrichment=gsea_func(rank = temp_df,
+                              rank_gene_col = rank_gene_col,
+                              rank_score_col=rank_score_col,
+                              minGSSize=minGSSize,
+                              maxGSSize=maxGSSize,
+                              gene_list = gene_list,
+                              gene_list_gene_col=gene_list_gene_col,
+                              gene_list_col_subset=gene_list_col_subset)
+    temp_enrichment[[rank_group_col]]=per_condition
+    return(temp_enrichment)
+  }))
+}
+
+#wrapper for gsea_func_groups and rank_genelist_wrapper
+rank_gsea_wrapper=function(genes,
+                           condition_col,
+                           gene_col='gene',
+                           pval_col=NULL,
+                           log2fc_col=NULL,
+                           background=NULL,
+                           rank_type = c("pval", "fc", "both"),
+                           gene_list,
+                           gene_list_gene_col='gene',
+                           gene_list_col_subset=NULL,
+                           minGSSize=1,
+                           maxGSSize=Inf){
+  results=c()
+  rank_type <- match.arg(rank_type)
+  all_rankings=rank_genelist_wrapper(genes = genes,
+                                     condition_col = condition_col,
+                                     gene_col = gene_col,
+                                     rank_type=rank_type,
+                                     pval_col = pval_col,
+                                     log2fc_col = log2fc_col,
+                                     background=background)
+  rank_groups=gsea_func_groups(rank=all_rankings,
+                               rank_gene_col='gene',
+                               rank_group_col=condition_col,
+                               gene_list=gene_list,
+                               gene_list_gene_col=gene_list_gene_col,
+                               gene_list_col_subset=gene_list_col_subset,
+                               minGSSize = minGSSize,
+                               maxGSSize = maxGSSize)
+  
+  rank_groups$p.adjust=p.adjust(rank_groups$pvalue,'BH')
+  results[['rankings']]=all_rankings
+  results[['gsea_enrichment']]=rank_groups
+  return(results)
+}
+
+#function to plot results from rank_gsea_wrapper$gsea_enrichment
+plot_gsea_enrichment=function(enrichment_df,
+                         condition_col,
+                         pathway_col,
+                         pval_col='p.adjust',
+                         factor_condition_levels_x=NULL,
+                         factor_condition_levels_facet=NULL,
+                         tilt_x=90){
+  enrichment_df[['pathway_col']]=enrichment_df[[pathway_col]]
+  enrichment_df[['pval_col']]=log2(enrichment_df$p.adjust)*-1
+  enrichment_df=enrichment_df%>%rstatix::add_significance(pval_col,
+                                                          output.col = 'p.adjust.signif')
+  enrichment_df$p.adjust.signif[enrichment_df$p.adjust.signif=='ns']=''
+  if(!is.null(factor_condition_levels_x)){
+    enrichment_df[[condition_col]]=factor(enrichment_df[[condition_col]],
+                                          levels=factor_condition_levels_x)
+  }
+  if(!is.null(factor_condition_levels_facet)){
+    enrichment_df[['pathway_col']]=factor(enrichment_df[['pathway_col']],
+                                          levels=factor_condition_levels_facet)
+  }
+  
+  plot_p=enrichment_df%>%ggplot(aes_string(y='enrichmentScore',
+                                           x=condition_col,fill='pval_col'))+
+    geom_bar(stat='identity',colour='black')+
+    facet_wrap(~pathway_col)+
+    scale_fill_gradient(expression('-log'[2]*'(p-val)'),low='white', high = "red2",
+                        guide = guide_colorbar(frame.colour = "black",
+                                               ticks = TRUE, 
+                                               ticks.colour = 'black',
+                                               title.position = 'top',
+                                               title.hjust=0.5))+
+    geom_text(aes(label=p.adjust.signif),nudge_y = 0.1)+
+    geom_hline(yintercept = 0)
+  
+  if(tilt_x==90){
+    plot_p=plot_p+theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))
+  }else if(tilt_x==45){
+    plot_p=plot_p+theme(axis.text.x=element_text(angle=45,hjust=1))
+  }
+  
+  return(plot_p)
+}
+
 #Function to make volcano plot
 volcano_function=function(degs,
                           gene_col='external_gene_name',
@@ -210,13 +434,20 @@ process_rse=function(rse,
                      ensembl_symbol_col='external_gene_name',
                      filter_duplicates=TRUE,
                      sample_filter=NULL,
-                     low_expression_filter=TRUE,
+                     low_expression_filter=c('all','per'),
                      scale_counts,
                      min_expression_filter=1,
                      min_perc_sample_filter=0.3,
                      method='cpm',
                      keep_filter=FALSE,
-                     replace_ensembl=TRUE){
+                     replace_ensembl=TRUE,
+                     remove_cq=FALSE,
+                     condition_col='cell_substate'){
+  # filter for samples
+  if(!is.null(sample_filter)){
+    rse=rse[,colnames(rse)%in%sample_filter]
+  }
+  
   if((filter_pc|replace_ensembl)&is.null(ensembl_dictionary)){
     message('must give ensembl_dictionary')
     return(NULL)
@@ -236,15 +467,43 @@ process_rse=function(rse,
                                         gene_name_col_in_biomart = ensembl_symbol_col)
   }
   
-  #remove duplicates
-  if(filter_duplicates){
-    gene_duplicates=rownames(rse)[duplicated(rownames(rse))]
-    rse=rse[!rownames(rse)%in%gene_duplicates,]
+  if(!is.null(low_expression_filter)){
+    if(low_expression_filter=='all'){
+      counts_temp=assay(rse)
+      counts_temp=filter_counts(dds=counts_temp,
+                                min_expression_filter=min_expression_filter,
+                                min_perc_sample_filter=min_perc_sample_filter,
+                                method=method)
+      genes_temp=rownames(counts_temp)
+      samples_temp=colnames(counts_temp)
+      rse=rse[rownames(rse)%in%genes_temp,]
+      rse=rse[,colnames(rse)%in%samples_temp]
+    }else if(low_expression_filter=='per'){
+      meta_condition=meta_add[,colnames(meta_add)%in%c(meta_id_col,condition_col)]
+      all_condition=unique(meta_condition[[condition_col]])
+      counts_temp=assay(rse)
+      genes_keep=do.call(c,lapply(all_condition,function(per_cond){
+        temp_samples=meta_condition[meta_condition[['cell_substate']]==per_cond,][[meta_id_col]]
+        
+        counts_temp_assay=counts_temp[,colnames(counts_temp)%in%temp_samples]
+        
+        counts_temp_assay=filter_counts(dds=counts_temp_assay,
+                                        min_expression_filter=min_expression_filter,
+                                        min_perc_sample_filter=min_perc_sample_filter,
+                                        method=method)
+        genes_temp=rownames(counts_temp_assay)
+      }))
+      genes_keep=unique(genes_keep)
+      
+      rse=rse[rownames(rse)%in%genes_keep,]
+    }
   }
   
-  # filter for samples
-  if(!is.null(sample_filter)){
-    rse=rse[,colnames(rse)%in%sample_filter]
+  rse=rse[rowSums(assay(rse)) != 0, ]
+  #remove duplicates
+  if(filter_duplicates){
+    gene_duplicates=unique(rownames(rse)[duplicated(rownames(rse))])
+    rse=rse[!rownames(rse)%in%gene_duplicates,]
   }
   
   #scale counts
@@ -269,16 +528,9 @@ process_rse=function(rse,
     rse=rse[,colnames(rse)%in%rse_keep]
   }
   
-  if(low_expression_filter){
-    counts_temp=assay(rse)
-    counts_temp=filter_counts(dds=counts_temp,
-                              min_expression_filter=min_expression_filter,
-                              min_perc_sample_filter=min_perc_sample_filter,
-                              method=method)
-    genes_temp=rownames(counts_temp)
-    samples_temp=colnames(counts_temp)
-    rse=rse[rownames(rse)%in%genes_temp,]
-    rse=rse[,colnames(rse)%in%samples_temp]
+  if(remove_cq){
+    keep=colData(rse)$cell_state!='CQ'
+    rse=rse[,keep]
   }
   
   return(rse)
@@ -452,7 +704,8 @@ pca_rds=function(deseq_obj,
 custom_pca=function(count_data,
                     ntop=500,
                     pheno_data,
-                    intgroup){
+                    intgroup,
+                    hide_legend=FALSE){
   # calculate the variance for each gene
   rv <- rowVars(count_data)
   
@@ -486,10 +739,15 @@ custom_pca=function(count_data,
   #   return(d)
   # }
   # 
-  ggplot(data=d, aes_string(x="PC1", y="PC2", color="group")) + geom_point(size=3) + 
+  p=ggplot(data=d, aes_string(x="PC1", y="PC2", color="group")) + geom_point(size=3) + 
     xlab(paste0("PC1: ",round(percentVar[1] * 100),"% variance")) +
     ylab(paste0("PC2: ",round(percentVar[2] * 100),"% variance")) +
     coord_fixed()
+  
+  if(hide_legend){
+    p=p+theme(legend.position = "none")
+  }
+  return(p)
 }
 
 #wgcna
@@ -892,12 +1150,13 @@ simulate_overlaps = function(relevant_degs,
                              outgroup_relevant = c('Proliferating_up', 'Proliferating_down'),
                              gene_col,
                              seed = 1,
-                             simulation_n = 10000) {
-  
+                             simulation_n = 10000,
+                             sig_col='sig',
+                             sig_label='y') {
   set.seed(seed)
   
   relevant_degs_to_use=relevant_degs[,colnames(relevant_degs)%in%
-                                       c(gene_col,facet_col,ingroup_col,outgroup_col,'sig')]
+                                       c(gene_col,facet_col,ingroup_col,outgroup_col,sig_col)]
   
   relevant_degs_to_use=unique(relevant_degs_to_use)
   
@@ -916,9 +1175,8 @@ simulate_overlaps = function(relevant_degs,
     # Calculate counts for each ingroup
     ingroup_n = rbindlist(lapply(unique_ingroup, function(per_ingroup) {
       relevant_degs_func_in = relevant_degs_func_out[get(ingroup_col) == per_ingroup]
-      sum(duplicated(relevant_degs_func_in$external_gene_name))
       facet_return = unique(relevant_degs_func_in[[facet_col]])
-      return(list(db = per_ingroup, facet = facet_return, n = sum(relevant_degs_func_in[['sig']] == 'y')))
+      return(list(db = per_ingroup, facet = facet_return, n = sum(relevant_degs_func_in[[sig_col]] == sig_label)))
     }))
     
     ingroup_n$outgroup = per_outgroup
@@ -929,7 +1187,6 @@ simulate_overlaps = function(relevant_degs,
       return(NULL)
     }
     
-    #...
     all_sim = rbindlist(lapply(seq_len(simulation_n), function(sim_x) {
       # Scramble and count overlaps
       all_scramble = rbindlist(
@@ -1019,13 +1276,30 @@ overlap_function <- function(df_1, df_2, gene_col_1, gene_col_2,
                              carry_col_1=NULL,carry_col_2=NULL,
                              group_col_1=NULL, group_col_2=NULL,background) {
   background=unique(background)
-  df_1=df_1[df_1[[gene_col_1]]%in%background,]
-  df_2=df_2[df_2[[gene_col_2]]%in%background,]
+  df_1_temp=df_1[df_1[[gene_col_1]]%in%background,]
+  df_2_temp=df_2[df_2[[gene_col_2]]%in%background,]
+  if(!is.null(group_col_1)){
+    df_1_temp[[group_col_1]]=as.character(df_1_temp[[group_col_1]])
+  }
+  if(!is.null(carry_col_1)){
+    for(i in carry_col_1){
+      df_1_temp[[i]]=as.character(df_1_temp[[i]])
+    }
+  }
+  if(!is.null(group_col_2)){
+    df_2_temp[[group_col_2]]=as.character(df_2_temp[[group_col_2]])
+  }
+  if(!is.null(carry_col_2)){
+    for(i in carry_col_2){
+      df_2_temp[[i]]=as.character(df_2_temp[[i]])
+    }
+  }
   genome.size=length(background)
   # Function to calculate overlaps
-  calculate_overlap <- function(df_1_sub, df_2_sub, gene_col_1, gene_col_2){
-    gene_set_1 <- df_1_sub[[gene_col_1]]
-    gene_set_2 <- df_2_sub[[gene_col_2]]
+  calculate_overlap <- function(df_1_sub, df_2_sub, gene_col_1, gene_col_2,
+                                genome.size){
+    gene_set_1 <- unique(df_1_sub[[gene_col_1]])
+    gene_set_2 <- unique(df_2_sub[[gene_col_2]])
     
     overlap_obj <- testGeneOverlap(newGeneOverlap(gene_set_1, gene_set_2,
                                   genome.size = genome.size))
@@ -1047,12 +1321,12 @@ overlap_function <- function(df_1, df_2, gene_col_1, gene_col_2,
   
   # If group_cols are not null, calculate overlaps by group combinations
   # Getting unique combinations for both dataframes
-  df_1_combinations <- df_1 %>% dplyr::select(all_of(group_col_1)) %>% distinct() %>% drop_na()
-  df_2_combinations <- df_2 %>% dplyr::select(all_of(group_col_2)) %>% distinct() %>% drop_na()
+  df_1_combinations <- df_1_temp %>% dplyr::select(all_of(group_col_1)) %>% distinct() %>% drop_na()
+  df_2_combinations <- df_2_temp %>% dplyr::select(all_of(group_col_2)) %>% distinct() %>% drop_na()
   results=c()
   
   for (i in 1:nrow(df_1_combinations)){
-    df_1_sub <- df_1
+    df_1_sub <- df_1_temp
     condition_1=c()
     carry_1=df_1_sub
     carry_1_carry=c()
@@ -1067,7 +1341,7 @@ overlap_function <- function(df_1, df_2, gene_col_1, gene_col_2,
     carry_1_carry=unlist(carry_1_carry)
     names(carry_1_carry)=NULL
     for (j in 1:nrow(df_2_combinations)){
-      df_2_sub <- df_2
+      df_2_sub <- df_2_temp
       condition_2=c()
       carry_2=df_2_sub
       carry_2_carry=c()
@@ -1082,11 +1356,16 @@ overlap_function <- function(df_1, df_2, gene_col_1, gene_col_2,
       }
       carry_2_carry=unlist(carry_2_carry)
       names(carry_2_carry)=NULL
-      result <- calculate_overlap(df_1_sub, df_2_sub, gene_col_1, gene_col_2)
+      result <- calculate_overlap(df_1_sub, df_2_sub,
+                                  gene_col_1, gene_col_2,
+                                  genome.size=genome.size)
       result <- c(result, condition_1, condition_2,
                   carry_1_carry,carry_2_carry)
       names(result)[names(result)=='']=c(group_col_1,group_col_2,carry_col_1,
                                          carry_col_2)
+      
+      result[['n1']]=nrow(df_1_sub)
+      result[['n2']]=nrow(df_2_sub)
       results <- rbind(results,
                        result)
     }
@@ -1100,9 +1379,190 @@ overlap_function <- function(df_1, df_2, gene_col_1, gene_col_2,
   results$pval=as.numeric(results$pval)
   results$odds=as.numeric(results$odds)
   results$adj=p.adjust(results$pval)
+  results$n1=as.numeric(results$n1)
+  results$n2=as.numeric(results$n2)
   rownames(results)=NULL
   
+  if(!is.null(group_col_1)){
+    if(is.factor(df_1[[group_col_1]])){
+    results[[group_col_1]]=factor(results[[group_col_1]],
+                                  levels=levels(df_1[[group_col_1]]))
+    }
+  }
+  
+  if(!is.null(group_col_2)){
+    if(is.factor(df_2[[group_col_2]])){
+    results[[group_col_2]]=factor(results[[group_col_2]],
+                                  levels=levels(df_2[[group_col_2]]))
+    }
+  }
+  
+  if(!is.null(carry_col_1)){
+    for(i in carry_col_1){
+      if(!is.factor(df_1[[i]])){
+        next
+      }
+      results[[i]]=factor(results[[i]],
+                                       levels=levels(df_1[[i]]))
+    }
+  }
+  
+  if(!is.null(carry_col_2)){
+    for(i in carry_col_2){
+      if(!is.factor(df_2[[i]])){
+        next
+      }
+      results[[i]]=factor(results[[i]],
+                                       levels=levels(df_2[[i]]))
+    }
+  }
+  
+  results$background_n=genome.size
+  
   return(results)
+}
+
+#wrapper for overlap_function() that p-value corrects for self-overlaps
+self_overlaps_full_grid=function(df,
+                                 gene_col,
+                                 background,
+                                 group_col,
+                                 carry_col=NULL){
+  self_overlaps=overlap_function(df_1 = df,
+                                 df_2 = df,
+                                 gene_col_1 = gene_col,
+                                 gene_col_2 = gene_col,
+                                 background = background,
+                                 group_col_1 = group_col,
+                                 group_col_2 = group_col,
+                                 carry_col_1=carry_col,
+                                 carry_col_2=carry_col)
+  
+  #adj
+  n_temp=nrow(self_overlaps)/2
+  
+  adj_temp=do.call(c,lapply(self_overlaps[['pval']],function(per_pval){
+    p.adjust(p = per_pval,n = n_temp)
+  }))
+  self_overlaps$adj=adj_temp
+  self_col=do.call(c,as.list(apply(self_overlaps,MARGIN = 1,function(x){
+    ifelse(x[[group_col]]==x[[paste0(group_col,'.1')]],
+           TRUE,FALSE)
+  })))
+  self_overlaps[['self']]=self_col
+  
+  return(self_overlaps)
+}
+
+#Function to remove self overlaps and repeat overlaps
+clean_self_overlaps=function(df,
+                             group_1,
+                             group_2){
+  accessions=do.call(c,list(apply(df,MARGIN = 1,function(get_accession){
+    x=get_accession[[group_1]]
+    y=get_accession[[group_2]]
+    accession=paste0(sort(c(x,y)),collapse='_')
+  })))
+  df$accession=accessions
+  df=df[!duplicated(df$accession),]
+  df=df[,colnames(df)!='accession']
+  
+  if('self'%in%colnames(df)){
+    df=df[!df$self,]
+  }
+  return(df)
+}
+
+#create simple overlap plot
+simple_overlap_plot=function(df,
+                             x,
+                             y,
+                             actual_col='actual',
+                             odds_col='odds',
+                             pval_col='adj',
+                             self=FALSE,
+                             x_factor=NULL,
+                             y_factor=NULL,
+                             rev_y=FALSE,
+                             xlab=NULL,
+                             ylab=NULL,
+                             x_tilt=0,
+                             text_size=10,
+                             add_almost_sig=FALSE,
+                             remove_nonsig=FALSE){
+  if(!is.null(x_factor)){
+    df[[x]]=factor(df[[x]],
+                   levels=x_factor)
+  }
+  
+  if(!is.null(y_factor)){
+    df[[y]]=factor(df[[y]],
+                   levels=y_factor)
+  }
+  
+  if(rev_y){
+    df[[y]]=factor(df[[y]],
+                   levels=rev(y_factor))
+  }
+  
+  df[['log2odds']]=log2(df[[odds_col]])
+  graph_max = max(ceiling(df$log2odds/2)[!is.infinite(ceiling(df$log2odds))]) * 2
+  graph_min = min(floor(df$log2odds/2)[!is.infinite(ceiling(df$log2odds))])*2
+  if(graph_min > 0){
+    graph_min = 0
+  }
+  
+  li <- c(graph_min, graph_max)
+  la <- c(seq(graph_min,graph_max,2))
+  br <- c(seq(graph_min,graph_max,2))
+  
+  df=df%>%rstatix::add_significance(pval_col,output.col = 'adj.signif')
+  
+  if(self){
+    df[['adj.signif']][df[['self']]]=''
+  }
+  
+  if(remove_nonsig){
+    df$adj.signif[df$adj.signif=='ns']=''
+  }
+  if(add_almost_sig){
+    df[[paste0(pval_col,'.signif')]][df[[pval_col]]>0.05&
+                                       df[[pval_col]]<0.1]='^'
+  }
+  
+  p_temp=df%>%ggplot(aes_string(x=x,y=y,fill='log2odds'))+
+    geom_tile(colour='black')+
+    geom_text(aes_string(label=actual_col),nudge_y=-0.25,size = text_size / 3)+
+    geom_text(aes(label=adj.signif),nudge_y=0.25,size = text_size / 3)+
+    scale_fill_gradient2(expression('log'[2]*'(Odds)'), low = "blue", mid = "white", high = "red2", midpoint = 0,
+                         guide = guide_colorbar(frame.colour = "black",
+                                                ticks = TRUE, 
+                                                ticks.colour = 'black', title.position = 'top', title.hjust=0.5),
+                         breaks=br,
+                         labels=la,
+                         limits=li)+
+    xlab(xlab)+
+    ylab(ylab)+
+    scale_x_discrete(expand=expansion(c(0,0)))+
+    scale_y_discrete(expand=expansion(c(0,0)))
+  
+  if(x_tilt==45) {
+    p_temp = p_temp + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = text_size))
+  } else if(x_tilt==0) {
+    p_temp = p_temp + theme(axis.text.x = element_text(size = text_size))
+  }else if(x_tilt==90){
+    p_temp = p_temp + theme(axis.text.x = element_text(angle = 90,
+                                                       hjust = 1,vjust=0.5, size = text_size))
+  }
+  
+  p_temp + theme(axis.title.y = element_text(size = text_size),
+                 axis.title.x = element_text(size = text_size),
+                 strip.text = element_text(size = text_size),
+                 legend.title = element_text(size = text_size),
+                 legend.text = element_text(size = text_size),
+                 axis.text.y=element_text(size=text_size))
+  
+  return(p_temp)
 }
 
 create_overlap_plot <- function(deg_db_overlap,
@@ -1117,7 +1577,11 @@ create_overlap_plot <- function(deg_db_overlap,
                                 ggtitle=NULL,
                                 remove_y=FALSE,
                                 text_size=10,
-                                x_tilt=FALSE) {
+                                x_tilt=0,
+                                add_almost_sig=FALSE,
+                                remove_nonsig=FALSE,
+                                cols=NULL,
+                                self=FALSE) {
   
   deg_db_overlap$log2odds = log2(deg_db_overlap[[odds_column]])
   
@@ -1133,13 +1597,25 @@ create_overlap_plot <- function(deg_db_overlap,
   br <- c(seq(graph_min,graph_max,2))
   
   # Add significance
-  deg_db_overlap = deg_db_overlap %>% rstatix::add_significance(pval_col)
+  deg_db_overlap = deg_db_overlap %>% rstatix::add_significance(pval_col,
+                                                                output.col = 'adj.signif')
+  if(remove_nonsig){
+    deg_db_overlap$adj.signif[deg_db_overlap$adj.signif=='ns']=''
+  }
+  if(add_almost_sig){
+    deg_db_overlap[[paste0(pval_col,'.signif')]][deg_db_overlap[[pval_col]]>0.05&
+                                deg_db_overlap[[pval_col]]<0.1]='^'
+  }
   
   # Create plot
   deg_db_overlap[['facet']]=deg_db_overlap[[facet_col]]
   
   if (!is.null(facet_2)) {
     deg_db_overlap[['facet_2']]=deg_db_overlap[[facet_2]]
+  }
+  
+  if(self){
+    deg_db_overlap[[paste0(pval_col,'.signif')]][deg_db_overlap[[self]]]=''
   }
   
   p_overlap = deg_db_overlap %>%
@@ -1160,18 +1636,27 @@ create_overlap_plot <- function(deg_db_overlap,
     xlab(xlab)+
     ylab(ylab)
   
-  if(x_tilt) {
+  if(x_tilt==45) {
     p_overlap = p_overlap + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = text_size))
-  } else {
+  } else if(x_tilt==0) {
     p_overlap = p_overlap + theme(axis.text.x = element_text(size = text_size))
+  }else if(x_tilt==90){
+    p_overlap = p_overlap + theme(axis.text.x = element_text(angle = 90,
+                                                             hjust = 1,vjust=0.5, size = text_size))
   }
   
   # Use facet_grid if facet_2 is provided, else use facet_wrap
   if (!is.null(facet_2)) {
     deg_db_overlap[['facet_2']]=deg_db_overlap[[facet_2]]
-    p_overlap = p_overlap + facet_grid(facet ~ facet_2,scales = 'free',space='free')
+    p_overlap = p_overlap + facet_grid(facet ~ facet_2,scales = 'free',
+                                       space='free')
   } else {
-    p_overlap = p_overlap + facet_wrap(.~facet)
+    if(is.null(cols)){
+      p_overlap = p_overlap + facet_wrap(.~facet)
+    }else{
+      p_overlap = p_overlap + facet_wrap(.~facet,ncol = cols)
+    }
+    
   }
   
   # Condition to remove y axis labels and tick marks
@@ -1192,8 +1677,6 @@ create_overlap_plot <- function(deg_db_overlap,
   return(p_overlap)
 }
 
-
-
 #Overlap within a df
 overlap_within_df <- function(dataframe,
                               group_col,
@@ -1205,8 +1688,8 @@ overlap_within_df <- function(dataframe,
   
   # Function to calculate overlaps
   calculate_overlap <- function(df_1_sub, df_2_sub, gene_col){
-    gene_set_1 <- df_1_sub[[gene_col]]
-    gene_set_2 <- df_2_sub[[gene_col]]
+    gene_set_1 <- unique(df_1_sub[[gene_col]])
+    gene_set_2 <- unique(df_2_sub[[gene_col]])
     
     overlap_obj <- testGeneOverlap(newGeneOverlap(gene_set_1, gene_set_2,
                                                   genome.size = genome.size))
@@ -1227,8 +1710,13 @@ overlap_within_df <- function(dataframe,
   }
   
   # Getting unique combinations for dataframe
-  df_combinations <- dataframe[,colnames(dataframe)%in%
-                                 c(group_col,other_cols)] %>% distinct() %>% drop_na()
+  if(is.null(other_cols)){
+    df_combinations <- dataframe%>%dplyr::select(group_col) %>% distinct() %>% drop_na()
+  }else{
+    df_combinations <- dataframe[,colnames(dataframe)%in%
+                                   c(group_col,other_cols)] %>% distinct() %>% drop_na()
+  }
+  
   
   # Cross-join df_combinations with itself
   df_combinations_cross <- merge(df_combinations, df_combinations, by = NULL)
@@ -1318,7 +1806,10 @@ plot_self_overlaps <- function(self_overlaps_recount_to_plot,
   br <- c(seq(graph_min,graph_max,scale))
   
   self_overlaps_recount_to_plot = self_overlaps_recount_to_plot %>% rstatix::add_significance('adj')
-  self_overlaps_recount_to_plot[['facet_col']]=self_overlaps_recount_to_plot[[facet_col]]
+  if(!is.null(facet_col)){
+    self_overlaps_recount_to_plot[['facet_col']]=self_overlaps_recount_to_plot[[facet_col]]
+  }
+  
   # Create plot
   p_overlap = self_overlaps_recount_to_plot %>%
     ggplot(aes_string(x=x, y=y)) +
@@ -1334,9 +1825,13 @@ plot_self_overlaps <- function(self_overlaps_recount_to_plot,
     scale_y_discrete(expand=c(0,0)) +
     geom_text(aes(label=adj.signif), nudge_y=0.25, size = text_size / 3) +  # adjusted size for geom_text
     geom_text(aes(label=actual), nudge_y=-0.25, size = text_size / 3) +  # adjusted size for geom_text
-    facet_wrap(.~facet_col, scales ='free') +
     xlab(xlab) +
     ylab(ylab)
+  
+  if(!is.null(facet_col)){
+    p_overlap=p_overlap+
+      facet_wrap(.~facet_col, scales ='free')
+  }
   
   # Adjust x-axis text angle if angle_x is TRUE
   if (angle_x) {
@@ -1356,6 +1851,88 @@ plot_self_overlaps <- function(self_overlaps_recount_to_plot,
   return(p_overlap)
 }
 
+plot_self_overlaps2=function(test_temp,
+                             accession_col='accession',
+                             accession_cols_1=c('group_1_1','direction_1_1'),
+                             accession_cols_2=c('group_1_2','direction_1_2'),
+                             odds_column='odds',
+                             actual_n='actual',
+                             pval_col='adj',
+                             max_odds=6,
+                             min_odds=-6){
+  test_temp=test_temp%>%rstatix::add_significance(pval_col,output.col = 'pval_label')
+  accessions_use=do.call('rbind',apply(test_temp,MARGIN = 1,function(get_accession){
+    accession_1_temp=paste0(get_accession[[accession_cols_1[1]]],' ',stringr::str_to_sentence(get_accession[[accession_cols_1[2]]]))
+    accession_2_temp=paste0(get_accession[[accession_cols_2[1]]],' ',stringr::str_to_sentence(get_accession[[accession_cols_2[2]]]))
+    return(data.frame(matrix(c(accession_1_temp,accession_2_temp),ncol=2)))
+  }))
+  
+  test_temp$accession_1=accessions_use$X1
+  test_temp$accession_2=accessions_use$X2
+  test_temp$log2odds = log2(test_temp[[odds_column]])
+  
+  # Determine graph_max and graph_min
+  graph_max = max(ceiling(test_temp$log2odds/2)[!is.infinite(ceiling(test_temp$log2odds))]) * 2
+  if(!is.null(max_odds)&max_odds<graph_max){
+    graph_max=max_odds
+    test_temp$log2odds[test_temp$log2odds>max_odds]=max_odds
+    cut_max=TRUE
+  }else{
+    cut_max=FALSE
+  }
+  
+  graph_min = min(floor(test_temp$log2odds/2)[!is.infinite(ceiling(test_temp$log2odds))])*2
+  if(!is.null(min_odds)&min_odds>graph_min){
+    graph_min=min_odds
+    test_temp$log2odds[test_temp$log2odds<min_odds]=min_odds
+    cut_min=TRUE
+  }else{
+    cut_min=FALSE
+  }
+  if(graph_min > 0){
+    graph_min = 0
+  }
+  
+  li <- c(graph_min, graph_max)
+  la <- c(seq(graph_min,graph_max,2))
+  br <- c(seq(graph_min,graph_max,2))
+  
+  if(cut_max){
+    la[br==max(br)]=paste0('>',graph_max)
+  }
+  
+  if(cut_min){
+    la[br==min(br)]=paste0('<',graph_min)
+  }
+  
+  test_temp=test_temp[!duplicated(test_temp[[accession_col]]),]
+  
+  order_x=rev(sort(table(test_temp$accession_1)))
+  order_y=rev(sort(table(test_temp$accession_2)))
+  test_temp$accession_1=factor(test_temp$accession_1,
+                               levels=names(order_x))
+  test_temp$accession_2=factor(test_temp$accession_2,
+                               levels=names(order_y))
+  test_temp%>%ggplot(aes(x=accession_1,y=accession_2))+
+    geom_tile(aes(fill=log2odds),colour='black')+
+    scale_fill_gradient2(expression('log'[2]*'(Odds)'), low = "blue", mid = "white", high = "red2", midpoint = 0,
+                         guide = guide_colorbar(frame.colour = "black",
+                                                ticks = TRUE, 
+                                                ticks.colour = 'black', title.position = 'top', title.hjust=0.5),
+                         breaks=br,
+                         labels=la,
+                         limits=li)+
+    theme(axis.text.x=element_text(angle=45,hjust=1),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank())+
+    geom_text(aes_string(label=actual_n),nudge_y=-0.2)+
+    geom_text(aes(label=pval_label),nudge_y = 0.2)+
+    scale_x_discrete(expand=expansion(c(0,0)))+
+    scale_y_discrete(expand=expansion(c(0,0)))+
+    xlab('Condition 1')+
+    ylab('Condition 2')
+}
 
 extract_up_down <- function(input_vector, pattern="down|up") {
   
@@ -1676,6 +2253,9 @@ enrich_genes=function(gene_list,
                                     axis_indent=axis_indent)
       results[['go_plot']]=GO_dotplot
     }
+    GO_temp$category=NA
+    GO_temp$subcategory=NA
+    GO_temp <- GO_temp[, colnames(kegg_temp)]
   }
   
   all_enrichment=rbind(kegg_temp,GO_temp)
@@ -1978,12 +2558,15 @@ time_analysis=function(cell_type,
   
   accession_time_study_processed=process_rse(rse=accession_time_study,
                                              meta_add=recount_pheno,
+                                             meta_id_col = 'sample_ID',
                                              filter_pc=TRUE,
+                                             condition_col = 'cell_state',
                                              ensembl_dictionary=ensembl_dictionary,
                                              filter_duplicates=TRUE,
                                              sample_filter=accession_time[['sample']],
-                                             low_expression_filter=TRUE,
-                                             scale_counts=FALSE)
+                                             low_expression_filter='per',
+                                             scale_counts=FALSE,
+                                             remove_cq = TRUE)
   
   time_coldata=data.frame(colData(accession_time_study_processed))
   
@@ -2015,6 +2598,9 @@ time_analysis=function(cell_type,
                                    protect_col=treatment_time_col,
                                    fix_col=NULL)
   
+  saveRDS(time_no_correction,file = paste0(temp_dir_cell,
+                                           'deseq.rds'))
+  
   time_no_correction_keep_vst=normalise_counts(
     dds_obj_use=time_no_correction[['deseq_obj']],
     batch_col=NULL,
@@ -2036,12 +2622,15 @@ time_analysis=function(cell_type,
   
   save_p(time_no_correction_keep_vst_pca,
          file_name='pca_no_batch_correction',save_dir = temp_dir_cell,p_width=12,p_height=10)
-  ##correctionp
+  ##correction
   if(fix_batch){
     message('Batch correcting')
     time_correction=deseq_studies(study_obj=accession_time_study_processed,
                                   protect_col=treatment_time_col,
                                   fix_col='batch')
+    
+    saveRDS(time_correction,file = paste0(temp_dir_cell,
+                                             'deseq.rds'))
     
     time_correction_keep_vst=normalise_counts(
       dds_obj_use=time_correction[['deseq_obj']],
@@ -2291,37 +2880,37 @@ time_analysis=function(cell_type,
     db=db[db[[db_col]]!=exclude_db,]
   }
   ##all overlaps
-  db_deg_overlaps_time=overlap_function(df_1 = time_degs_sig,
-                                        gene_col_1 = 'gene',
-                                        group_col_1 = 'group_1_dir',
-                                        df_2 = db,
-                                        group_col_2 = db_col,
-                                        gene_col_2 = db_gene_col,
-                                        background = time_degs$gene,
-                                        carry_col_1 = c('group_1','direction_1'))
-  
-  save_csv(data=db_deg_overlaps_time,file_name = 'deg_db_overlaps_all',
-           path=temp_dir_cell)
-  db_deg_overlaps_time=factor_column_and_modify(df = db_deg_overlaps_time,
-                                                column = 'group_1',
-                                                old_list = time_levels[2:length(time_levels)],
-                                                keyword = NULL)
-  
-  db_deg_overlaps_time$direction_1[db_deg_overlaps_time$direction_1=='up']=
-    'Up in\nArrest'
-  db_deg_overlaps_time$direction_1[db_deg_overlaps_time$direction_1=='down']=
-    'Down in\nArrest'
-
-  overlap_plot=create_overlap_plot(deg_db_overlap = db_deg_overlaps_time,
-                                   odds_column = 'odds',
-                                   pval_col = 'adj',
-                                   facet_col = 'group_1',
-                                   x = 'direction_1',
-                                   y = 'Senescence',
-                                   xlab = paste0(cell_type,' DEGs'),
-                                   ylab = 'CellAge')
-  save_p(overlap_plot,file_name = 'deg_db_overlaps_all',save_dir =temp_dir_cell)
-  
+  # db_deg_overlaps_time=overlap_function(df_1 = time_degs_sig,
+  #                                       gene_col_1 = 'gene',
+  #                                       group_col_1 = 'group_1_dir',
+  #                                       df_2 = db,
+  #                                       group_col_2 = db_col,
+  #                                       gene_col_2 = db_gene_col,
+  #                                       background = time_degs$gene,
+  #                                       carry_col_1 = c('group_1','direction_1'))
+  # 
+  # save_csv(data=db_deg_overlaps_time,file_name = 'deg_db_overlaps_all',
+  #          path=temp_dir_cell)
+  # db_deg_overlaps_time=factor_column_and_modify(df = db_deg_overlaps_time,
+  #                                               column = 'group_1',
+  #                                               old_list = time_levels[2:length(time_levels)],
+  #                                               keyword = NULL)
+  # 
+  # db_deg_overlaps_time$direction_1[db_deg_overlaps_time$direction_1=='up']=
+  #   'Up in\nArrest'
+  # db_deg_overlaps_time$direction_1[db_deg_overlaps_time$direction_1=='down']=
+  #   'Down in\nArrest'
+  # 
+  # overlap_plot=create_overlap_plot(deg_db_overlap = db_deg_overlaps_time,
+  #                                  odds_column = 'odds',
+  #                                  pval_col = 'adj',
+  #                                  facet_col = 'group_1',
+  #                                  x = 'direction_1',
+  #                                  y = 'Senescence',
+  #                                  xlab = paste0(cell_type,' DEGs'),
+  #                                  ylab = 'CellAge')
+  # save_p(overlap_plot,file_name = 'deg_db_overlaps_all',save_dir =temp_dir_cell)
+  # 
   if(run_simulations){
     message('Running simulations')
     time_simulation_none_outgroup=simulate_overlaps(relevant_degs=time_degs,
@@ -2358,25 +2947,25 @@ time_analysis=function(cell_type,
   # 
   # save_ggplot(db_deg_overlaps_time_no_zero$p,obj_name = 'deg_db_overlaps_no_proliferative',
   #             dir=temp_dir_cell)
-  p_over_time=time_graph_deg_db(
-    degs=db_deg_overlaps_time,
-    group_1_deg_col='group_1',
-    group_1_dir_col='direction_1',
-    group_2_deg_col='Senescence',
-    pval_col='adj',
-    odds_col='odds',
-    n_col='actual',
-    order= NULL,
-    facet_col='Senescence',
-    exclude_db_facet=exclude_db,
-    nudge_y=45,
-    label_ns=FALSE,
-    xlab='Days',
-    ylab='Number of overlapping DEGs',
-    cell_type=cell_type,
-    ggtitle='Differentially expressed genes compared to proliferating controls')
-  save_p(plot = p_over_time,file_name = 'deg_db_overlaps_vs_proliferative',
-         save_dir = temp_dir_cell)
+  # p_over_time=time_graph_deg_db(
+  #   degs=db_deg_overlaps_time,
+  #   group_1_deg_col='group_1',
+  #   group_1_dir_col='direction_1',
+  #   group_2_deg_col='Senescence',
+  #   pval_col='adj',
+  #   odds_col='odds',
+  #   n_col='actual',
+  #   order= NULL,
+  #   facet_col='Senescence',
+  #   exclude_db_facet=exclude_db,
+  #   nudge_y=45,
+  #   label_ns=FALSE,
+  #   xlab='Days',
+  #   ylab='Number of overlapping DEGs',
+  #   cell_type=cell_type,
+  #   ggtitle='Differentially expressed genes compared to proliferating controls')
+  # save_p(plot = p_over_time,file_name = 'deg_db_overlaps_vs_proliferative',
+  #        save_dir = temp_dir_cell)
   
   #Compare expression amounts
   message('Comparing logFC between groups')
@@ -2384,24 +2973,24 @@ time_analysis=function(cell_type,
                                      column = 'group_1',
                                      old_list = time_levels[2:length(time_levels)],
                                      keyword = NULL)
-  testing_fc=compare_logfc_outgroup(ingroup_col = 'group_1',
-                                    outgroup_col = 'group_2',
-                                    degs_gene_col = 'gene',
-                                    degs=time_degs,
-                                    xlab='Day',
-                                    facet_order=levels(time_degs$group_1),
-                                    database=db,
-                                    database_gene_col = db_gene_col,
-                                    database_group_col=db_col)
-  testing_fc_p=testing_fc[1:(length(testing_fc)-2)]
-  for(i in 1:length(testing_fc_p)){
-    temp_name=names(testing_fc_p[i])
-    save_p(plot=testing_fc_p[[temp_name]],
-           file_name = paste0(temp_name,'_log2FC'),save_dir = temp_dir_cell)
-  }
-  save_csv(data=testing_fc$wilcox,file_name='wilcox_fc_db',path=temp_dir_cell)
-  save_csv(data=testing_fc$kw,file_name='kw_fc_db',path=temp_dir_cell)
-  
+  # testing_fc=compare_logfc_outgroup(ingroup_col = 'group_1',
+  #                                   outgroup_col = 'group_2',
+  #                                   degs_gene_col = 'gene',
+  #                                   degs=time_degs,
+  #                                   xlab='Day',
+  #                                   facet_order=levels(time_degs$group_1),
+  #                                   database=db,
+  #                                   database_gene_col = db_gene_col,
+  #                                   database_group_col=db_col)
+  # testing_fc_p=testing_fc[1:(length(testing_fc)-2)]
+  # for(i in 1:length(testing_fc_p)){
+  #   temp_name=names(testing_fc_p[i])
+  #   save_p(plot=testing_fc_p[[temp_name]],
+  #          file_name = paste0(temp_name,'_log2FC'),save_dir = temp_dir_cell)
+  # }
+  # save_csv(data=testing_fc$wilcox,file_name='wilcox_fc_db',path=temp_dir_cell)
+  # save_csv(data=testing_fc$kw,file_name='kw_fc_db',path=temp_dir_cell)
+  # 
   #Compare expression amounts of triple intersect
   time_degs_sig_up=time_degs_sig[time_degs_sig$direction_1=='up',]
   time_degs_sig_up=data.frame(table(time_degs_sig_up[['gene']]))
@@ -2641,7 +3230,7 @@ get_sem_sim=function(orgdb="org.Hs.eg.db",
 
 label_genes <- function(df, new_column, gene_vector, gene_column, gene_label) {
   # Check if new_column exists
-  if(!new_column %in% names(df)) {
+  if(!new_column %in% colnames(df)) {
     # If not, create it with NA values
     df[[new_column]] <- NA
   }
@@ -2650,6 +3239,23 @@ label_genes <- function(df, new_column, gene_vector, gene_column, gene_label) {
   df[[new_column]][df[[gene_column]] %in% gene_vector] <- gene_label
   
   return(df)
+}
+
+# extract genes before labelling them
+extract_label_genes=function(df,
+                             new_df=NULL,
+                             new_column,
+                             gene_vector,
+                             gene_column,
+                             gene_label){
+  temp_genes=df[df[[gene_column]]%in%gene_vector,]
+  temp_genes[[new_column]]=gene_label
+  if(!is.null(new_df)){
+    new_df=rbind(new_df,temp_genes)
+    return(new_df)
+  }else{
+    return(temp_genes)
+  }
 }
 
 #Function to plot gene expression by group
@@ -2669,9 +3275,13 @@ compare_expression=function(degs,
                             hide_ns=TRUE,
                             text_size=10, 
                             facet_text_size=10,
+                            hide_legend=FALSE,
                             legend_bottom=FALSE,
                             gene_lab='Gene',
-                            condition_lab='Condition'){
+                            condition_lab='Condition',
+                            graph_min_new=NULL,
+                            graph_max_new=NULL,
+                            barwidth=10){
   
   degs_relevant=degs[degs[[gene_col]]%in%genes,]
   
@@ -2696,6 +3306,14 @@ compare_expression=function(degs,
   graph_min=min(floor(degs_relevant[[fill_col]]/scale_temp)[!is.infinite(ceiling(degs_relevant[[fill_col]]))])*scale_temp
   if(graph_min>0){
     graph_min=0
+  }
+  
+  if(!is.null(graph_min_new)){
+    graph_min=graph_min_new
+  }
+  
+  if(!is.null(graph_max_new)){
+    graph_max=graph_max_new
   }
   
   li <- c(graph_min, graph_max)
@@ -2726,7 +3344,8 @@ compare_expression=function(degs,
       scale_fill_gradient2(expression('log'[2]*'(FC)'), low = "blue", mid = "white", high = "red2", midpoint = 0,
                            guide = guide_colorbar(frame.colour = "black",
                                                   ticks = TRUE, 
-                                                  ticks.colour = 'black',title.position = 'top',title.hjust=0.5),
+                                                  ticks.colour = 'black',title.position = 'top',title.hjust=0.5,
+                                                  barwidth = barwidth),
                            breaks=br,
                            labels=la,
                            limits=li)+
@@ -2783,6 +3402,11 @@ compare_expression=function(degs,
     p_temp=p_temp+
       facet_grid(facet_temp~facet_temp2,scales = 'free',space='free')
   }
+  
+  if(hide_legend){
+    p_temp=
+      p_temp + theme(legend.position="none")
+  }
   return(p_temp)
 }
 
@@ -2803,6 +3427,9 @@ compare_degs_between_groups=function(all_degs,
                                      graph_scale=1,
                                      text_size=12){
   all_comparison=unique(all_degs[[group_col]])
+  all_degs[[group_comparison_col_1]]=as.character(all_degs[[group_comparison_col_1]])
+  all_degs[[group_comparison_col_2]]=as.character(all_degs[[group_comparison_col_2]])
+  all_degs[[group_col]]=as.character(all_degs[[group_col]])
   comparison_df=vector_to_df(all_comparison)
   all_overlaps=do.call('rbind',apply(comparison_df,MARGIN=1,function(per_row){
     group_1=per_row[['x']]
@@ -2881,13 +3508,13 @@ compare_degs_between_groups=function(all_degs,
   all_overlaps[['n_2']]=as.numeric(as.character(all_overlaps[['n_2']]))
   all_overlaps[['background_n']]=as.numeric(as.character(all_overlaps[['background_n']]))
   
-  all_overlaps$p.adj=p.adjust(all_overlaps[['pval']],method='BH')
+  all_overlaps$p.adj=p.adjust(all_overlaps[['pval']])
   all_overlaps$log2odds=log2(all_overlaps[['odds']])
   all_overlaps=all_overlaps%>%rstatix::add_significance('p.adj')
   
   all_overlaps[['accession']]=paste0(all_overlaps[['group_1']],' ',
                                      all_overlaps[['dir_ingroup_1']],
-                                     ' vs.\n',all_overlaps[['group_2']],' ',
+                                     '\n',all_overlaps[['group_2']],' ',
                                      all_overlaps[['dir_ingroup_2']]
   )
   all_overlaps[['x']]=paste0(all_overlaps[['group_1']],' ',gsub(all_overlaps[['time_1']],pattern='_',replacement=' '))
@@ -2948,4 +3575,134 @@ compare_degs_between_groups=function(all_degs,
   return_me[['df']]=all_overlaps
   return_me[['p']]=p_temp
   return(return_me)
+}
+
+# function to make summary plot of overlaps
+summarise_overlaps = function(db,
+                              x,
+                              y,
+                              odds_col = 'odds',
+                              pval_col = 'adj',
+                              xlab = NULL,
+                              ylab = NULL,
+                              add_line = TRUE,
+                              legend_title = NULL,
+                              label_cq = TRUE,
+                              remove_self = FALSE,
+                              self_col = c('group_1','group_1.1'),
+                              legend_position_bottom = FALSE,
+                              rotate_x_text = TRUE) {
+  
+  db$log2odds = log2(db[[odds_col]])
+  db$fill = ifelse(db[[pval_col]] > 0.05, 'Not Sig', ifelse(db$log2odds > 0, 'Sig Over-represented', 'Sig Under-represented'))
+  
+  if(!label_cq) {
+    db$fill = factor(db$fill,
+                     levels = c('Sig Over-represented', 'Sig Under-represented', 'Not Sig'))
+    fill_manual = c("Not Sig" = "#f1f1f1", "Sig Over-represented" = "#f8766d",
+                    "Sig Under-represented" = "#00bfc4")
+  } else {
+    new_legend = apply(db, 1, function(per_row) {
+      temp_fill = per_row[['fill']]
+      if(temp_fill == 'Not Sig') {
+        return(temp_fill)
+      } else {
+        paste0(ifelse(grepl(per_row[[y]], pattern = 'CQ'), 'CQ', 'CS'), ' ', per_row[['fill']])
+      }
+    })
+    
+    db$fill = new_legend
+    db$fill = factor(db$fill,
+                     levels = c("CS Sig Over-represented",
+                                "CQ Sig Over-represented",
+                                "CS Sig Under-represented",
+                                "CQ Sig Under-represented",
+                                'Not Sig'))
+    fill_manual = c("Not Sig" = "#f1f1f1", "CS Sig Over-represented" = "#f8766d",
+                    'CQ Sig Over-represented' = '#ffb3b3',
+                    'CQ Sig Under-represented' = '#b3ffff',
+                    "CS Sig Under-represented" = "#00bfc4")
+  }
+  
+  db[['x']] = db[[x]]
+  db[['y']] = db[[y]]
+  
+  if(remove_self) {
+    db$fill[db[[self_col[1]]] == db[[self_col[2]]]] = NA
+  }
+  
+  temp_p = db %>% ggplot(aes(x = x, y = y, fill = fill)) +
+    geom_tile(colour = 'black') +
+    scale_x_discrete(expand = expansion(c(0, 0))) +
+    scale_y_discrete(expand = expansion(c(0, 0))) +
+    ylab(ylab) +
+    xlab(xlab) +
+    scale_fill_manual(name = legend_title,
+                      values = fill_manual)
+  
+  if(add_line) {
+    yint = (length(unique(db[['y']])) / 2) + 0.5
+    temp_p = temp_p + geom_hline(yintercept = yint, size = 1)
+  }
+  
+  # Adjust x-axis text rotation if rotate_x_text is TRUE
+  if(rotate_x_text) {
+    temp_p = temp_p + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  }
+  
+  # Adjust legend position if legend_position_bottom is TRUE
+  if(legend_position_bottom) {
+    temp_p = temp_p + theme(legend.position = "bottom")
+  }
+  
+  return(temp_p)
+}
+
+summarise_overlaps_facet=function(db,
+                            x,
+                            y,
+                            odds_col='odds',
+                            pval_col='adj',
+                            xlab=NULL,
+                            ylab=NULL,
+                            add_line=TRUE,
+                            legend_title=NULL,
+                            label_cq=TRUE,
+                            facet_col,
+                            angle=90){
+  db$log2odds=log2(db[[odds_col]])
+  db$fill=ifelse(db[[pval_col]]>0.05,'Not Sig',ifelse(db$log2odds>0,'Sig Over-represented','Sig Under-represented'))
+  
+  db$fill=factor(db$fill,
+                   levels=c('Sig Over-represented','Sig Under-represented','Not Sig'))
+  fill_manual=c("Not Sig" = "#f1f1f1", "Sig Over-represented" = "#f8766d",
+                  "Sig Under-represented" = "#00bfc4")
+  
+  if(angle==90){
+    angle_x=element_text(angle=90,vjust=0.5,hjust=1)
+  }else if(angle==45){
+    angle_x=element_text(angle=45,hjust=1)
+  }
+  db$facet_temp=db[[facet_col]]
+  db[['x']]=db[[x]]
+  db[['y']]=db[[y]]
+  temp_p=
+    db%>%ggplot(aes(x=x,y=y,fill=fill))+
+    geom_tile(colour='black')+
+    scale_x_discrete(expand=expansion(c(0,0)))+
+    scale_y_discrete(expand=expansion(c(0,0)))+
+    theme(axis.text.x=angle_x)+
+    ylab(ylab)+
+    xlab(xlab)+
+    scale_fill_manual(name=legend_title,
+                      values = fill_manual)+
+  facet_grid(facet_temp~.)
+    
+  if(add_line){
+    yint=(length(unique(db[['y']]))/2)+0.5
+    
+    temp_p=temp_p+
+      geom_hline(yintercept = yint,size=1)
+  }
+  return(temp_p)
 }
