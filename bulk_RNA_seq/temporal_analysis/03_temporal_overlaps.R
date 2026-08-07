@@ -1,23 +1,13 @@
 #Script to download and analyse temporal DEGs
-source('/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/Scripts/for_github/general_functions.R')
+source("R/config.R")
+source("R/functions.R")
 
-cs_signatures_studies=read.csv(paste0(save_dir_csv,'1_cellage.csv'))
+cs_signatures_studies=read.csv(file.path(SAVE_DIR_CSV, '1_cellage.csv'))
 cs_signatures_studies=cs_signatures_studies[cs_signatures_studies$source!='Tao et al',]
 #####
 
-ensembl100=useMart(host='https://apr2020.archive.ensembl.org', 
-                   biomart='ENSEMBL_MART_ENSEMBL', 
-                   dataset='hsapiens_gene_ensembl')
-
-human_pc=getBM(attributes=c('external_gene_name', 'ensembl_gene_id'),
-               filters = 'biotype',
-               values = c('protein_coding'),
-               mart = ensembl100)
-
-human_pc_entrez=getBM(attributes=c('external_gene_name','entrezgene_id','ensembl_gene_id'),
-                      filters = 'biotype',
-                      values = c('protein_coding'),
-                      mart = ensembl100)
+human_pc <- get_ensembl_release_pc()
+human_pc_entrez <- get_ensembl_release_pc_entrez()
 #####
 cs_signatures_studies$dir[cs_signatures_studies$dir=='Induces']='Induce CS'
 cs_signatures_studies$dir[cs_signatures_studies$dir=='Inhibits']='Inhibit CS'
@@ -29,7 +19,7 @@ cs_signatures_studies$dir[cs_signatures_studies$dir=='Underexpressed']='Down in 
 search_1_time=build_search(column='sra',
                            search_terms=c("ERP021140"))
 
-recount_filtered_quiescence_fixed=read.csv('/Volumes/GoogleDrive/My Drive/PhD_copy/To Publish/CS Clusters/CS_studies/recount_final.csv')
+recount_filtered_quiescence_fixed=readRDS(file.path(RERUN_DIR, 'temporal_recount_pheno.rds'))
 # Keratinocyte
 time_analysis(cell_type='Keratinocyte',
               recount_pheno=recount_filtered_quiescence_fixed,
@@ -112,11 +102,11 @@ time_analysis(cell_type='Fibroblast',
 
 #####
 #All DEG analyses
-# time_degs=compile_time_files(dir_use='/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/ERP021140/',
+# time_degs=compile_time_files(dir_use=paste0(ERP021140_DIR, '/'),
 #                    deg_file='degs.csv')
 # save_csv(time_degs,file_name = 'all_time_degs',
-#          path = '/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/ERP021140')
-time_degs=read.csv('/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/ERP021140/all_time_degs.csv')
+#          path = ERP021140_DIR)
+time_degs=read.csv(file.path(ERP021140_DIR, 'all_time_degs.csv'))
 time_degs=factor_column_and_modify(df = time_degs,
                                    column = 'group_1',
                                    old_list = rev(c('4_days','10_days','20_days')),
@@ -129,12 +119,12 @@ time_degs=factor_column_and_modify(df = time_degs,
                                    keyword = NULL)
 #####
 #simulations
-sims=compile_time_files(dir_use='/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/ERP021140/',
+sims=compile_time_files(dir_use=paste0(ERP021140_DIR, '/'),
                    deg_file='simulation_overlap.csv')
-save_csv(sims,file_name = 'sims_by_type',path = '/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/ERP021140/')
-sims_cumsum=compile_time_files(dir_use='/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/ERP021140/',
+save_csv(sims,file_name = 'sims_by_type',path = paste0(ERP021140_DIR, '/'))
+sims_cumsum=compile_time_files(dir_use=paste0(ERP021140_DIR, '/'),
                                deg_file='reverse_cumsum_recount.csv')
-save_csv(sims_cumsum,file_name = 'reverse_cumsum_recount',path = '/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/ERP021140/')
+save_csv(sims_cumsum,file_name = 'reverse_cumsum_recount',path = paste0(ERP021140_DIR, '/'))
 
 #####
 time_degs$ingroup=paste0(time_degs$cell_type,'_',
@@ -151,7 +141,7 @@ time_deg_overlap_sim=simulate_overlaps(relevant_degs = time_degs,
                   simulation_n=10000)
 
 save_csv(time_deg_overlap_sim,file_name = 'all_sim_overlap',
-         path = '/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/ERP021140')
+         path = ERP021140_DIR)
 
 max(time_deg_overlap_sim$Freq[time_deg_overlap_sim$outgroup=='none_up'&
                                 time_deg_overlap_sim$Var1==9])
@@ -195,13 +185,13 @@ time_deg_overlaps = compare_degs_between_groups(
 )
 
 save_csv(time_deg_overlaps$df,file_name = 'temporal_comparison',
-         path = '/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/ERP021140')
+         path = ERP021140_DIR)
 
-save_csv(time_deg_overlaps$df,file_name = 'temp_temporal_comparison',path = '/Users/ravelarvargas/Downloads')
+save_csv(time_deg_overlaps$df,file_name = 'temp_temporal_comparison',path = RERUN_DIR)
 
 save_p(plot = time_deg_overlaps$p,
        file_name = 'temporal_comparison',
-       save_dir ='/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/ERP021140',
+       save_dir =ERP021140_DIR,
        p_width = 13,
        p_height = 11)
 
@@ -412,7 +402,7 @@ p_temp=temp_p_overlaps%>%ggplot(aes(x=x_use,y=y_use,fill=log2odds))+
 # 
 # save_p(p_temp,
 #        file_name = 'temporal_comparison_melanocyte',
-#        save_dir ='/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/ERP021140',
+#        save_dir =ERP021140_DIR,
 #        p_width = 7,
 #        p_height = 7)
 
@@ -461,7 +451,7 @@ summary_melanocyte=df%>%ggplot(aes(x=Arrow2,y=Arrow1,fill=fill))+
     )
 save_p(summary_melanocyte,
        file_name = 'temporal_self_summary',
-       save_dir = '/Users/ravelarvargas/Downloads/marian/simplified_overlaps',p_width = 10,
+       save_dir = RERUN_DIR,p_width = 10,
        p_height = 4)
 
 temp_p_overlaps_no_melo=all_overlaps[all_overlaps$group_1!='Melanocyte',]
@@ -578,14 +568,14 @@ all_p=lapply(all_accession,function(exclude_me){
 lapply(all_p,function(save_p){
   save_p(save_p,
          file_name = paste0(sample(1:1000)[1]),
-         save_dir = '/Users/ravelarvargas/Downloads/marian/simplified_overlaps',
+         save_dir = RERUN_DIR,
          p_width = 7,p_height = 4)
 })
 
 simple_all_temporal=all_p[[1]]+patchwork::plot_spacer()+all_p[[2]]+all_p[[3]]+patchwork::plot_layout(guides = 'collect')&
   theme(legend.position = 'bottom')
 
-save_p(simple_all_temporal,file_name = 'temporal_simple',save_dir ='/Users/ravelarvargas/Downloads/marian/simplified_overlaps',
+save_p(simple_all_temporal,file_name = 'temporal_simple',save_dir =RERUN_DIR,
        p_width = 14,p_height = 5.5)
 
 #####
@@ -665,7 +655,7 @@ compiled_time_db_overlaps=create_overlap_plot(deg_db_overlap = db_deg_overlaps_t
                     ylab='CS Gene Lists')
 
 save_p(compiled_time_db_overlaps,file_name = 'temporal_vs_cellage',
-       save_dir = '/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/ERP021140',
+       save_dir = ERP021140_DIR,
        p_width = 9,p_height=9)
 
 db_deg_overlaps_time$direction_1=gsub(db_deg_overlaps_time$direction_1,pattern='↑',
@@ -673,7 +663,7 @@ db_deg_overlaps_time$direction_1=gsub(db_deg_overlaps_time$direction_1,pattern='
 db_deg_overlaps_time$direction_1=gsub(db_deg_overlaps_time$direction_1,pattern='↓',
                            replacement='down')
 save_csv(db_deg_overlaps_time,file_name = 'temporal_vs_cellage',
-         path = '/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/ERP021140')
+         path = ERP021140_DIR)
 
 #simplify summary
 db_deg_overlaps_time$summary_y=apply(db_deg_overlaps_time,MARGIN = 1,function(x){
@@ -716,7 +706,7 @@ summary_p_temporal_stress=summarise_overlaps_facet(db=db_deg_overlaps_time,
                                                    facet_col='cell_type',angle = 45)
 
 save_p(summary_p_temporal_stress,file_name = '6b_simplified_temporal_db',
-       save_dir = '/Users/ravelarvargas/Downloads/marian/simplified_overlaps',
+       save_dir = RERUN_DIR,
        p_width = 6,p_height = 4)
 #####
 time_degs$temporal_accession=paste0(time_degs$cell_type,' ',time_degs$group_1)
@@ -798,13 +788,13 @@ p3_temp=plot_gsea_enrichment(enrichment_df=temporal_gsea3$gsea_enrichment,
                        'Keratinocyte 20 Days'
                      ))
 
-save_p(plot = p_temp,save_dir = '/Users/ravelarvargas/Downloads',
+save_p(plot = p_temp,save_dir = RERUN_DIR,
        file_name = 'test_1',p_width = 10)
 
-save_p(plot = p2_temp,save_dir = '/Users/ravelarvargas/Downloads',
+save_p(plot = p2_temp,save_dir = RERUN_DIR,
        file_name = 'test_2',p_width = 12)
 
-save_p(plot = p3_temp,save_dir = '/Users/ravelarvargas/Downloads',
+save_p(plot = p3_temp,save_dir = RERUN_DIR,
        file_name = 'test_3',p_width = 10)
 
 time_degs$accession_full=paste0(time_degs$cell_type,' ',
@@ -832,7 +822,7 @@ p_4=create_overlap_plot(deg_db_overlap = temp_overlap,
                     y = 'accession_partial',x='direction_1',
                     add_almost_sig = TRUE,remove_nonsig = TRUE)
 
-save_p(plot = p_4,save_dir = '/Users/ravelarvargas/Downloads',
+save_p(plot = p_4,save_dir = RERUN_DIR,
        file_name = 'test_overlap',p_width = 10)
 
 temp_overlap2=overlap_function(df_1 = time_degs[time_degs$sig=='y',],
@@ -857,7 +847,7 @@ p_5=create_overlap_plot(deg_db_overlap = temp_overlap2,
                         y = 'accession_partial',x='direction_1',
                         add_almost_sig = TRUE,remove_nonsig = TRUE)
 
-save_p(plot = p_5,save_dir = '/Users/ravelarvargas/Downloads',
+save_p(plot = p_5,save_dir = RERUN_DIR,
        file_name = 'test_overlap2',p_width = 10,p_height=10)
 
 temp_overlap3=overlap_function(df_1 = time_degs[time_degs$sig=='y',],
@@ -882,6 +872,6 @@ p_6=create_overlap_plot(deg_db_overlap = temp_overlap3,
                         y = 'accession_partial',x='direction_1',
                         add_almost_sig = TRUE,remove_nonsig = TRUE)
 
-save_p(plot = p_6,save_dir = '/Users/ravelarvargas/Downloads',
+save_p(plot = p_6,save_dir = RERUN_DIR,
        file_name = 'test_overlap3',p_width = 10,p_height=10)
 #####

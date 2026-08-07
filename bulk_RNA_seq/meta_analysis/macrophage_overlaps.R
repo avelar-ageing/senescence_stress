@@ -1,5 +1,6 @@
 library(biomaRt)
-source('/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/Scripts/for_github/general_functions.R')
+source("R/config.R")
+source("R/functions.R")
 
 dir_use='/Users/ravelarvargas/Downloads/marian/final/macrophage/'
 senmayo_mouse=read.csv(paste0(dir_use,'senmayo_mouse.csv'))
@@ -31,7 +32,7 @@ mouse_pc_homology_full=mouse_pc_homology[!is.na(mouse_pc_homology$hsapiens_homol
 
 senmayo_mouse_homology=merge(senmayo_mouse,mouse_pc_homology_full,by.x='gene',by.y='external_gene_name')
 
-genelists_human=read.csv('/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/SI_tables/1_cellage.csv')
+genelists_human=read.csv(file.path(SAVE_DIR_CSV, '1_cellage.csv'))
 genelists_human_senmayo=genelists_human[genelists_human$source=='Saul et al',]
 
 sum(genelists_human_senmayo$gene%in%senmayo_mouse_homology$hsapiens_homolog_associated_gene_name)/nrow(genelists_human_senmayo)*100

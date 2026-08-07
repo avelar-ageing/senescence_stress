@@ -1,7 +1,8 @@
 
-source('/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/Scripts/for_github/general_functions.R')
+source("R/config.R")
+source("R/functions.R")
 #Read in CellAge
-cellage=read.csv('/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/SI_tables/1_cellage.csv')
+cellage=read.csv(file.path(SAVE_DIR_CSV, '1_cellage.csv'))
 cellage_driver=cellage[cellage$Database=='Driver',]
 #####
 ensembl100=useMart(host='https://apr2020.archive.ensembl.org', 

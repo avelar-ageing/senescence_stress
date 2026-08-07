@@ -1,0 +1,19 @@
+"tissue","cell_substate","Freq"
+"Foreskin","Contact_inhibited CQ",8
+"Lung","Contact_inhibited CQ",3
+"Skin","Contact_inhibited CQ",8
+"Foreskin","Oncogene-induced CS",7
+"Lung","Oncogene-induced CS",41
+"Skin","Oncogene-induced CS",0
+"Foreskin","Proliferating",25
+"Lung","Proliferating",61
+"Skin","Proliferating",5
+"Foreskin","Replicative CS",2
+"Lung","Replicative CS",9
+"Skin","Replicative CS",0
+"Foreskin","Serum_starved CQ",13
+"Lung","Serum_starved CQ",9
+"Skin","Serum_starved CQ",0
+"Foreskin","Stress-induced CS",18
+"Lung","Stress-induced CS",18
+"Skin","Stress-induced CS",3

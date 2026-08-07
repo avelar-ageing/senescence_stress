@@ -1,6 +1,7 @@
 #DEG analysis
-cellage=read.csv('/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/SI_tables/1_cellage.csv')
-source('/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/Scripts/for_github/general_functions.R')
+cellage=read.csv(file.path(SAVE_DIR_CSV, '1_cellage.csv'))
+source("R/config.R")
+source("R/functions.R")
 #####
 ensembl100=useMart(host='https://apr2020.archive.ensembl.org', 
                    biomart='ENSEMBL_MART_ENSEMBL', 
@@ -18,7 +19,7 @@ human_pc_entrez=getBM(attributes=c('external_gene_name','ensembl_gene_id',
                       mart = ensembl100)
 human_pc_entrez=human_pc_entrez[!is.na(human_pc_entrez$entrezgene_id),]
 #####
-arrest_degs_merged=read.csv('/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/SI_tables/arrest_degs_final.csv')
+arrest_degs_merged=read.csv(file.path(SAVE_DIR_CSV, 'arrest_degs_final.csv'))
 arrest_degs_merged$group_1[arrest_degs_merged$group_1=='Contact_inhibited_CQ']='Contact-inhibited CQ'
 arrest_degs_merged$group_1[arrest_degs_merged$group_1=='Serum_starved_CQ']='Serum-starved CQ'
 arrest_degs_merged$group_1[arrest_degs_merged$group_1=='Replicative_CS']='RS'
@@ -98,7 +99,7 @@ pathway_genes=do.call('rbind',lapply(pathway_get,function(get_pathway){
 }))
 pathway_genes=pathway_genes%>%dplyr::arrange(code,gene)
 pathway_genes_unique=unique(pathway_genes)
-# save_csv(pathway_genes,'wikipathway_genes',path = '/Users/ravelarvargas/Downloads/marian')
+# save_csv(pathway_genes,'wikipathway_genes',path =  RERUN_DIR)
 
 #KEGG
 library(KEGGREST)
@@ -113,7 +114,7 @@ colnames(kegg_modules)=c('code','gene')
 kegg_modules$pathway='Pentose Phosphate Pathway + PRPP biosynthesis'
 kegg_modules=kegg_modules%>%dplyr::select(gene,code,pathway)
 kegg_modules=kegg_modules%>%dplyr::arrange(code,gene)
-# save_csv(kegg_modules,'mkegg_genes',path = '/Users/ravelarvargas/Downloads/marian')
+# save_csv(kegg_modules,'mkegg_genes',path =  RERUN_DIR)
 
 #biocyc
 ##purine
@@ -153,7 +154,7 @@ glycolysis_temp$type='metabolic enzyme'
 glycolysis_temp$keep=TRUE
 
 biocyc_pathways=rbind(purine_temp,pyrimidine_temp, TCA_temp,glycolysis_temp)
-# save_csv(biocyc_pathways,'biocyc_genes',path = '/Users/ravelarvargas/Downloads/marian')
+# save_csv(biocyc_pathways,'biocyc_genes',path =  RERUN_DIR)
 #####
 
 glut=c('GSS', 'GSR', 'GCLC', 'GCLM', 'GPX1', 'GPX2', 'GPX3', 'GPX4', 'GPX5',
@@ -265,12 +266,12 @@ arrest_heterogeneity_metabolism=compare_expression(degs=arrest_degs_merged,
 )
 save_p(arrest_heterogeneity_metabolism,
        file_name = 'heterogeneity_metabolism',
-       save_dir = '/Volumes/GoogleDrive/My Drive/Grants/2023/Impetus_metabolism',
+       save_dir = DATA_DIR,
        p_width = 7.5,p_height=4.5)
 #####
 #temporal
 
-time_degs=compile_time_files(dir_use='/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/ERP021140/',
+time_degs=compile_time_files(dir_use=paste0(ERP021140_DIR, '/'),
                              deg_file='degs.csv')
 time_degs$group_1[time_degs$group_1=='4_days']='4 days'
 time_degs$group_1[time_degs$group_1=='10_days']='10 days'
@@ -547,7 +548,7 @@ p_1=compare_expression(degs=time_degs,
                                        graph_limits = c(-9,9))
 
 save_p(p_1,file_name = 'get_legend',
-       save_dir = '/Users/ravelarvargas/Downloads')
+       save_dir =  RERUN_DIR)
   # theme(legend.position = "none")
 p_2=compare_expression(degs=time_degs,
                      gene_col = 'ensembl',
@@ -573,7 +574,7 @@ temporal_metabolism=grid.arrange(arrangeGrob(p_1, p_2, ncol = 1),
              temp_legend, nrow = 2, heights = c(10, 1))
 save_p(temporal_metabolism,
        file_name = 'temporal_metabolism',
-       save_dir = '/Volumes/GoogleDrive/My Drive/Grants/2023/Impetus_metabolism',
+       save_dir = DATA_DIR,
        p_width = 10,p_height = 9)
 
 temporal_metabolism_full=compare_expression(degs=time_degs,
@@ -599,7 +600,7 @@ temporal_metabolism_full=compare_expression(degs=time_degs,
 
 save_p(temporal_metabolism_full,
        file_name = 'temporal_metabolism_full',
-       save_dir = '/Volumes/GoogleDrive/My Drive/Grants/2023/Impetus_metabolism',
+       save_dir = DATA_DIR,
        p_width = 14,p_height = 5)
 
 #####
@@ -652,11 +653,11 @@ write.table(oxo_degs,file =
 #overlaps
 save_csv(metabolism_background,
          file_name = 'background_pc_arrest_filtered',
-         path = '/Users/ravelarvargas/Downloads/marian')
+         path =  RERUN_DIR)
 
 save_csv(metabolism_genes,
          file_name = 'genelist_pc_arrest_filtered',
-         path = '/Users/ravelarvargas/Downloads/marian')
+         path =  RERUN_DIR)
 
 #overlap with self
 meta_self_overlap=overlap_within_df(dataframe = metabolism_genes,
@@ -679,7 +680,7 @@ metabolism_self_overlaps_p_2=plot_self_overlaps(meta_self_overlap,
                    facet_col = NULL,angle_x = TRUE)
 save_p(metabolism_self_overlaps_p_2,
        file_name = 'metabolism_self_overlaps_synthase',
-       save_dir='/Users/ravelarvargas/Downloads/marian')
+       save_dir= RERUN_DIR)
 
 #overlap with degs
 arrest_degs_merged_sig=arrest_degs_merged[arrest_degs_merged$sig=='y',]
@@ -708,7 +709,7 @@ overlaps_metabolism=create_overlap_plot(metabolism_deg_overlap,
 
 save_p(overlaps_metabolism,
        file_name = 'degs_vs_metabolism',
-       save_dir = '/Users/ravelarvargas/Downloads/marian/',
+       save_dir =  RERUN_DIR,
        p_width = 11,p_height=5.3)
 
 ##with synthase
@@ -737,7 +738,7 @@ overlaps_metabolism_2=create_overlap_plot(metabolism_deg_overlap_grouped,
 
 save_p(overlaps_metabolism_2,
        file_name = 'degs_vs_metabolism_synthase',
-       save_dir = '/Users/ravelarvargas/Downloads/marian/',
+       save_dir =  RERUN_DIR,
        p_width = 11,p_height=5.3)
 
 #Function to make heatmaps from subset of genes
@@ -761,7 +762,7 @@ metabolism_heatmap=build_heatmap(degs = arrest_degs_merged[arrest_degs_merged$ge
 
 save_pheatmap(pheatmap_to_save=metabolism_heatmap,
               file_name='metabolism_all_samples',
-              save_dir='/Users/ravelarvargas/Downloads/marian/',
+              save_dir= RERUN_DIR,
               p_width=3000,
               p_height=3000)
 
@@ -803,7 +804,7 @@ deg_heatmap=genelist_heatmap(degs = arrest_degs_merged[arrest_degs_merged$gene%i
 
 save_pheatmap(pheatmap_to_save=deg_heatmap,
               file_name='metabolism_deg_heatmap',
-              save_dir='/Users/ravelarvargas/Downloads/marian/',
+              save_dir= RERUN_DIR,
               p_width=3000,
               p_height=3000)
 
@@ -1042,7 +1043,7 @@ arrest_heterogeneity_metabolism=compare_expression(degs=arrest_degs_merged_plot,
 )
 save_p(arrest_heterogeneity_metabolism,
        file_name = 'metabolism_arrest_genes',
-       save_dir = '/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/SI_figures/',
+       save_dir = DATA_DIR,
        p_width = 10,p_height=10)
 
 #Overlap
@@ -1058,7 +1059,7 @@ metabolism_arrest_overlaps=overlap_function(df_1 = arrest_degs_merged_sig,
                  background = unique(arrest_degs_merged$gene))
 
 save_csv(metabolism_arrest_overlaps,file_name = 'metabolism_arrest_fishers',
-         path = '/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/SI_tables/')
+         path = SAVE_DIR_CSV)
 
 metabolism_arrest_overlaps$group_1[metabolism_arrest_overlaps$group_1=='Contact-inhibited CQ']='Contact-inhibited\nCQ'
 metabolism_arrest_overlaps$group_1[metabolism_arrest_overlaps$group_1=='Serum-starved CQ']='Serum-starved\nCQ'
@@ -1075,7 +1076,7 @@ overlaps_metabolism=create_overlap_plot(metabolism_arrest_overlaps,
 
 save_p(overlaps_metabolism,
        file_name = 'metabolism_arrest',
-       save_dir = '/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/SI_figures/')
+       save_dir = DATA_DIR)
 
 #####
 #Temporal
@@ -1279,12 +1280,12 @@ compare_expression_temporal_2=compare_expression_temporal(degs=time_degs_plot_2,
 
 save_p(compare_expression_temporal_1,
        file_name = 'temporal_metabolism_genes_p1',
-       save_dir = '/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/SI_figures/',
+       save_dir = DATA_DIR,
        p_width = 20)
 
 save_p(compare_expression_temporal_2,
        file_name = 'temporal_metabolism_genes_p2',
-       save_dir = '/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/SI_figures/',
+       save_dir = DATA_DIR,
        p_width = 20)
 
 pathway_genes=read.csv('/Users/ravelarvargas/Downloads/marian/pathways_genes.csv')
@@ -1303,7 +1304,7 @@ metabolism_arrest_overlaps_temporal=overlap_function(df_1 = time_degs_sig,
                                             background = unique(time_degs$ensembl))
 
 save_csv(metabolism_arrest_overlaps_temporal,file_name = 'metabolism_temporal_fishers',
-         path = '/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/SI_tables/')
+         path = SAVE_DIR_CSV)
 
 metabolism_arrest_overlaps_temporal$direction_1[metabolism_arrest_overlaps_temporal$direction_1=='up']='Up\nin Arrest'
 metabolism_arrest_overlaps_temporal$direction_1[metabolism_arrest_overlaps_temporal$direction_1=='down']='Down\nin Arrest'
@@ -1317,5 +1318,5 @@ overlaps_metabolism_temporal=create_overlap_plot(metabolism_arrest_overlaps_temp
 
 save_p(overlaps_metabolism_temporal,
        file_name = 'metabolism_temporal',
-       save_dir = '/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/SI_figures/',
+       save_dir = DATA_DIR,
        p_height = 10)

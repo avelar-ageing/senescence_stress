@@ -1,32 +1,107 @@
-library(ComplexUpset)
-library(data.table)
-library(recount3)
-library(biomaRt)
-library(ggplot2)
-library(ggpubr)
-library(edgeR)
-library(DESeq2)
-library(WGCNA)
-library(tibble)
-library(pheatmap)
-library(gplots)
-library(tidyr)
-library(dplyr)
-library(GeneOverlap)
-library(EnhancedVolcano)
-library(RColorBrewer)
-library(clusterProfiler)
-library(stringi)
-library(rrvgo)
-library(org.Hs.eg.db)
+# functions.R
+#
+# All shared analysis functions for the bulk RNA-seq (recount3 meta-analysis +
+# ERP021140 temporal) pipelines. Pure function definitions only — no
+# hardcoded paths. Source config.R first (it sets SAVE_DIR_CSV etc.), then
+# this file:
+#
+#   source("R/config.R")
+#   source("R/functions.R")
+#
+# Restructured from the original Final/Scripts/for_github/general_functions.R
+# (unmodified copy kept at archive_original/ for reference). Logic is
+# byte-identical except: (1) the hardcoded save_dir/save_dir_csv/... path
+# assignments that used to live at the top of this file were moved into
+# config.R as PROJECT_DIR-relative paths, and (2) this header.
 
-save_dir='/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/'
-save_dir_csv=paste0(save_dir,'SI_tables/')
-save_dir_figure=paste0(save_dir,'Figures/')
-save_dir_figure_si=paste0(save_dir,'SI_figures/')
+suppressPackageStartupMessages({
+  library(ComplexUpset)
+  library(data.table)
+  library(recount3)
+  library(biomaRt)
+  library(ggplot2)
+  library(ggpubr)
+  library(edgeR)
+  library(DESeq2)
+  library(WGCNA)
+  library(tibble)
+  library(pheatmap)
+  library(gplots)
+  library(tidyr)
+  library(dplyr)
+  library(GeneOverlap)
+  library(EnhancedVolcano)
+  library(RColorBrewer)
+  library(clusterProfiler)
+  library(stringi)
+  library(rrvgo)
+  library(org.Hs.eg.db)
+})
+
 
 #General functions
 #Save ggplot
+# Exact, version-pinned protein-coding gene dictionary, matching what
+# getBM(biotype='protein_coding') against the original apr2020 Ensembl-100
+# archive would have returned -- but fetched from Ensembl's plain FTP file
+# archive (still live) instead of the retired interactive
+# archive+biomart web service. Verified: reproduces 13,681/13,681 (100%) of
+# the gene symbols in the one surviving object from the original Ensembl-100
+# pipeline run (cq_samples.rds). See config.R's ENSEMBL_PINNED_RELEASE note.
+#
+# Cached to disk after first download (the GTF is ~47MB) so reruns don't
+# re-fetch it.
+get_ensembl_release_pc <- function(release = ENSEMBL_PINNED_RELEASE, cache_dir = RERUN_DIR) {
+  cache_rds <- file.path(cache_dir, sprintf("human_pc_ensembl%d_exact.rds", release))
+  if (file.exists(cache_rds)) {
+    return(readRDS(cache_rds))
+  }
+  gtf_path <- file.path(cache_dir, sprintf("Homo_sapiens.GRCh38.%d.gtf.gz", release))
+  if (!file.exists(gtf_path)) {
+    url <- sprintf("https://ftp.ensembl.org/pub/release-%d/gtf/homo_sapiens/Homo_sapiens.GRCh38.%d.gtf.gz",
+                    release, release)
+    message(sprintf("Downloading Ensembl release %d GTF (protein-coding dictionary source)...", release))
+    utils::download.file(url, gtf_path, quiet = TRUE, mode = "wb")
+  }
+  gtf <- readLines(gzfile(gtf_path))
+  gtf <- gtf[!grepl("^#", gtf)]
+  fields <- strsplit(gtf, "\t")
+  is_gene <- sapply(fields, function(x) length(x) >= 3 && x[3] == "gene")
+  attr_col <- sapply(fields[is_gene], function(x) x[9])
+
+  extract_attr <- function(attr_str, key) {
+    pat <- paste0(key, ' "([^"]+)"')
+    m <- regmatches(attr_str, regexpr(pat, attr_str))
+    ifelse(nchar(m) > 0, sub(pat, "\\1", m), NA)
+  }
+  biotypes   <- extract_attr(attr_col, "gene_biotype")
+  gene_names <- extract_attr(attr_col, "gene_name")
+  gene_ids   <- extract_attr(attr_col, "gene_id")
+
+  keep <- biotypes == "protein_coding" & !is.na(gene_names)
+  df <- data.frame(external_gene_name = gene_names[keep], ensembl_gene_id = gene_ids[keep],
+                    stringsAsFactors = FALSE)
+  saveRDS(df, cache_rds)
+  df
+}
+
+# Entrez ID cross-reference for the same pinned protein-coding gene list.
+# The original pipeline pulled entrezgene_id from the same (now-dead)
+# apr2020 biomart call. Ensembl's plain GTF doesn't carry Entrez IDs, so this
+# maps gene symbol -> Entrez via org.Hs.eg.db instead -- NOT release-pinned
+# the same exact way, but symbol<->Entrez mappings are far more stable across
+# time than the protein-coding gene SET itself, so this is a much smaller
+# approximation than falling back to a live Ensembl release would be.
+get_ensembl_release_pc_entrez <- function(release = ENSEMBL_PINNED_RELEASE, cache_dir = RERUN_DIR) {
+  pc <- get_ensembl_release_pc(release = release, cache_dir = cache_dir)
+  entrez <- suppressMessages(AnnotationDbi::mapIds(
+    org.Hs.eg.db::org.Hs.eg.db, keys = pc$external_gene_name,
+    column = "ENTREZID", keytype = "SYMBOL", multiVals = "first"
+  ))
+  pc$entrezgene_id <- entrez[pc$external_gene_name]
+  pc
+}
+
 save_p <- function(plot, file_name, save_dir, p_width = 7, p_height = 7) {
   if(!dir.exists(save_dir)){
     stop('Directory does not exist')
@@ -1334,12 +1409,15 @@ overlap_function <- function(df_1, df_2, gene_col_1, gene_col_2,
       df_1_sub <- df_1_sub[df_1_sub[[k]] == df_1_combinations[[k]][i], ]
       condition_1=rbind(condition_1,df_1_combinations[[k]][i])
       condition_filter_1=df_1_sub[df_1_sub[[k]]%in%unique(df_1_sub[[k]]),]
-      carry_1_carry=unique(condition_filter_1[,colnames(condition_filter_1)%in%
-                                              carry_col_1])
-      carry_1_carry=carry_1_carry[,carry_col_1]
+      carry_1_carry=unique(do.call(c,lapply(carry_col_1,function(per_carry){
+        temp_carry_1=unique(condition_filter_1[,colnames(condition_filter_1)%in%
+                                    per_carry])
+        if(length(temp_carry_1)>1){
+          stop('carry cols are not unique for df_1')
+        }
+        return(temp_carry_1)
+      })))
     }
-    carry_1_carry=unlist(carry_1_carry)
-    names(carry_1_carry)=NULL
     for (j in 1:nrow(df_2_combinations)){
       df_2_sub <- df_2_temp
       condition_2=c()
@@ -1349,13 +1427,15 @@ overlap_function <- function(df_1, df_2, gene_col_1, gene_col_2,
         df_2_sub <- df_2_sub[df_2_sub[[l]] == df_2_combinations[[l]][j], ]
         condition_2=rbind(condition_2,df_2_combinations[[l]][j])
         condition_filter_2=df_2_sub[df_2_sub[[l]]%in%unique(df_2_sub[[l]]),]
-        carry_2_carry=unique(condition_filter_2[,colnames(condition_filter_2)%in%
-                                                  carry_col_2])
-        carry_2_carry=carry_2_carry[,carry_col_2]
-        
+        carry_2_carry=unique(do.call(c,lapply(carry_col_2,function(per_carry){
+          temp_carry_2=unique(condition_filter_2[,colnames(condition_filter_2)%in%
+                                                   per_carry])
+          if(length(temp_carry_2)>1){
+            stop('carry cols are not unique for df_2')
+          }
+          return(temp_carry_2)
+        })))
       }
-      carry_2_carry=unlist(carry_2_carry)
-      names(carry_2_carry)=NULL
       result <- calculate_overlap(df_1_sub, df_2_sub,
                                   gene_col_1, gene_col_2,
                                   genome.size=genome.size)

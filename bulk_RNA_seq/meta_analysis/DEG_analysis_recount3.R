@@ -1,5 +1,6 @@
 #DEG analysis
-source('/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/Scripts/for_github/general_functions.R')
+source("R/config.R")
+source("R/functions.R")
 
 ensembl100=useMart(host='https://apr2020.archive.ensembl.org', 
                    biomart='ENSEMBL_MART_ENSEMBL', 
@@ -10,11 +11,11 @@ human_pc=getBM(attributes=c('external_gene_name', 'ensembl_gene_id'),
                values = c('protein_coding'),
                mart = ensembl100)
 
-arrest_degs_merged=read.csv('/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/SI_tables/arrest_degs_final.csv')
+arrest_degs_merged=read.csv(file.path(SAVE_DIR_CSV, 'arrest_degs_final.csv'))
 arrest_degs_merged=arrest_degs_merged[arrest_degs_merged$gene%in%
                                         human_pc$external_gene_name,]
 
-cs_gene_list=read.csv('/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/SI_tables/1_cellage.csv')
+cs_gene_list=read.csv(file.path(SAVE_DIR_CSV, '1_cellage.csv'))
 
 cs_gene_list$accession[cs_gene_list$accession=='Saul et al ']='SenMayo'
 cs_gene_list$accession[cs_gene_list$accession=='Driver Inhibits']='CellAge Inhibits CS'
@@ -143,7 +144,7 @@ arrest_degs_merged_sig$group_1=
 # 
 # save_p(recount_cellage_overlap_plot_no_dir,
 #        file_name = 'signature_degs_overlap_no_dir',
-#        save_dir = '/Users/ravelarvargas/Downloads',p_width = 11)
+#        save_dir =  RERUN_DIR,p_width = 11)
 
 #overlap direction
 arrest_degs_merged_sig$group_1[arrest_degs_merged_sig$group_1=="Replicative_CS"]='RS'
@@ -214,7 +215,7 @@ simple_deg_v_db=summarise_overlaps(db = deg_cellage_overlap,
                ylab = 'Arrest-DEGs')
 
 save_p(simple_deg_v_db,file_name = '2b_deg_v_db',
-       save_dir = '/Users/ravelarvargas/Downloads/marian/simplified_overlaps',p_width = 6,p_height = 3.5)
+       save_dir =  RERUN_DIR,p_width = 6,p_height = 3.5)
 #####
 #self overlaps
 self_overlaps_recount_to_plot=overlap_function(df_1 = arrest_degs_merged_sig,
@@ -378,7 +379,7 @@ self_overlap_simple=self_overlap_simple+
   geom_vline(xintercept = 5.5,size=1)
 
 save_p(self_overlap_simple,file_name = '2a_self_simple',
-       save_dir = '/Users/ravelarvargas/Downloads/marian/simplified_overlaps',p_width = 6.5,p_height = 2.7)
+       save_dir =  RERUN_DIR,p_width = 6.5,p_height = 2.7)
 #####
 #volcano plot
 arrest_degs_merged$group_1=as.character(arrest_degs_merged$group_1)
@@ -599,9 +600,9 @@ filter_upset=function(upset_df,
 casella_upset=upset_intersects(overlap = casella_temp,
                  by_col='dir',title = 'Casella')
 save_p(casella_upset$down,file_name = 'casella_upset_down',
-       save_dir = '/Users/ravelarvargas/Downloads')
+       save_dir =  RERUN_DIR)
 save_p(casella_upset$up,file_name = 'casella_upset_up',
-       save_dir = '/Users/ravelarvargas/Downloads')
+       save_dir =  RERUN_DIR)
 
 
 #just up direction

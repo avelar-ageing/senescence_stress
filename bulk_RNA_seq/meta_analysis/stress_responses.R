@@ -1,6 +1,7 @@
 #msigdb
 # Load necessary libraries
-source('/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/Scripts/for_github/general_functions.R')
+source("R/config.R")
+source("R/functions.R")
 
 #protein-coding genes
 ensembl100=useMart(host='http://apr2020.archive.ensembl.org', 
@@ -84,10 +85,10 @@ result=result[result$genes%in%
 result=unique(result)
 
 save_csv(result,file_name = 'stress_response_pathways',
-         path = '/Users/ravelarvargas/Downloads/marian/stress_results')
+         path =  RERUN_DIR)
 #####
 #read in senescence data
-arrest_degs_merged=read.csv('/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/SI_tables/arrest_degs_final.csv')
+arrest_degs_merged=read.csv(file.path(SAVE_DIR_CSV, 'arrest_degs_final.csv'))
 arrest_degs_merged=factor_column_and_modify(df = arrest_degs_merged,
                                             column = 'group_1',
                                             old_list = c('Contact_inhibited_CQ','Serum_starved_CQ',
@@ -95,7 +96,7 @@ arrest_degs_merged=factor_column_and_modify(df = arrest_degs_merged,
                                             keyword = NULL)
 arrest_degs_merged_sig=arrest_degs_merged[arrest_degs_merged$sig=='y',]
 
-temporal_degs=read.csv('/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/ERP021140/all_time_degs.csv')
+temporal_degs=read.csv(file.path(ERP021140_DIR, 'all_time_degs.csv'))
 
 temporal_degs[['cell_type_time_point']]=paste0(temporal_degs[['cell_type']],'_',
                                                temporal_degs[['group_1']])
@@ -165,7 +166,7 @@ simple_deg_v_pathway=summarise_overlaps(db = ora_main_stress_plot,
                ylab = 'Arrest-DEGs')
 
 save_p(simple_deg_v_pathway,file_name = '3a_deg_v_pathway',
-       save_dir = '/Users/ravelarvargas/Downloads/marian/simplified_overlaps',
+       save_dir =  RERUN_DIR,
        p_width = 6.5,p_height = 4)
 
 ora_main_stress_plot$direction_1[ora_main_stress_plot$direction_1=='Down in Arrest']=
@@ -182,11 +183,11 @@ ora_main_stress_p=create_overlap_plot(deg_db_overlap = ora_main_stress_plot,
                                       remove_nonsig = TRUE,xlab='Cell Cycle Arrest DEGs',
                                       ylab = 'MSigDB Pathways')
 
-save_p(save_dir = '/Users/ravelarvargas/Downloads/marian/stress_results',
+save_p(save_dir =  RERUN_DIR,
        ora_main_stress_p,
        file_name = 'hallmark_vs_arrest_degs',p_height = 5.5,p_width = 7.5)
 
-save_csv(path = '/Users/ravelarvargas/Downloads/marian/stress_results',
+save_csv(path =  RERUN_DIR,
          file_name = 'hallmark_vs_arrest_degs',
          data = ora_main_stress)
 #####
@@ -220,7 +221,7 @@ ora_temporal_stress_plot=factor_column_and_modify(ora_temporal_stress_plot,
 
 save_csv(data = ora_temporal_stress,
          file_name = 'temporal_hallmarks_overlap',
-         path = '/Users/ravelarvargas/Downloads/marian/stress_results')
+         path =  RERUN_DIR)
 
 ora_temporal_stress_plot=ora_temporal_stress_plot[ora_temporal_stress_plot$pathway%in%pathway_of_interest,]
 ora_temporal_stress_plot$direction_1[ora_temporal_stress_plot$direction_1=='up']='Up in Arrest'
@@ -234,7 +235,7 @@ temporal_stress_p=create_overlap_plot(deg_db_overlap = ora_temporal_stress_plot,
                                       x_tilt = 45,remove_nonsig = TRUE)
 save_p(temporal_stress_p,
        file_name = 'temporal_hallmarks_overlap',
-       save_dir = '/Users/ravelarvargas/Downloads/marian/stress_results',
+       save_dir =  RERUN_DIR,
        p_width = 10,p_height = 6)
 
 ora_temporal_stress_plot$summary_y=apply(ora_temporal_stress_plot,MARGIN = 1,function(x){
@@ -278,11 +279,11 @@ summary_p_temporal_stress=summarise_overlaps_facet(db=ora_temporal_stress_plot,
                          facet_col='cell_type',angle = 45)
 
 save_p(summary_p_temporal_stress,file_name = '7a_simplified_overlaps_temporal_deg_v_pathway',
-       save_dir = '/Users/ravelarvargas/Downloads/marian/simplified_overlaps',
+       save_dir =  RERUN_DIR,
        p_width = 6,p_height = 5.5)
 #####
 #gene lists
-cs_gene_list=read.csv('/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/SI_tables/1_cellage.csv')
+cs_gene_list=read.csv(file.path(SAVE_DIR_CSV, '1_cellage.csv'))
 
 cs_gene_list$accession[cs_gene_list$accession=='Saul et al ']='SenMayo'
 cs_gene_list$accession[cs_gene_list$accession=='Driver Inhibits']='CellAge Inhibit CS'
@@ -329,11 +330,11 @@ stress_vs_genelists_p=simple_overlap_plot(df = msig_cs_plot,
 
 save_p(stress_vs_genelists_p,
        file_name = 'cs_genelist_hallmarks_overlap',
-       save_dir = '/Users/ravelarvargas/Downloads/marian/stress_results',
+       save_dir =  RERUN_DIR,
        p_width = 10,p_height = 6)
 save_csv(msig_cs,
          file_name = 'cs_genelist_hallmarks_overlap',
-         path = '/Users/ravelarvargas/Downloads/marian/stress_results')
+         path =  RERUN_DIR)
 
 database_v_pathway=summarise_overlaps(db = msig_cs_plot,
                                         x = 'pathway',
@@ -342,7 +343,7 @@ database_v_pathway=summarise_overlaps(db = msig_cs_plot,
                                         ylab = 'CS Genelists',
                                       add_line = FALSE,label_cq = FALSE)
 save_p(database_v_pathway,file_name = '3b_simplified_db_v_pathway',
-       save_dir = '/Users/ravelarvargas/Downloads/marian/simplified_overlaps',
+       save_dir =  RERUN_DIR,
        p_width = 6.5,p_height = 4)
 #####
 #stress vs sasp
@@ -393,9 +394,9 @@ sasp_v_stress=create_overlap_plot(deg_db_overlap = sasp_stress_plot,
                                   remove_nonsig = TRUE)
 
 save_p(sasp_v_stress,file_name = 'sasp_vs_hallmark',
-       save_dir = '/Users/ravelarvargas/Downloads/marian/stress_results',
+       save_dir =  RERUN_DIR,
        p_width = 8,p_height = 6.5)
-save_csv(path = '/Users/ravelarvargas/Downloads/marian/stress_results',
+save_csv(path =  RERUN_DIR,
          data = sasp_stress,file_name='sasp_vs_hallmark')
 
 #simplified
@@ -412,7 +413,7 @@ sasp_vs_stress_simplified=summarise_overlaps_facet(db=sasp_stress_plot,
                                                    facet_col='direction',angle = 45)
 
 save_p(sasp_vs_stress_simplified,file_name = '5b_sasp_v_pathway',
-       save_dir = '/Users/ravelarvargas/Downloads/marian/simplified_overlaps',
+       save_dir =  RERUN_DIR,
        p_height = 4.5,p_width=7.5)
 #####
 #self overlaps stress
@@ -431,12 +432,12 @@ stress_self_p=simple_overlap_plot(df = self_overlap_temp_p,
                                   x_tilt=45,remove_nonsig = TRUE)
 
 save_p(stress_self_p,file_name = 'stress_self_overlaps',
-       save_dir = '/Users/ravelarvargas/Downloads/marian/stress_results',
+       save_dir =  RERUN_DIR,
        p_width = 8,p_height = 6.5)
 
 self_overlap_temp=self_overlap_temp[self_overlap_temp$pathway!=self_overlap_temp$pathway.1,]
 save_csv(self_overlap_temp,file_name = 'stress_self_overlaps',
-         path = '/Users/ravelarvargas/Downloads/marian/stress_results')
+         path =  RERUN_DIR)
 
 #####
 arrest_degs_merged=factor_column_and_modify(df = arrest_degs_merged,
@@ -587,7 +588,7 @@ arrest_degs_GOI=compare_expression(degs=arrest_degs_merged,
 
 save_p(arrest_degs_GOI,
        file_name = 'arrest_degs_goi',
-       save_dir = '/Users/ravelarvargas/Downloads/marian/final',p_width = 10,p_height = 6.5)
+       save_dir =  RERUN_DIR,p_width = 10,p_height = 6.5)
 
 #temporal
 temporal_degs$group=NA
@@ -662,11 +663,11 @@ temporal_goi=compare_expression(degs=temporal_degs,
 
 save_p(temporal_goi,
        file_name = 'temporal_goi',
-       save_dir = '/Users/ravelarvargas/Downloads/marian/final',
+       save_dir =  RERUN_DIR,
        p_width = 11,p_height = 5.5)
 
 #check unique inflammation genes
-result=read.csv('/Users/ravelarvargas/Downloads/marian/stress_results/stress_response_pathways.csv')
+result=read.csv(file.path(RERUN_DIR, 'stress_response_pathways_RERUN.csv'))
 cs_gene_list_induces=cs_gene_list[cs_gene_list$accession=="Driver Inhibits",]
 arrest_degs_merged_sig_up_cs=arrest_degs_merged[arrest_degs_merged$sig=='y'&
                                                arrest_degs_merged$direction_1=='down'&

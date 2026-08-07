@@ -1,6 +1,7 @@
 #analyse CQ DEGs
-source('/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/Scripts/for_github/general_functions.R')
-save_dir='/Volumes/GoogleDrive/My Drive/PhD_to_publish/systems_analysis_arrest/Final/'
+source("R/config.R")
+source("R/functions.R")
+save_dir = paste0(DATA_DIR, "/")
 save_dir_csv=paste0(save_dir,'SI_tables/')
 save_dir_csv_cq=paste0(save_dir_csv,'cq_test/')
 save_dir_figure_cq=paste0(save_dir,'SI_figures/cq_test/')
@@ -131,12 +132,12 @@ summary_cq=df%>%ggplot(aes(x=accession,y=accession.1,fill=fill))+
   )
 save_p(summary_cq,
        file_name = 'cq_sasp_summary',
-       save_dir = '/Users/ravelarvargas/Downloads/marian/simplified_overlaps',p_width = 7,
+       save_dir =  RERUN_DIR,p_width = 7,
        p_height = 3.5)
 #####
 #read in stress responses
 # Define the path to your file
-result=read.csv('/Users/ravelarvargas/Downloads/marian/stress_results/stress_response_pathways.csv')
+result=read.csv(file.path(RERUN_DIR, 'stress_response_pathways_RERUN.csv'))
 pathway_of_interest=c(
   "HALLMARK TNFA SIGNALING VIA NFKB",
   "HALLMARK P53 PATHWAY",
