@@ -1,10 +1,10 @@
-# 15_pathway_effect_heatmap_partial.R
+# 06_pathway_effect_heatmap.R
 #
-# Regenerates the cross-analysis pathway-effect heatmap (formerly
-# 11_pathway_effect_heatmap.R) using the EXACT partial-tAge decomposition
-# (14a/14b/14d) instead of the pathway-restricted-rerun approach -- same
-# unbiased selection principle (recurrence-filtered, hierarchically
-# clustered), now on numbers verified exact to floating-point precision.
+# Cross-analysis pathway-effect heatmap (meta-analysis conditions + temporal
+# cell types side by side), from the exact partial-tAge decomposition
+# (01-05). Pathway selection is unbiased: recurrence-filtered (significant in
+# >=6/8 groups), rows hierarchically clustered -- the grouping comes from the
+# data, not a preconceived narrative.
 
 source("R/config.R")
 suppressPackageStartupMessages({
@@ -64,7 +64,7 @@ pheatmap(
   gaps_col = 5,
   annotation_col = col_annotation,
   na_col = "grey85",
-  main = "Hallmark pathways moving tAge -- EXACT partial decomposition (Cohen's d, yugene_diff model)\nRows: significant (padj<0.05) in >=6/8 groups. */**/*** = padj<.05/.01/.001",
+  main = "Hallmark pathways moving tAge (partial-tAge decomposition, Cohen's d, yugene_diff model)\nRows: significant (padj<0.05) in >=6/8 groups. */**/*** = padj<.05/.01/.001",
   fontsize_row = 9,
   fontsize_col = 10,
   angle_col = 45,

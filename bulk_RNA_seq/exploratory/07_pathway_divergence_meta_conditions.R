@@ -1,8 +1,9 @@
-# 16_pathway_divergence_meta_partial.R
+# 07_pathway_divergence_meta_conditions.R
 #
-# Regenerates the within-meta-analysis pathway-divergence figure (formerly
-# 12_pathway_divergence_meta_conditions.R) using the EXACT partial-tAge
-# decomposition instead of the pathway-restricted-rerun approach.
+# Which Hallmark pathways differ MOST between the 5 meta-analysis conditions
+# themselves (CICQ/SSCQ/RS/SIPS/OIS vs each other, not vs Proliferating in
+# general), from the exact partial-tAge decomposition (01-05). Divergence =
+# range of Cohen's d across the 5 conditions (max-min), a topic-blind ranking.
 
 source("R/config.R")
 suppressPackageStartupMessages({
@@ -54,7 +55,7 @@ pheatmap(
   cluster_rows = TRUE,
   clustering_method = "average",
   na_col = "grey85",
-  main = "Top 20 pathways separating arrest conditions -- EXACT partial decomposition\n(meta-analysis, Cohen's d yugene_diff). */**/*** = padj<.05/.01/.001",
+  main = "Top 20 pathways separating arrest conditions from each other\n(meta-analysis, partial-tAge decomposition, Cohen's d yugene_diff). */**/*** = padj<.05/.01/.001",
   fontsize_row = 10,
   fontsize_col = 12,
   angle_col = 0,

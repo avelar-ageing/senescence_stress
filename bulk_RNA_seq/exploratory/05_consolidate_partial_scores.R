@@ -1,11 +1,9 @@
-# 14d_consolidate_partial_scores.R
+# 05_consolidate_partial_scores.R
 #
-# Consolidates the exact partial-tAge decomposition (14a/14a2/14b) across
+# Consolidates the exact partial-tAge decomposition (01/02/03/04) across
 # EVERY group comparison computed: 5 meta-analysis conditions, 3 pooled
 # temporal cell types (irradiated vs none), and 9 per-timepoint temporal
-# comparisons (3 cell types x 3 timepoints, 6v6 vs none) -- all via the
-# same exact linear decomposition method, replacing the earlier
-# pathway-restricted-rerun approach (08/09/10) everywhere.
+# comparisons (3 cell types x 3 timepoints, 6v6 vs none).
 
 source("R/config.R")
 PT <- file.path(RERUN_DIR, "partial_tage")

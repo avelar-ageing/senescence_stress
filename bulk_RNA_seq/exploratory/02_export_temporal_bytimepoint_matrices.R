@@ -1,8 +1,7 @@
-# 14a2_export_temporal_bytimepoint_matrices.R
+# 02_export_temporal_bytimepoint_matrices.R
 #
-# Extends 14a to per-timepoint resolution (3 cell types x 3 timepoints vs
-# each cell type's own 'none' baseline, 6v6 each) -- same exact-decomposition
-# method, just at the finer temporal granularity used in script 10.
+# Extends 01 to per-timepoint resolution: 3 cell types x 3 timepoints, each
+# vs that cell type's own 'none' baseline (6v6 per comparison).
 
 source("R/config.R")
 source("R/functions.R")

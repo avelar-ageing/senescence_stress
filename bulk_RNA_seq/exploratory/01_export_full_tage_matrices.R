@@ -1,22 +1,17 @@
-# 14a_export_full_tage_matrices.R
+# 01_export_full_tage_matrices.R
 #
-# Proper method (per Tyshkovskiy/Gladyshev et al. 2026, Nature -- the paper
-# behind the tAge package -- "partial tAge differences predicted using only
-# genes from the respective module"): decompose the ALREADY-FITTED linear
-# ElasticNet model's prediction by pathway, on the FULL, properly
-# whole-transcriptome-normalized data -- NOT re-running tAge_preprocessing on
-# a pathway-restricted gene subset (which is what 08/09/10 did, forcing
-# ~99% of the model's input to be imputed with a training-set constant on
-# every run). ElasticNet is linear (pred = intercept + sum(coef_i * z_i)), so
-# a pathway's exact contribution is sum(coef_i * z_i) over just that
-# pathway's genes -- computed once from the correctly, fully preprocessed
-# data, no re-imputation, no re-normalization on a tiny gene subset.
+# Step 1 of the partial-tAge pipeline (see PARTIAL_TAGE_METHOD.md). The EN
+# tAge model is a linear ElasticNet (pred = intercept + sum(coef_i * z_i)),
+# so a pathway's exact contribution to the prediction is sum(coef_i * z_i)
+# over just that pathway's genes -- computed from the FULL,
+# whole-transcriptome-normalized data (no re-normalization on a restricted
+# gene subset, no forced imputation of missing pathway genes).
 #
-# This script: runs tAge_preprocessing ONCE per group on the FULL gene set
-# (same settings as the original 05/09 full-analysis runs), exports the
-# scaled_diff/yugene_diff matrices that get fed to the model (samples x
-# genes, mouse-ortholog-ID columns, NaN-padded to the 18,696 reference list)
-# plus group labels -- for the python decomposition step to consume.
+# This script runs tAge_preprocessing ONCE per group on the full gene set,
+# and exports the scaled_diff/yugene_diff matrices that get fed to the model
+# (samples x genes, mouse-ortholog-ID columns, NaN-padded to the 18,696
+# reference list) plus group labels, for 04_partial_tage_decompose.py to
+# consume.
 
 source("R/config.R")
 source("R/functions.R")
@@ -47,8 +42,7 @@ export_matrices <- function(eset, group_col, control_label, label) {
   cat(sprintf("   exported %d samples x %d genes\n", nrow(m), ncol(m)))
 }
 
-# ── Meta-analysis: export once (all 6 conditions together, matching the
-#    original 05_tage_all_conditions.R control_group_column='cell_state') ──
+# ── Meta-analysis: export once (all 6 conditions together) ─────────────────
 cat("== Meta-analysis (all 6 conditions, one export) ==\n")
 rse <- readRDS(file.path(RERUN_DIR, "cs_cq_all_study_processed.rds"))
 eset <- ExpressionSet(assayData = as.matrix(assay(rse)), phenoData = AnnotatedDataFrame(as.data.frame(colData(rse))))

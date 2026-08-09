@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""14b_partial_tage_decompose.py
+"""04_partial_tage_decompose.py
 
 Exact linear decomposition of the fitted ElasticNet tAge model's prediction
 by MSigDB Hallmark pathway (the "partial tAge" method described in
@@ -10,13 +10,12 @@ ElasticNet is linear: prediction = intercept + sum(coef_i * z_i), where z_i
 is the imputed+standardized feature value (exactly what the pipeline's
 imputer+scaler steps produce). A pathway's exact contribution to that sum is
 just sum(coef_i * z_i) over the genes in that pathway -- computed once from
-the correctly, fully-preprocessed data (this script), with NO re-imputation
-of a restricted gene subset and no re-normalization on a tiny gene set (the
-noise sources in the earlier 08/09/10 pathway-restricted-rerun approach).
+the correctly, fully-preprocessed data exported by 01/02, with no
+re-imputation and no re-normalization of a restricted gene subset.
 
 Also reconstructs the FULL prediction (sum over ALL features + intercept,
-species-adjusted) as an exact sanity check against the real predict_tAge()
-output already computed for these same samples.
+species-adjusted) as an exact sanity check against a direct model.predict()
+call -- see PARTIAL_TAGE_METHOD.md for the verification (max diff = 0.0).
 """
 import sys
 import warnings
