@@ -49,6 +49,15 @@ intercept) reproduces a direct `model.predict()` call to floating-point precisio
 5. **`05_consolidate_partial_scores.R`** — Cohen's d / Wilcoxon (BH-adjusted within each
    analysis × model) per pathway per group, across all 17 group comparisons. Output:
    `rerun_outputs/partial_tage_ALL.csv` (1,700 rows: 17 groups × 50 pathways × 2 models).
+
+**Pathway list (step 3)**: read directly from `rerun_outputs/stress_response_pathways_RERUN.csv`
+— the exact pathway × gene table `meta_analysis/03_hallmark_enrichment.R` already builds for the
+DEG-overlap enrichment (MSigDB Hallmark with `_V1`/`_V2` merged, e.g. `MYC_TARGETS_V1` +
+`MYC_TARGETS_V2` → one `HALLMARK MYC TARGETS` pathway, plus the custom **"Lysosomal Genes"** set
+recovered from `Final/SI_tables/lyso_genes.csv`, 191 genes, `human_pc`-filtered). 49 Hallmark
+terms + Lysosomal Genes = 50 pathways. This is read from that single source of truth rather than
+re-derived here, so the tAge partial-decomposition pathways and the DEG-overlap enrichment
+pathways can never drift apart.
 6. **`06_pathway_effect_heatmap.R`** — cross-analysis figure (meta-analysis conditions +
    temporal cell types side by side). Pathway selection: significant (padj<0.05) in ≥6 of
    the 8 groups — a topic-blind recurrence filter, not a hand-picked list; rows
@@ -65,25 +74,35 @@ condition's?):
 
 | | CICQ | SSCQ | RS | SIPS | OIS |
 |---|---|---|---|---|---|
-| Fibroblast | 0.37 | 0.54 | 0.41 | **0.71** | 0.60 |
-| Keratinocyte | 0.41 | 0.39 | 0.09 | 0.59 | 0.47 |
-| Melanocyte | −0.13 | 0.06 | −0.01 | 0.30 | 0.14 |
+| Fibroblast | 0.31 | 0.51 | 0.45 | **0.76** | 0.65 |
+| Keratinocyte | 0.36 | 0.38 | 0.06 | 0.56 | 0.45 |
+| Melanocyte | −0.13 | 0.03 | 0.00 | 0.31 | 0.15 |
 
 Temporal Fibroblast's pathway-effect signature most resembles the meta-analysis's own
 fibroblast conditions — strongest to SIPS (both acute-stress-induced), weakest to CICQ
 (a mechanistically different trigger, contact inhibition). Melanocyte resembles none of
 the five meta-analysis conditions.
 
-**Melanocyte's distinct signature**: `HALLMARK_INTERFERON_ALPHA_RESPONSE` is its strongest
+**Melanocyte's distinct signature**: `HALLMARK INTERFERON ALPHA RESPONSE` is its strongest
 single pathway effect (Cohen's d ≈ −10.5, yugene_diff model, pooled irradiated vs. none),
 present already at 4 days and sustained through 20 days (per-timepoint breakdown in
 `partial_tage_ALL.csv`, `analysis == "temporal_bytimepoint"`) — absent from Fibroblast's
 and Keratinocyte's top pathways in either direction.
 
-**mTOR signaling across meta-analysis conditions**: `HALLMARK_PI3K_AKT_MTOR_SIGNALING` is
+**mTOR signaling across meta-analysis conditions**: `HALLMARK PI3K AKT MTOR SIGNALING` is
 strongest in SIPS (Cohen's d ≈ 0.30, yugene_diff — nominally significant but a modest
 effect, not a dominant one), present but weaker in OIS, and not detectable in RS, CICQ,
 or SSCQ.
+
+**Lysosomal Genes** (recovered custom pathway, not in default MSigDB Hallmark): one of the
+strongest and most consistent effects in the whole panel — significant (padj<0.05) in 6/8
+of the primary meta-analysis + pooled-temporal groups, yugene_diff model. Effect size is
+particularly large in temporal Fibroblast, and grows with time (Cohen's d = 2.99 at 4 days,
+3.04 at 10 days, 5.75 at 20 days, irradiated vs. none) — consistent with progressive
+lysosomal/autophagic dysfunction accumulating over the senescence time course. Also
+significant across all five meta-analysis conditions (CICQ/SSCQ/RS/SIPS/OIS, d = 1.11–1.88)
+and in pooled temporal Fibroblast (d = 2.92), but not significant in Keratinocyte or
+Melanocyte (pooled or per-timepoint, except a small negative effect at Melanocyte 10 days).
 
 ## Canonical files
 

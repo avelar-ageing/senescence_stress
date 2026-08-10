@@ -15,7 +15,7 @@ suppressPackageStartupMessages({
 df <- read.csv(file.path(RERUN_DIR, "partial_tage_ALL.csv"))
 meta <- df[df$analysis == "meta_analysis" & df$model == "yugene", ]
 meta$label <- factor(meta$label, levels = c("CICQ", "SSCQ", "RS", "SIPS", "OIS"))
-meta$pathway_short <- gsub("^HALLMARK_", "", meta$pathway)
+meta$pathway_short <- gsub("^HALLMARK ", "", meta$pathway)
 
 mat_d <- meta %>% select(pathway_short, label, cohens_d) %>%
   pivot_wider(names_from = label, values_from = cohens_d) %>% as.data.frame()

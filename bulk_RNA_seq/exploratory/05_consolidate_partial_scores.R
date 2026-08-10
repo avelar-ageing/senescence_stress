@@ -15,7 +15,9 @@ cohens_d <- function(x, y) {
 }
 
 score_pathways <- function(scores_csv, groups_df, test_label, control_label, label, analysis, cell_type = NA, timepoint = NA) {
-  scores <- read.csv(scores_csv)
+  # check.names=FALSE: pathway names (e.g. "HALLMARK MYC TARGETS") are column
+  # headers in this file, and read.csv()'s default mangles spaces to dots.
+  scores <- read.csv(scores_csv, check.names = FALSE)
   m <- merge(scores, groups_df, by = "sample_id")
   test_rows <- m[m$group == test_label, ]
   ctrl_rows <- m[m$group == control_label, ]

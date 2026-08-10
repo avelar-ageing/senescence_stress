@@ -17,7 +17,7 @@ df <- read.csv(file.path(RERUN_DIR, "partial_tage_ALL.csv"))
 df <- df[df$model == "yugene" & df$analysis %in% c("meta_analysis", "temporal_pooled"), ]
 df$label <- factor(df$label, levels = c("CICQ", "SSCQ", "RS", "SIPS", "OIS",
                                          "Fibroblast", "Keratinocyte", "Melanocyte"))
-df$pathway_short <- gsub("^HALLMARK_", "", df$pathway)
+df$pathway_short <- gsub("^HALLMARK ", "", df$pathway)
 
 mat_d <- df %>% select(pathway_short, label, cohens_d) %>%
   pivot_wider(names_from = label, values_from = cohens_d) %>% as.data.frame()

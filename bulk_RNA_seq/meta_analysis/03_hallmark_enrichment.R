@@ -13,16 +13,19 @@
 # tiny) source of drift -- see the discrepancy report for what msigdbr
 # version this actually resolved to.
 #
-# SCOPE REDUCTION (flagged): the original also added a custom "Lysosomal
-# Genes" set from a personal file (temp-autophagy.csv, filtered to
-# class=='Lysosome') that isn't recoverable from anything in this repo
-# (Final/SI_tables/autophagy_genes.csv exists but is a different, differently
-# -schemed table with no 'class'/'Lysosome' column). Pure-Hallmark terms only
-# here; "Lysosomal Genes" is dropped from pathway_of_interest.
+# The original also added a custom "Lysosomal Genes" set from a personal
+# file (temp-autophagy.csv, filtered to class=='Lysosome') that isn't itself
+# in this repo -- but the same 191-gene list was found saved to
+# Final/SI_tables/lyso_genes.csv (Group=='lysosome'), so it's added back here
+# exactly as the original did, just from the recoverable copy.
 
 source("R/config.R")
 source("R/functions.R")
 library(msigdbr)
+library(dplyr)
+
+human_pc <- get_ensembl_release_pc()
+cat(sprintf("Loaded human_pc: %d gene records (Ensembl release %d, cached)\n", nrow(human_pc), ENSEMBL_PINNED_RELEASE))
 
 cat("== MSigDB Hallmark gene sets (via msigdbr) ==\n")
 hallmark <- msigdbr(species = "Homo sapiens", collection = "H")
@@ -32,15 +35,25 @@ result$pathway <- gsub(result$pathway, pattern = "_V1", replacement = "")
 result$pathway <- gsub(result$pathway, pattern = "_V2", replacement = "")
 result$pathway <- gsub(result$pathway, pattern = "_", replacement = " ")
 result <- unique(result)
-cat(sprintf("  %d pathway x gene rows, %d unique pathways\n", nrow(result), length(unique(result$pathway))))
+cat(sprintf("  %d pathway x gene rows, %d unique pathways (Hallmark only)\n", nrow(result), length(unique(result$pathway))))
+
+# Add lysosomal genes back in, same as the original stress_responses.R.
+lyso <- read.csv(file.path(DATA_DIR, "SI_tables", "lyso_genes.csv"))
+lyso_genes <- lyso[lyso$Group == "lysosome", ]
+lyso_genes <- data.frame(pathway = "Lysosomal Genes", genes = lyso_genes$Official.Gene.symbol)
+result <- rbind(result, lyso_genes)
+result <- result[result$genes %in% human_pc$external_gene_name, ]
+result <- unique(result)
+cat(sprintf("  + %d Lysosomal Genes -> %d pathway x gene rows, %d unique pathways total\n",
+            nrow(lyso_genes), nrow(result), length(unique(result$pathway))))
 
 pathway_of_interest <- c(
   "HALLMARK TNFA SIGNALING VIA NFKB", "HALLMARK P53 PATHWAY", "HALLMARK MYC TARGETS",
   "HALLMARK MTORC1 SIGNALING", "HALLMARK MITOTIC SPINDLE", "HALLMARK INTERFERON GAMMA RESPONSE",
   "HALLMARK INTERFERON ALPHA RESPONSE", "HALLMARK INFLAMMATORY RESPONSE",
   "HALLMARK IL6 JAK STAT3 SIGNALING", "HALLMARK HYPOXIA", "HALLMARK G2M CHECKPOINT",
-  "HALLMARK E2F TARGETS", "HALLMARK APOPTOSIS", "HALLMARK DNA REPAIR"
-  # "Lysosomal Genes" dropped -- see header note.
+  "HALLMARK E2F TARGETS", "HALLMARK APOPTOSIS", "HALLMARK DNA REPAIR",
+  "Lysosomal Genes"
 )
 
 save_csv(result, file_name = "stress_response_pathways_RERUN.csv", path = RERUN_DIR)
