@@ -30,7 +30,8 @@ plot_df <- tage_result %>%
 sig_symbol <- function(p) ifelse(p < 0.001, "***", ifelse(p < 0.01, "**", ifelse(p < 0.05, "*", "ns")))
 
 # Build per-facet significance annotations vs Proliferating (group1), placed
-# at a fixed y just above each facet's max value.
+# well above each facet's max value so brackets clear the violins, and
+# dropping non-significant comparisons entirely (no line, no label).
 make_stat_df <- function(model_name) {
   sub <- wilcox_vs_prolif[wilcox_vs_prolif$model == paste0(model_name, "_EN_tAge") |
                             wilcox_vs_prolif$model == model_name, ]
@@ -42,24 +43,25 @@ make_stat_df <- function(model_name) {
     model_label = ifelse(model_name == "scaled_diff", "Scaled difference EN model", "YuGene EN model"),
     group1 = "Proliferating", group2 = sub$condition,
     p.adj = sub$p.adj, label = sig_symbol(sub$p.adj),
-    y.position = y_max + y_range * (0.08 * seq_len(nrow(sub)))
+    y.position = y_max + y_range * (0.25 + 0.16 * seq_len(nrow(sub)))
   )
 }
 stat_df <- rbind(make_stat_df("scaled_diff"), make_stat_df("yugene_diff"))
+stat_df <- stat_df[stat_df$label != "ns", ]
 
 p <- ggplot(plot_df, aes(x = condition, y = tAge, fill = condition)) +
   geom_violin(alpha = 0.6, trim = FALSE) +
-  geom_boxplot(width = 0.15, outlier.shape = NA, fill = "white") +
   geom_jitter(width = 0.08, size = 0.6, alpha = 0.35, colour = "black") +
   stat_pvalue_manual(stat_df, label = "label", xmin = "group1", xmax = "group2",
-                      y.position = "y.position", tip.length = 0.01, size = 3.2) +
+                      y.position = "y.position", tip.length = 0, bracket.size = 0.5, size = 6) +
   facet_wrap(~model_label, ncol = 1, scales = "free_y") +
-  theme_bw(base_size = 12) +
-  theme(legend.position = "none", strip.text = element_text(face = "bold")) +
-  labs(x = NULL, y = "tAge",
-       title = "Universal transcriptomic age by arrest/senescence condition",
-       subtitle = paste0("Fibroblast recount3 meta-analysis vs. Proliferating controls (Wilcoxon rank-sum, BH-adjusted\n",
-                          "across 5 conditions x 2 models); */**/*** = padj < 0.05/0.01/0.001, ns = not significant"))
+  theme_bw(base_size = 20) +
+  theme(legend.position = "none",
+        strip.text = element_text(face = "plain", size = 20),
+        strip.background = element_blank(),
+        axis.text = element_text(size = 18),
+        axis.title = element_text(size = 20)) +
+  labs(x = NULL, y = "tAge")
 
-ggsave(file.path(RERUN_DIR, "figure_universal_tage_differences.png"), p, width = 9, height = 10, dpi = 300)
+ggsave(file.path(RERUN_DIR, "figure_universal_tage_differences.png"), p, width = 9, height = 11, dpi = 300)
 cat(sprintf("Saved -> %s\n", file.path(RERUN_DIR, "figure_universal_tage_differences.png")))
