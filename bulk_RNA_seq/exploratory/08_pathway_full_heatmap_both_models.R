@@ -27,7 +27,7 @@ col_order <- as.vector(t(outer(c("CICQ", "SSCQ", "RS", "SIPS", "OIS"), c("scaled
 mat_d <- meta %>% select(pathway_short, col, cohens_d) %>%
   pivot_wider(names_from = col, values_from = cohens_d) %>% as.data.frame()
 rownames(mat_d) <- mat_d$pathway_short; mat_d$pathway_short <- NULL
-mat_d <- as.matrix(mat_d)[, col_order]
+mat_d <- as.matrix(mat_d)[sort(rownames(mat_d)), col_order]
 
 mat_p <- meta %>% select(pathway_short, col, p_adj) %>%
   pivot_wider(names_from = col, values_from = p_adj) %>% as.data.frame()
@@ -59,14 +59,11 @@ pheatmap(
   number_color = "black",
   fontsize_number = 8,
   cluster_cols = FALSE,
-  cluster_rows = TRUE,
-  clustering_method = "average",
+  cluster_rows = FALSE,
   gaps_col = seq(2, 8, by = 2),
   annotation_col = col_annotation,
   labels_col = display_col_labels,
   na_col = "grey85",
-  main = paste0("All 50 pathways, partial-tAge decomposition (Cohen's d), meta-analysis vs Proliferating\n",
-                "Both EN models shown per condition (scaled/yugene). */**/*** = padj<.05/.01/.001, BH-adjusted within analysis x model"),
   fontsize_row = 7,
   fontsize_col = 9,
   angle_col = 0,
