@@ -32,6 +32,19 @@ plot_df <- tage_temporal %>%
 
 sig_symbol <- function(p) ifelse(p < 0.001, "***", ifelse(p < 0.01, "**", ifelse(p < 0.05, "*", "ns")))
 
+# geom_violin(trim=FALSE) draws kernel-density tails that extend past the real
+# data range, so max(tAge) understates how tall each violin actually renders
+# (this is what left brackets overlapping the Keratinocyte violins). Build the
+# violin layer once and read its true rendered y extent per model row.
+violin_extent <- function(model_name) {
+  d <- plot_df[plot_df$model == model_name, ]
+  gb <- ggplot_build(
+    ggplot(d, aes(x = time_after_treatment, y = tAge)) +
+      geom_violin(trim = FALSE) + facet_wrap(~cell_type)
+  )
+  max(gb$data[[1]]$ymax, na.rm = TRUE)
+}
+
 # Brackets: each timepoint vs 'none', per cell type, per model -- using the
 # already-computed 18-test (3 cell types x 3 timepoints x 2 models) BH family
 # from tage_temporal_wilcoxon_vs_none.csv. Non-significant comparisons
@@ -44,14 +57,16 @@ make_stat_df <- function(model_name) {
   sub$timepoint <- factor(sub$timepoint, levels = TIME_LEVELS)
   sub <- sub[order(sub$cell_type, sub$timepoint), ]
 
-  y_max <- plot_df %>% filter(model == model_name) %>% group_by(cell_type) %>%
-    summarise(y_max = max(tAge), y_range = diff(range(tAge)), .groups = "drop")
-  # left_join (not merge/base R, which silently re-sorts by the join key and
-  # so scrambled the none-vs-4d/10d/20d stacking order) preserves sub's
-  # existing cell_type/timepoint order.
-  sub <- dplyr::left_join(sub, y_max, by = "cell_type")
+  # facet_grid(scales="free_y") gives each ROW (model) one shared y scale, so
+  # bracket heights must come from that shared row-wide extent -- not from each
+  # cell type's own range, which put panels on different scales (inconsistent
+  # spacing) and placed brackets below neighbouring violins that extend higher
+  # on the shared axis (overlap). Uses the rendered violin extent, not the data
+  # max, so the trim=FALSE density tails are cleared too.
+  row_vals <- plot_df$tAge[plot_df$model == model_name]
+  y_max <- violin_extent(model_name); y_range <- diff(range(row_vals))
   sub <- sub %>% group_by(cell_type) %>%
-    mutate(y.position = y_max + y_range * (0.25 + 0.18 * row_number())) %>% ungroup()
+    mutate(y.position = y_max + y_range * (0.05 + 0.10 * row_number())) %>% ungroup()
 
   data.frame(model = model_name,
              model_label = ifelse(model_name == "scaled_diff", "Scaled difference EN model", "YuGene EN model"),
