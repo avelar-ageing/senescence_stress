@@ -9,69 +9,56 @@
 # 06_pathway_effect_heatmap.R (yugene-only, recurrence-filtered cross-
 # analysis view) and 07_pathway_divergence_meta_conditions.R (yugene-only,
 # meta-analysis divergence ranking) rather than replacing them.
+#
+# Plain geom_tile grid, not pheatmap: with clustering off (rows are
+# alphabetical, a lookup reference -- see script history/discussion) and no
+# dendrogram, pheatmap wasn't buying anything but its annotation strips,
+# which facet_wrap reproduces directly and more controllably.
 
 source("R/config.R")
 suppressPackageStartupMessages({
   library(dplyr)
   library(tidyr)
-  library(pheatmap)
+  library(ggplot2)
 })
 
 df <- read.csv(file.path(RERUN_DIR, "partial_tage_ALL.csv"), check.names = FALSE)
 meta <- df[df$analysis == "meta_analysis", ]
 meta$pathway_short <- gsub("^HALLMARK ", "", meta$pathway)
-meta$col <- paste(meta$label, meta$model, sep = " | ")
-col_order <- as.vector(t(outer(c("CICQ", "SSCQ", "RS", "SIPS", "OIS"), c("scaled", "yugene"),
-                                FUN = function(a, b) paste(a, b, sep = " | "))))
 
-mat_d <- meta %>% select(pathway_short, col, cohens_d) %>%
-  pivot_wider(names_from = col, values_from = cohens_d) %>% as.data.frame()
-rownames(mat_d) <- mat_d$pathway_short; mat_d$pathway_short <- NULL
-mat_d <- as.matrix(mat_d)[sort(rownames(mat_d)), col_order]
+sig_symbol <- function(p) ifelse(p < 0.001, "***", ifelse(p < 0.01, "**", ifelse(p < 0.05, "*", "")))
 
-mat_p <- meta %>% select(pathway_short, col, p_adj) %>%
-  pivot_wider(names_from = col, values_from = p_adj) %>% as.data.frame()
-rownames(mat_p) <- mat_p$pathway_short; mat_p$pathway_short <- NULL
-mat_p <- as.matrix(mat_p)[rownames(mat_d), col_order]
+plot_df <- meta %>%
+  mutate(
+    pathway_short = factor(pathway_short, levels = sort(unique(pathway_short), decreasing = TRUE)),
+    label = factor(label, levels = c("CICQ", "SSCQ", "RS", "SIPS", "OIS")),
+    model_label = ifelse(model == "scaled", "scaled", "yugene"),
+    model_label = factor(model_label, levels = c("scaled", "yugene")),
+    stars = sig_symbol(p_adj)
+  )
 
-sig_stars <- matrix("", nrow = nrow(mat_p), ncol = ncol(mat_p), dimnames = dimnames(mat_p))
-sig_stars[mat_p < 0.001] <- "***"
-sig_stars[mat_p >= 0.001 & mat_p < 0.01] <- "**"
-sig_stars[mat_p >= 0.01 & mat_p < 0.05] <- "*"
+cap <- min(6, ceiling(quantile(abs(plot_df$cohens_d), 0.97, na.rm = TRUE)))
 
-col_annotation <- data.frame(
-  Condition = rep(c("CICQ", "SSCQ", "RS", "SIPS", "OIS"), each = 2),
-  Model = rep(c("scaled_diff", "yugene_diff"), times = 5)
-)
-rownames(col_annotation) <- col_order
-display_col_labels <- rep(c("scaled", "yugene"), times = 5)
+p <- ggplot(plot_df, aes(x = model_label, y = pathway_short, fill = cohens_d)) +
+  geom_tile(colour = "grey80") +
+  geom_text(aes(label = stars), size = 2.6) +
+  facet_grid(~label, switch = "x") +
+  scale_fill_gradient2(low = "#2166AC", mid = "white", high = "#B2182B", midpoint = 0,
+                       limits = c(-cap, cap), oob = scales::squish, name = "Cohen's d") +
+  theme_minimal(base_size = 11) +
+  theme(
+    axis.text.y = element_text(size = 7),
+    axis.text.x = element_text(size = 9),
+    axis.title = element_blank(),
+    strip.placement = "outside",
+    strip.text = element_text(size = 11, face = "plain"),
+    panel.grid = element_blank(),
+    panel.spacing = unit(0.4, "lines")
+  )
 
-cap <- min(6, ceiling(quantile(abs(mat_d), 0.97, na.rm = TRUE)))
-breaks <- seq(-cap, cap, length.out = 101)
-
-png(file.path(RERUN_DIR, "figure_pathway_heatmap_all_both_models.png"),
-    width = 11, height = 15, units = "in", res = 300)
-pheatmap(
-  mat_d,
-  color = colorRampPalette(c("#2166AC", "white", "#B2182B"))(100),
-  breaks = breaks,
-  display_numbers = sig_stars,
-  number_color = "black",
-  fontsize_number = 8,
-  cluster_cols = FALSE,
-  cluster_rows = FALSE,
-  gaps_col = seq(2, 8, by = 2),
-  annotation_col = col_annotation,
-  labels_col = display_col_labels,
-  na_col = "grey85",
-  fontsize_row = 7,
-  fontsize_col = 9,
-  angle_col = 0,
-  border_color = "grey70"
-)
-dev.off()
+ggsave(file.path(RERUN_DIR, "figure_pathway_heatmap_all_both_models.png"), p, width = 11, height = 15, dpi = 300)
 cat(sprintf("Saved -> %s\n", file.path(RERUN_DIR, "figure_pathway_heatmap_all_both_models.png")))
 
-n_sig <- rowSums(mat_p < 0.05, na.rm = TRUE)
+n_sig <- meta %>% group_by(pathway_short) %>% summarise(n_sig = sum(p_adj < 0.05))
 cat("\nDistribution of n significant tests (of 10: 5 conditions x 2 models), all 50 pathways:\n")
-print(table(n_sig))
+print(table(n_sig$n_sig))
