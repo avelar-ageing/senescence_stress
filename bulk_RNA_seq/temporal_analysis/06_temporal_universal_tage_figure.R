@@ -86,6 +86,11 @@ p <- ggplot(plot_df, aes(x = time_after_treatment, y = tAge, fill = time_after_t
   geom_jitter(width = 0.08, size = 1.2, alpha = 0.5, colour = "black") +
   stat_pvalue_manual(stat_df, label = "label", xmin = "group1", xmax = "group2",
                       y.position = "y.position", tip.length = 0, bracket.size = 0.5, size = 5) +
+  # Relabel for display only -- the underlying factor levels stay as
+  # none/4_days/... because the bracket table matches against those exact
+  # strings from tage_temporal_pairwise_all_timepoints.csv.
+  scale_x_discrete(labels = c("none" = "None", "4_days" = "4 Days",
+                              "10_days" = "10 Days", "20_days" = "20 Days")) +
   facet_grid(model_label ~ cell_type, scales = "free_y") +
   theme_bw(base_size = 18) +
   theme(legend.position = "none",
@@ -94,7 +99,7 @@ p <- ggplot(plot_df, aes(x = time_after_treatment, y = tAge, fill = time_after_t
         axis.text = element_text(size = 15),
         axis.text.x = element_text(angle = 30, hjust = 1),
         axis.title = element_text(size = 18)) +
-  labs(x = NULL, y = "tAge")
+  labs(x = "Days Post-Irradiation", y = "tAge")
 
 ggsave(file.path(RERUN_DIR, "figure_temporal_universal_tage.png"), p, width = 13, height = 10, dpi = 300)
 cat(sprintf("Saved -> %s\n", file.path(RERUN_DIR, "figure_temporal_universal_tage.png")))
