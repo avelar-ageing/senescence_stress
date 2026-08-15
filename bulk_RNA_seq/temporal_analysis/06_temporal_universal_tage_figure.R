@@ -21,7 +21,12 @@ CT_LEVELS <- c("Fibroblast", "Keratinocyte", "Melanocyte")
 tage_temporal <- read.csv(file.path(RERUN_DIR, "tage_temporal_by_celltype.csv"))
 tage_temporal$time_after_treatment <- factor(tage_temporal$time_after_treatment, levels = TIME_LEVELS)
 tage_temporal$cell_type <- factor(tage_temporal$cell_type, levels = CT_LEVELS)
-wilcox_vs_none <- read.csv(file.path(RERUN_DIR, "tage_temporal_wilcoxon_vs_none.csv"))
+# All-pairs family (07_tage_temporal_pairwise.R): every timepoint vs every
+# other, BH-adjusted across 3 cell types x 6 pairs x 2 models = 36 tests.
+# This is the canonical family -- it subsumes the vs-baseline comparisons
+# (none vs 4/10/20 days are 3 of the 6 pairs) and additionally covers the
+# between-timepoint contrasts the trajectory claims depend on.
+pairwise <- read.csv(file.path(RERUN_DIR, "tage_temporal_pairwise_all_timepoints.csv"))
 
 plot_df <- tage_temporal %>%
   dplyr::select(cell_type, time_after_treatment, scaled_diff_EN_tAge, yugene_diff_EN_tAge) %>%
@@ -45,17 +50,18 @@ violin_extent <- function(model_name) {
   max(gb$data[[1]]$ymax, na.rm = TRUE)
 }
 
-# Brackets: each timepoint vs 'none', per cell type, per model -- using the
-# already-computed 18-test (3 cell types x 3 timepoints x 2 models) BH family
-# from tage_temporal_wilcoxon_vs_none.csv. Non-significant comparisons
-# dropped entirely.
+# Brackets: every significant timepoint pair, per cell type, per model, from
+# the 36-test all-pairs BH family. Non-significant comparisons dropped
+# entirely. Brackets are stacked shortest-span-first so short contrasts sit
+# low and wide ones sit above them, minimising visual crossing.
 make_stat_df <- function(model_name) {
-  sub <- wilcox_vs_none[wilcox_vs_none$model == model_name, ]
+  sub <- pairwise[pairwise$model == model_name, ]
   sub$label <- sig_symbol(sub$p.adj)
   sub <- sub[sub$label != "ns", ]
   sub$cell_type <- factor(sub$cell_type, levels = CT_LEVELS)
-  sub$timepoint <- factor(sub$timepoint, levels = TIME_LEVELS)
-  sub <- sub[order(sub$cell_type, sub$timepoint), ]
+  sub$span <- abs(match(sub$timepoint_2, TIME_LEVELS) - match(sub$timepoint_1, TIME_LEVELS))
+  sub <- sub[order(sub$cell_type, sub$span,
+                    match(sub$timepoint_1, TIME_LEVELS)), ]
 
   # facet_grid(scales="free_y") gives each ROW (model) one shared y scale, so
   # bracket heights must come from that shared row-wide extent -- not from each
@@ -66,11 +72,11 @@ make_stat_df <- function(model_name) {
   row_vals <- plot_df$tAge[plot_df$model == model_name]
   y_max <- violin_extent(model_name); y_range <- diff(range(row_vals))
   sub <- sub %>% group_by(cell_type) %>%
-    mutate(y.position = y_max + y_range * (0.05 + 0.10 * row_number())) %>% ungroup()
+    mutate(y.position = y_max + y_range * (0.05 + 0.09 * row_number())) %>% ungroup()
 
   data.frame(model = model_name,
              model_label = ifelse(model_name == "scaled_diff", "Scaled difference EN model", "YuGene EN model"),
-             cell_type = sub$cell_type, group1 = "none", group2 = sub$timepoint,
+             cell_type = sub$cell_type, group1 = sub$timepoint_1, group2 = sub$timepoint_2,
              label = sub$label, y.position = sub$y.position)
 }
 stat_df <- rbind(make_stat_df("scaled_diff"), make_stat_df("yugene_diff"))

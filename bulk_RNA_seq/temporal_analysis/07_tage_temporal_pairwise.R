@@ -42,7 +42,23 @@ write.csv(rows, file.path(RERUN_DIR, "tage_temporal_pairwise_all_timepoints.csv"
 
 cat(sprintf("Saved -> %s (%d rows, BH-corrected across %d tests)\n",
             file.path(RERUN_DIR, "tage_temporal_pairwise_all_timepoints.csv"), nrow(rows), nrow(rows)))
+cat(sprintf("  %d of %d comparisons significant at padj<0.05\n", sum(rows$p.adj < 0.05), nrow(rows)))
 cat("\n== All pairwise timepoint comparisons NOT involving 'none' (i.e. 4d/10d/20d vs each other) ==\n")
 print(rows[rows$timepoint_1 != "none" & rows$timepoint_2 != "none",
            c("cell_type", "timepoint_1", "timepoint_2", "model", "median_diff_1_minus_2", "p.adj")],
       row.names = FALSE)
+
+# Global Kruskal-Wallis across all 4 timepoints, one test per cell type x
+# model (uncorrected; a single omnibus test per panel, not part of the
+# pairwise family above). Carried over from the superseded
+# 05_tage_spread_figure.R so this omnibus result isn't lost with it.
+cat("\n== Kruskal-Wallis across all 4 timepoints, per cell type x model ==\n")
+kw <- do.call(rbind, lapply(CT_LEVELS, function(ct) {
+  d <- tage_temporal[tage_temporal$cell_type == ct, ]
+  data.frame(cell_type = ct, model = c("scaled_diff", "yugene_diff"),
+             kruskal_p = c(kruskal.test(d$scaled_diff_EN_tAge ~ d$time_after_treatment)$p.value,
+                           kruskal.test(d$yugene_diff_EN_tAge ~ d$time_after_treatment)$p.value))
+}))
+print(kw, row.names = FALSE)
+write.csv(kw, file.path(RERUN_DIR, "tage_temporal_kruskal.csv"), row.names = FALSE)
+cat(sprintf("Saved -> %s\n", file.path(RERUN_DIR, "tage_temporal_kruskal.csv")))

@@ -106,20 +106,13 @@ spread_stats <- tage_temporal %>%
 print(spread_stats)
 write.csv(spread_stats, file.path(RERUN_DIR, "tage_temporal_spread.csv"), row.names = FALSE)
 
-cat("\n== Wilcoxon vs 'none' baseline, per cell type (BH-corrected across 3 cell types x 3 timepoints x 2 models = 18 tests) ==\n")
-wilcox_rows <- do.call(rbind, lapply(cell_types, function(ct) {
-  df_ct <- tage_temporal[tage_temporal$cell_type == ct, ]
-  none_grp <- df_ct[df_ct$time_after_treatment == "none", ]
-  do.call(rbind, lapply(c("4_days", "10_days", "20_days"), function(tp) {
-    grp <- df_ct[df_ct$time_after_treatment == tp, ]
-    p_scaled <- wilcox.test(grp$scaled_diff_EN_tAge, none_grp$scaled_diff_EN_tAge)$p.value
-    p_yugene <- wilcox.test(grp$yugene_diff_EN_tAge, none_grp$yugene_diff_EN_tAge)$p.value
-    data.frame(cell_type = ct, timepoint = tp, model = c("scaled_diff", "yugene_diff"), p = c(p_scaled, p_yugene))
-  }))
-}))
-wilcox_rows$p.adj <- p.adjust(wilcox_rows$p, method = "BH")
-print(wilcox_rows)
-write.csv(wilcox_rows, file.path(RERUN_DIR, "tage_temporal_wilcoxon_vs_none.csv"), row.names = FALSE)
+# Significance testing lives in 07_tage_temporal_pairwise.R, which computes
+# the canonical all-pairs family: every timepoint vs every other, per cell
+# type, per model, BH-adjusted across 3 x 6 x 2 = 36 tests. That family
+# subsumes the vs-baseline comparisons (none vs 4/10/20 days are 3 of the 6
+# pairs) and additionally covers the between-timepoint contrasts the
+# trajectory claims rest on, so it replaces the narrower vs-baseline-only
+# family this script used to write out.
 
 # Violin/boxplot: tAge trajectory over time, faceted by cell type
 plot_df <- tage_temporal %>%
