@@ -46,9 +46,12 @@ make_stat_df <- function(model_name) {
 
   y_max <- plot_df %>% filter(model == model_name) %>% group_by(cell_type) %>%
     summarise(y_max = max(tAge), y_range = diff(range(tAge)), .groups = "drop")
-  sub <- merge(sub, y_max, by = "cell_type")
-  sub <- sub[order(sub$cell_type, sub$timepoint), ]
-  sub <- sub %>% group_by(cell_type) %>% mutate(y.position = y_max + y_range * (0.15 * row_number())) %>% ungroup()
+  # left_join (not merge/base R, which silently re-sorts by the join key and
+  # so scrambled the none-vs-4d/10d/20d stacking order) preserves sub's
+  # existing cell_type/timepoint order.
+  sub <- dplyr::left_join(sub, y_max, by = "cell_type")
+  sub <- sub %>% group_by(cell_type) %>%
+    mutate(y.position = y_max + y_range * (0.25 + 0.18 * row_number())) %>% ungroup()
 
   data.frame(model = model_name,
              model_label = ifelse(model_name == "scaled_diff", "Scaled difference EN model", "YuGene EN model"),
