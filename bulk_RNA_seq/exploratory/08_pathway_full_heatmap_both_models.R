@@ -32,8 +32,8 @@ plot_df <- meta %>%
   mutate(
     pathway_short = factor(pathway_short, levels = sort(unique(pathway_short), decreasing = TRUE)),
     label = factor(label, levels = c("CICQ", "SSCQ", "RS", "SIPS", "OIS")),
-    model_label = ifelse(model == "scaled", "scaled", "yugene"),
-    model_label = factor(model_label, levels = c("scaled", "yugene")),
+    model_label = ifelse(model == "scaled", "Scaled", "YuGene"),
+    model_label = factor(model_label, levels = c("Scaled", "YuGene")),
     stars = sig_symbol(p_adj)
   )
 
@@ -41,22 +41,24 @@ cap <- min(6, ceiling(quantile(abs(plot_df$cohens_d), 0.97, na.rm = TRUE)))
 
 p <- ggplot(plot_df, aes(x = model_label, y = pathway_short, fill = cohens_d)) +
   geom_tile(colour = "grey80") +
-  geom_text(aes(label = stars), size = 2.6) +
-  facet_grid(~label, switch = "x") +
+  geom_text(aes(label = stars), size = 4) +
+  facet_grid(~label) +
   scale_fill_gradient2(low = "#2166AC", mid = "white", high = "#B2182B", midpoint = 0,
                        limits = c(-cap, cap), oob = scales::squish, name = "Cohen's d") +
-  theme_minimal(base_size = 11) +
+  theme_minimal(base_size = 16) +
   theme(
-    axis.text.y = element_text(size = 7),
-    axis.text.x = element_text(size = 9),
+    axis.text.y = element_text(size = 11),
+    axis.text.x = element_text(size = 14),
+    axis.ticks.y = element_line(colour = "grey40"),
     axis.title = element_blank(),
-    strip.placement = "outside",
-    strip.text = element_text(size = 11, face = "plain"),
+    strip.text = element_text(size = 16, face = "plain"),
+    legend.text = element_text(size = 13),
+    legend.title = element_text(size = 15),
     panel.grid = element_blank(),
     panel.spacing = unit(0.4, "lines")
   )
 
-ggsave(file.path(RERUN_DIR, "figure_pathway_heatmap_all_both_models.png"), p, width = 11, height = 15, dpi = 300)
+ggsave(file.path(RERUN_DIR, "figure_pathway_heatmap_all_both_models.png"), p, width = 13, height = 16, dpi = 300)
 cat(sprintf("Saved -> %s\n", file.path(RERUN_DIR, "figure_pathway_heatmap_all_both_models.png")))
 
 n_sig <- meta %>% group_by(pathway_short) %>% summarise(n_sig = sum(p_adj < 0.05))
