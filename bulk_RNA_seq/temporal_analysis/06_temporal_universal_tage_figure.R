@@ -72,7 +72,7 @@ make_stat_df <- function(model_name) {
   row_vals <- plot_df$tAge[plot_df$model == model_name]
   y_max <- violin_extent(model_name); y_range <- diff(range(row_vals))
   sub <- sub %>% group_by(cell_type) %>%
-    mutate(y.position = y_max + y_range * (0.05 + 0.09 * row_number())) %>% ungroup()
+    mutate(y.position = y_max + y_range * (0.06 + 0.14 * row_number())) %>% ungroup()
 
   data.frame(model = model_name,
              model_label = ifelse(model_name == "scaled_diff", "Scaled difference EN model", "YuGene EN model"),
