@@ -33,7 +33,7 @@ plot_df <- tage_temporal %>%
   tidyr::pivot_longer(cols = c(scaled_diff_EN_tAge, yugene_diff_EN_tAge),
                        names_to = "model", values_to = "tAge") %>%
   mutate(model = ifelse(model == "scaled_diff_EN_tAge", "scaled_diff", "yugene_diff"),
-         model_label = ifelse(model == "scaled_diff", "Scaled difference EN model", "YuGene EN model"))
+         model_label = ifelse(model == "scaled_diff", "Scaled Difference", "YuGene"))
 
 sig_symbol <- function(p) ifelse(p < 0.001, "***", ifelse(p < 0.01, "**", ifelse(p < 0.05, "*", "ns")))
 
@@ -75,7 +75,7 @@ make_stat_df <- function(model_name) {
     mutate(y.position = y_max + y_range * (0.06 + 0.14 * row_number())) %>% ungroup()
 
   data.frame(model = model_name,
-             model_label = ifelse(model_name == "scaled_diff", "Scaled difference EN model", "YuGene EN model"),
+             model_label = ifelse(model_name == "scaled_diff", "Scaled Difference", "YuGene"),
              cell_type = sub$cell_type, group1 = sub$timepoint_1, group2 = sub$timepoint_2,
              label = sub$label, y.position = sub$y.position)
 }
