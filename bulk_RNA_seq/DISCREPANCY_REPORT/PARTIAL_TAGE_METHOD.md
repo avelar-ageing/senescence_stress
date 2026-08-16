@@ -4,10 +4,18 @@
 
 Per-pathway tAge effects for the senescence/quiescence meta-analysis (CICQ/SSCQ/RS/SIPS/OIS
 vs. pooled Proliferating) and the ERP021140 temporal time course (Fibroblast/Keratinocyte/
-Melanocyte, pooled and per-timepoint), using the method described in the paper behind the
-tAge package (Tyshkovskiy, Gladyshev et al. 2026, *Nature*,
-["Universal transcriptomic hallmarks of mammalian ageing and mortality"](https://pmc.ncbi.nlm.nih.gov/articles/PMC13233323/)):
-**"partial tAge differences predicted using only genes from the respective module."**
+Melanocyte, pooled and per-timepoint), **adapted from** the module-level analysis in the paper
+behind the tAge package (Tyshkovskiy, Gladyshev et al. 2026, *Nature*,
+["Universal transcriptomic hallmarks of mammalian ageing and mortality"](https://pmc.ncbi.nlm.nih.gov/articles/PMC13233323/)).
+
+We apply the paper's **gene-contribution definition** (coefficient x differential expression;
+their Fig. 3g "logFC x clock coefficient") but **aggregate over MSigDB Hallmark pathways using
+the fitted global clock**, rather than training a separate clock per WGCNA module as the paper
+does. The paper's phrase "partial tAge differences predicted using only genes from the
+respective module" refers to a module clock's own prediction, not a post-hoc decomposition of
+the global model. This is a defensible adaptation, not a reproduction -- see
+`PARTIAL_TAGE_VS_PAPER.md` for the full comparison and for three consequences of using
+overlapping curated sets instead of near-disjoint data-derived modules.
 
 ## The method
 
