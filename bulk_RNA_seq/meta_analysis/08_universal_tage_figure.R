@@ -29,7 +29,7 @@ plot_df <- tage_result %>%
   tidyr::pivot_longer(cols = c(scaled_diff_EN_tAge, yugene_diff_EN_tAge),
                        names_to = "model", values_to = "tAge") %>%
   mutate(model = ifelse(model == "scaled_diff_EN_tAge", "scaled_diff", "yugene_diff"),
-         model_label = ifelse(model == "scaled_diff", "Scaled difference EN model", "YuGene EN model"))
+         model_label = ifelse(model == "scaled_diff", "Scaled Difference", "YuGene"))
 
 sig_symbol <- function(p) ifelse(p < 0.001, "***", ifelse(p < 0.01, "**", ifelse(p < 0.05, "*", "ns")))
 pos_of <- function(x) match(x, COND_LEVELS)
@@ -60,7 +60,7 @@ make_stat_df <- function(model_name) {
   y_max <- max(plot_df$tAge[plot_df$model == model_name])
   y_range <- diff(range(plot_df$tAge[plot_df$model == model_name]))
   all_cmp$model <- model_name
-  all_cmp$model_label <- ifelse(model_name == "scaled_diff", "Scaled difference EN model", "YuGene EN model")
+  all_cmp$model_label <- ifelse(model_name == "scaled_diff", "Scaled Difference", "YuGene")
   all_cmp$y.position <- y_max + y_range * (0.25 + 0.16 * seq_len(nrow(all_cmp)))
   all_cmp
 }
