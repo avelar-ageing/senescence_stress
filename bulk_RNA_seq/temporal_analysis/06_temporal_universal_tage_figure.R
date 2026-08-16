@@ -89,9 +89,9 @@ p <- ggplot(plot_df, aes(x = time_after_treatment, y = tAge, fill = time_after_t
   # tage_temporal_pairwise_all_timepoints.csv. group=1 connects across the
   # discrete x within each panel.
   stat_summary(aes(group = 1), fun = median, geom = "line",
-               colour = "grey20", linewidth = 0.9) +
+               colour = "grey45", linewidth = 0.7, alpha = 0.65) +
   stat_summary(aes(group = 1), fun = median, geom = "point",
-               colour = "grey20", size = 2.4) +
+               colour = "grey45", size = 1.8, alpha = 0.75) +
   stat_pvalue_manual(stat_df, label = "label", xmin = "group1", xmax = "group2",
                       y.position = "y.position", tip.length = 0, bracket.size = 0.5, size = 5) +
   # Relabel for display only -- the underlying factor levels stay as
