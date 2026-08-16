@@ -109,8 +109,11 @@ def run(model_path, expr_csv, pathway_csv, groups_csv, test_label, control_label
 
 if __name__ == "__main__":
     rerun_dir, model_dir = sys.argv[1], sys.argv[2]
+    # optional: alternative grouping (e.g. the paper's modules) + output tag
+    mapping_name = sys.argv[3] if len(sys.argv) > 3 else "hallmark_pathway_mouse_ids.csv"
+    out_tag = sys.argv[4] if len(sys.argv) > 4 else "partial_tage_size_matched_null"
     PT = f"{rerun_dir}/partial_tage"
-    pathway_csv = f"{PT}/hallmark_pathway_mouse_ids.csv"
+    pathway_csv = f"{PT}/{mapping_name}"
     models = {"scaled": f"{model_dir}/EN_Chronoage_Multispecies_Multitissue_scaleddiff.pkl",
               "yugene": f"{model_dir}/EN_Chronoage_Multispecies_Multitissue_yugenediff.pkl"}
     expr_suffix = {"scaled": "scaled_diff", "yugene": "yugene_diff"}
@@ -135,7 +138,7 @@ if __name__ == "__main__":
         all_rows.extend(rows)
 
     out = pd.DataFrame(all_rows)
-    out_path = f"{rerun_dir}/partial_tage_size_matched_null.csv"
+    out_path = f"{rerun_dir}/{out_tag}.csv"
     out.to_csv(out_path, index=False)
     print(f"\nSaved {out_path} ({len(out)} rows)", file=sys.stderr)
     sig = out[out.p_empirical < 0.05]
