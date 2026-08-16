@@ -84,6 +84,14 @@ stat_df <- rbind(make_stat_df("scaled_diff"), make_stat_df("yugene_diff"))
 p <- ggplot(plot_df, aes(x = time_after_treatment, y = tAge, fill = time_after_treatment)) +
   geom_violin(alpha = 0.6, trim = FALSE) +
   geom_jitter(width = 0.08, size = 1.2, alpha = 0.5, colour = "black") +
+  # Median trajectory across timepoints. Median (not mean) to match the
+  # Wilcoxon tests and the median differences reported in
+  # tage_temporal_pairwise_all_timepoints.csv. group=1 connects across the
+  # discrete x within each panel.
+  stat_summary(aes(group = 1), fun = median, geom = "line",
+               colour = "grey20", linewidth = 0.9) +
+  stat_summary(aes(group = 1), fun = median, geom = "point",
+               colour = "grey20", size = 2.4) +
   stat_pvalue_manual(stat_df, label = "label", xmin = "group1", xmax = "group2",
                       y.position = "y.position", tip.length = 0, bracket.size = 0.5, size = 5) +
   # Relabel for display only -- the underlying factor levels stay as
