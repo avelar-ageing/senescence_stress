@@ -198,6 +198,48 @@ glycolysis (92), mRNA splicing (79), ECM organization/EMT (75), adaptive immunit
 OxPhos/heme metabolism (65), interferon signaling (45), VEGF signaling (45), protein processing in
 ER/UPR (23), protein folding/translation (21), fatty acid metabolism/peroxisome (20).
 
+## 6c. Module *memberships* were run as a grouping — and they do not corroborate Hallmark (added 2026-08-16)
+
+Since the module *clocks* fail validation (§6b), the salvageable version of action 3 is to use the
+paper's module **gene memberships** as the grouping unit for our own (exact, verified) decomposition,
+keeping the estimator we trust and adopting the paper's data-derived grouping. That was implemented
+and run — `exploratory/13_build_paper_module_mapping.R` → `paper_module_mouse_ids.csv`, then
+`04_partial_tage_decompose.py` unchanged → `*_modulescores_*.csv` → `rerun_outputs/module_tage_ALL.csv`.
+All 26 decompositions exact (max diff 0.0).
+
+**The multispecies panel is ideal on paper**: 14 modules, 1,248 genes, **zero** gene shared between
+modules (perfectly disjoint), and 1,248/1,248 present among the clock's 10,487 features. That should
+have removed §5 consequences (1) and (2). Three results say otherwise:
+
+1. **Disjointness barely helped.** Inter-module median |Spearman rho| = 0.20 — identical to Hallmark's
+   0.201. Only the tail improved (0% of module pairs above 0.7 vs 1.5% for Hallmark). The dependence
+   is driven by shared sample-level structure, not by gene sharing.
+2. **Modules are LESS stable across normalisations than Hallmark.** Sign agreement between the two EN
+   models: **0.55 for modules vs 0.775 for Hallmark**; both-significant-and-same-sign 0.235 vs 0.382.
+   Several modules flip sign with both models significant (Fibroblast "Fatty acid metabolism/
+   Peroxisome" d = -6.18 scaled vs +10.20 yugene). Modules cover only 12% of the clock's features, so
+   model-specific coefficient differences are averaged down far less.
+3. **They cannot corroborate our headline interferon result, because the paper's interferon module
+   does not contain the interferon genes.** `HALLMARK INTERFERON ALPHA RESPONSE` (85 clock genes) and
+   the paper's `darkmagenta / Interferon signaling` module (45 clock genes) share **zero** genes.
+   Checked and not an artefact: both ID sets are mouse Entrez resolving in the package gene table
+   (1,248/1,248 and 4,234/4,251), the extracted entrez↔symbol pairing is 98.5% identical to the
+   package table (the 1.5% are symbol-vintage synonyms, e.g. Atp5mc3/Atp5g3), sheet layout was read
+   directly from MOESM7 and matches the script's assumption, and module sizes and labels agree with
+   the official dictionary (MOESM8 sheet D: darkmagenta = Interferon signaling, orange = Chromatin
+   modification). Canonical ISGs present in the sheet's 1,284-gene universe sit in *other* modules:
+   **Isg15 and Irf7 → orange (Chromatin modification)**, Rsad2 → darkred (mRNA splicing), Usp18 and
+   Ifih1 → pink (Mitochondrial translation/OxPhos). No module is enriched for its own annotation's
+   canonical markers above background.
+
+**Interpretation.** These are WGCNA *co-expression* modules from rodent ageing data; the functional
+annotation is a top-enrichment label for the module, not a membership criterion, and co-expression in
+rodent tissue need not group canonical pathway members together — still less transfer to irradiated
+human skin cells. **Consequence: module results are not interpretable as pathway labels in our
+setting, and the melanocyte interferon finding can be neither confirmed nor refuted by them.** The
+outputs are kept for provenance but **should not be reported as pathway-level results**, and the
+Hallmark decomposition stands as the interpretable arm (as §4 already argued).
+
 ## 6b. VALIDATION FAILURE — do not run the module clocks yet (added 2026-08-16)
 
 §6 says the module clocks "can be evaluated directly ... **No retraining required**". **That is not
