@@ -22,13 +22,58 @@ pathway-level biological claims. It supports gene-level ones.**
    fitted global clock. Different estimators, and they can disagree. This is a real difference but
    not by itself an error — see below for what actually limits us.
 
-## Test 1 — size-matched null: 9% survive
+## Test 1 — size-matched null: 10% survive
 
-1,000 random equal-size draws from the clock's own 10,487 features, per pathway per group per
-model. Only **72/800 (9%)** reach p_emp < 0.05; **15/400** group–pathway pairs clear it on both
-models. Caveat that cuts the other way: the draw pool is genes already selected for
-age-association, so this asks "does this set beat an arbitrary slice of the age clock", which is
-deliberately harsh, and non-survival is not evidence of no effect.
+1,000 random equal-size draws from the clock's own 10,487 features, per set per group per model.
+**Coverage completed 2026-08-17** — the first run covered the meta-analysis and pooled temporal
+comparisons only (800 tests); the 9 per-timepoint comparisons, which the temporal write-up
+actually leans on, were missing and have now been added. Full coverage is 1,700 tests
+(meta 500, temporal pooled 300, temporal per-timepoint 900).
+
+**171/1700 (10.1%)** reach p_emp < 0.05. Both-model survivors: 7 in the meta-analysis, 8 pooled
+temporal, 17 per-timepoint — **32 of ~850 group x set combinations**.
+
+Caveat that cuts the other way: the draw pool is genes already selected for age-association, so
+this asks "does this set beat an arbitrary slice of the age clock", which is deliberately harsh,
+and non-survival is not evidence of no effect.
+
+### The null and the representation filter are in tension
+
+**Every gene set that survives the null in 2 or more comparisons is POOR-tier:**
+
+| set | comparisons survived | eff_n | tier |
+|---|---|---|---|
+| MITOTIC SPINDLE | 5 | 3.4 | POOR |
+| **INTERFERON ALPHA RESPONSE** | **4** | 5.9 | POOR |
+| APICAL JUNCTION | 3 | 6.3 | POOR |
+| E2F TARGETS | 3 | 3.9 | POOR |
+| G2M CHECKPOINT | 3 | 3.4 | POOR |
+| HEME METABOLISM | 3 | 5.7 | POOR |
+| ADIPOGENESIS | 2 | 7.1 | POOR |
+| MYC TARGETS | 2 | 3.0 | POOR |
+| UV RESPONSE UP | 2 | 5.0 | POOR |
+
+No WELL or MODERATE set survives in more than one comparison. **Only 3 group x set combinations in
+the entire analysis pass both filters**, and they share no pattern: meta OIS x XENOBIOTIC
+METABOLISM, pooled Melanocyte x P53 PATHWAY, Melanocyte 4-day x COMPLEMENT.
+
+*Mechanism UNVERIFIED.* Concentration does not simply inflate effect size (eff_n vs max |d|,
+rho = -0.09, p = 0.53), so the tension is not explained by that. Whatever its cause, the practical
+consequence is that **the two filters cannot both be satisfied**, and a set passing the null should
+be read as reproducible-and-concentrated rather than as validated.
+
+### The interferon case specifically
+
+`HALLMARK INTERFERON ALPHA RESPONSE` in melanocytes survives the null in **all 8 melanocyte tests**
+(pooled + 3 timepoints, x 2 models), p_emp 0.001-0.033, d = -7.2 to -22.6 against null 95th
+percentiles of 5.3-9.9. By reproducibility it is the strongest result in the analysis after
+MITOTIC SPINDLE. By representation it is POOR (eff_n 5.9; `Isg15` alone is 38-51% of the effect).
+
+The two tests therefore disagree on this set more sharply than on any other, and the resolution is
+the level of claim: **it does not support "the interferon pathway", but it does support a specific,
+reproducible statement about `Isg15`, `Herc6` and `Usp18`.** Dropping it entirely would discard the
+most consistently reproducible signal in the decomposition; keeping it as a pathway claim would
+overstate a five-gene effect.
 
 ## Test 2 — convergent validity against DEG enrichment: weak
 

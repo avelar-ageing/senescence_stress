@@ -133,6 +133,15 @@ if __name__ == "__main__":
             print(f"[{mdl}] temporal pooled: {ct}", file=sys.stderr)
             run(mpath, f"{PT}/{ct}_{expr_suffix[mdl]}.csv", pathway_csv, f"{PT}/{ct}_groups.csv",
                 "irradiated", "none", ct, "temporal_pooled", rows)
+        # per-timepoint: 3 cell types x 3 timepoints, 6v6 vs that cell type's own baseline.
+        # Needed because the per-timepoint results are what the temporal write-up leans on;
+        # the pooled null does not cover them.
+        for ct in ["Fibroblast", "Keratinocyte", "Melanocyte"]:
+            for tp in ["4_days", "10_days", "20_days"]:
+                grp = f"{ct}_{tp}"
+                print(f"[{mdl}] temporal bytimepoint: {grp}", file=sys.stderr)
+                run(mpath, f"{PT}/{grp}_{expr_suffix[mdl]}.csv", pathway_csv,
+                    f"{PT}/{grp}_groups.csv", tp, "none", grp, "temporal_bytimepoint", rows)
         for r in rows:
             r["model"] = mdl
         all_rows.extend(rows)
