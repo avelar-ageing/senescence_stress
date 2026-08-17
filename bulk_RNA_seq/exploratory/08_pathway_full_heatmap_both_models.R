@@ -29,24 +29,25 @@ meta$pathway_short <- gsub("^HALLMARK ", "", meta$pathway)
 # REPRESENTATION FILTER (added 2026-08-17)
 # A gene set can only support a pathway-level claim if the clock's prediction
 # for it is spread across many genes rather than carried by one or two. Sets are
-# tiered by effective number of contributing genes (eff_n = 1/sum(share^2)) in
-# exploratory/14_pathway_representation.py; only WELL (eff_n>=14) and MODERATE
-# (>=9) sets are plotted. Row labels carry the evidence: clock genes in the set,
-# then the % with a non-zero coefficient under each model (scaled/yugene) --
-# genes with a zero coefficient contribute exactly nothing, ever.
+# gated in exploratory/14_pathway_representation.py: a set is plotted only if its
+# five largest-contributing genes carry <=65% of its total contribution under BOTH
+# models (17 of 50 sets). Row labels carry the evidence: clock genes in the set,
+# the % with a non-zero coefficient under each model (zero-coefficient genes
+# contribute exactly nothing, ever), and that worst-case top-5 share.
 # ---------------------------------------------------------------------------
 rep_csv <- file.path(RERUN_DIR, "pathway_representation.csv")
 if (!file.exists(rep_csv)) {
   stop("pathway_representation.csv not found -- run exploratory/14_pathway_representation.py first.")
 }
 rep <- read.csv(rep_csv, check.names = FALSE)
-rep <- rep[rep$tier %in% c("WELL", "MODERATE"), ]
-rep$label_full <- sprintf("%s  (%d; %.0f%%/%.0f%%)",
+rep <- rep[rep$tier == "INTERPRETABLE", ]
+rep$label_full <- sprintf("%s  (%d; %.0f/%.0f%% nz; top5 %.0f%%)",
                           gsub("^HALLMARK ", "", rep$pathway),
                           rep$n_clock_scaled,
                           100 * rep$n_nonzero_scaled / rep$n_clock_scaled,
-                          100 * rep$n_nonzero_yugene / rep$n_clock_yugene)
-cat(sprintf("Representation filter: keeping %d of 50 gene sets (WELL/MODERATE)\n", nrow(rep)))
+                          100 * rep$n_nonzero_yugene / rep$n_clock_yugene,
+                          100 * rep$top5_max)
+cat(sprintf("Gate (top5 <= 65%% both models): keeping %d of 50 gene sets\n", nrow(rep)))
 
 
 sig_symbol <- function(p) ifelse(p < 0.001, "***", ifelse(p < 0.01, "**", ifelse(p < 0.05, "*", "")))

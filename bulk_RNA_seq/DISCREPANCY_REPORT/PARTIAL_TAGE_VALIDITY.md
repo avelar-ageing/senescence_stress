@@ -160,6 +160,42 @@ spreads weight across that module's genes instead of letting global competition 
 That is the substantive methodological point behind the scRNA arm's observation — not the
 gene-contribution definition, which is fine.
 
+## GATE ADOPTED: top-5 share <= 65% (decision 2026-08-17, supersedes the eff_n threshold below)
+
+The eff_n >= 9 threshold used in Test 3b **could not be justified as a number** and has been
+replaced. Two problems with it:
+
+1. **Arbitrary.** 9 was chosen by eye from the distribution. It sits in a gap (9.7 -> 8.3) but only
+   the fourth-largest one, and moving it materially changes the Results: >=10 drops COMPLEMENT,
+   APOPTOSIS and MTORC1; >=12 also drops the lysosomal set.
+2. **Non-monotone in the quantity of interest.** It retained MTORC1 (top-5 share 60%) while
+   excluding KRAS SIGNALING UP (top-5 share **52%**) -- i.e. it excluded a *less* concentrated set
+   than one it kept, because eff_n depends on the whole share distribution.
+
+A relative alternative (eff_n as a fraction of set size, >=10%) was tested and is **worse**: eff_n
+correlates with set size at rho 0.67, so dividing by size over-corrects to rho -0.15 and turns the
+rule into a small-set preference. It would admit NOTCH SIGNALING and PANCREAS BETA CELLS, whose
+*entire* contribution sits in five genes (top-5 = 100%), while excluding TNFA SIGNALING VIA NFKB
+(eff_n 16.3, 50 contributing genes). Rejected.
+
+**Adopted criterion:** a set is interpreted at set level only where its **five largest-contributing
+genes carry no more than 65% of its total contribution under both models**. This yields **17 of 50
+sets**. It is directly interpretable, monotone in the quantity of interest, correlates with eff_n at
+rho 0.95, and is a *stipulation* about what may be called a set-level effect rather than an
+empirical threshold requiring justification.
+
+**Also decided: the gate is structural, not a caveat.** Excluded sets do not appear in main figures
+at all. A prose caveat does not stop a large Cohen's d with three significance stars reading as a
+finding; removing the row does.
+
+Relative to the eff_n >= 9 list this adds two sets: **KRAS SIGNALING UP** (top-5 58%; significant in
+CICQ +2.32/+1.69, SSCQ +1.46/+0.73, OIS +1.55/+1.51, and Fibroblast 20 days +6.91/+9.07) and
+**UV RESPONSE DN** (top-5 59%; admitted by the gate but with no both-model significant effect in any
+comparison -- reported for completeness, contributes no claim).
+
+eff_n remains in `pathway_representation.csv` as a companion statistic. The tier language below is
+superseded; read it for the underlying numbers, not for the gate.
+
 ## Test 3b — which gene sets ARE well represented? (added 2026-08-17)
 
 Test 3's medians hide a real gradient, so representation was computed per gene set:

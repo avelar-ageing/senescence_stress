@@ -19,10 +19,15 @@ Metrics, computed on the meta-analysis matrix (n=230, the largest):
   top1, top5   share of the set's total |contribution| from its largest
                1 and 5 genes
 
-Suggested tiers (used in DISCREPANCY_REPORT/PARTIAL_TAGE_VALIDITY.md):
-  WELL     eff_n >= 14 on BOTH models
-  MODERATE eff_n >= 9  on both
-  POOR     otherwise -- do not make pathway-level claims from these
+GATE (top5_max <= 0.65). A set is interpreted at set level only if its five
+largest-contributing genes carry no more than 65% of its total contribution
+under BOTH models. 17 of 50 sets qualify. This replaced an earlier eff_n >= 9
+threshold, which selected an almost identical list but could not be justified as
+a number and was non-monotone in the quantity of interest: it retained MTORC1
+(top5 60%) while excluding KRAS SIGNALING UP (top5 52%). Filtering directly on
+top5 removes that artefact, is stateable in one clause, and is a stipulation
+about what may be called a set-level effect rather than an empirical threshold.
+eff_n is still reported alongside (rho 0.95 with -top5).
 
 Output: rerun_outputs/pathway_representation.csv
 """
@@ -34,6 +39,7 @@ import pandas as pd
 
 warnings.filterwarnings("ignore")
 
+TOP5_CUT = 0.65   # five largest genes may carry at most this share, both models
 MODELS = {"scaled": "EN_Chronoage_Multispecies_Multitissue_scaleddiff.pkl",
           "yugene": "EN_Chronoage_Multispecies_Multitissue_yugenediff.pkl"}
 EXPR = {"scaled": "meta_scaled_diff.csv", "yugene": "meta_yugene_diff.csv"}
@@ -84,9 +90,18 @@ def representation(rerun_dir, model_dir, mapping="hallmark_pathway_mouse_ids.csv
 
     d = frames["scaled"].join(frames["yugene"], lsuffix="_scaled", rsuffix="_yugene")
     d["eff_n_min"] = d[["eff_n_scaled", "eff_n_yugene"]].min(axis=1)
-    d["tier"] = np.where(d.eff_n_min >= 14, "WELL",
-                np.where(d.eff_n_min >= 9, "MODERATE", "POOR"))
-    return d.sort_values("eff_n_min", ascending=False)
+    # PRIMARY CRITERION (top5_max): worst-case share of the set's total contribution
+    # carried by its five largest genes, across the two models. Used as the gate
+    # because it is directly interpretable -- "five genes carry X% of this set's
+    # signal" -- and because it is monotone in the quantity of interest, which
+    # eff_n is not (eff_n retained MTORC1 at top5 60% while excluding KRAS
+    # SIGNALING UP at top5 52%). eff_n is retained as a reported companion
+    # statistic; the two agree at rho 0.95.
+    d["top5_max"] = d[["top5_scaled", "top5_yugene"]].max(axis=1)
+    d["top1_max"] = d[["top1_scaled", "top1_yugene"]].max(axis=1)
+    d["interpretable"] = d.top5_max <= TOP5_CUT
+    d["tier"] = np.where(d.interpretable, "INTERPRETABLE", "GENE-DOMINATED")
+    return d.sort_values("top5_max")
 
 
 if __name__ == "__main__":
@@ -96,7 +111,7 @@ if __name__ == "__main__":
     out = f"{rerun_dir}/pathway_representation.csv"
     d.to_csv(out)
     print(d[["n_clock_scaled", "n_nonzero_scaled", "n_nonzero_yugene",
-             "eff_n_scaled", "eff_n_yugene", "eff_n_min", "tier"]].to_string(
-             float_format=lambda x: f"{x:7.1f}"))
-    print(f"\ntiers: {dict(d.tier.value_counts())}")
+             "top1_max", "top5_max", "eff_n_min", "tier"]].to_string(
+             float_format=lambda x: f"{x:7.2f}"))
+    print(f"\ntiers (top5 <= {TOP5_CUT:.0%}): {dict(d.tier.value_counts())}")
     print(f"Saved -> {out}")
