@@ -73,6 +73,57 @@ spreads weight across that module's genes instead of letting global competition 
 That is the substantive methodological point behind the scRNA arm's observation — not the
 gene-contribution definition, which is fine.
 
+## Test 3b — which gene sets ARE well represented? (added 2026-08-17)
+
+Test 3's medians hide a real gradient, so representation was computed per gene set:
+`exploratory/14_pathway_representation.py` -> `rerun_outputs/pathway_representation.csv`.
+Metric: **effective number of contributing genes**, eff_n = 1/sum(share^2) on mean |coef*z|
+shares (inverse-Simpson). eff_n = 10 means the set behaves like ~10 equally weighted genes.
+Tier = min(eff_n) across both models.
+
+**8 WELL (eff_n >= 14), 7 MODERATE (>= 9), 35 POOR.** So most sets cannot support pathway-level
+claims, but a real minority can.
+
+| tier | gene set | eff_n | non-zero genes (s/y) | both-model-sig groups (of 17) | survives size null |
+|---|---|---|---|---|---|
+| WELL | EPITHELIAL MESENCHYMAL TRANSITION | 20.9 | 55/57 | 2 | 0 |
+| WELL | ESTROGEN RESPONSE EARLY | 17.7 | 50/48 | 3 | 0 |
+| WELL | **TNFA SIGNALING VIA NFKB** | 16.3 | 50/47 | **10** | 0 |
+| WELL | ESTROGEN RESPONSE LATE | 16.2 | 44/37 | 2 | 0 |
+| WELL | IL2 STAT5 SIGNALING | 16.2 | 35/47 | 1 | 0 |
+| WELL | **MYOGENESIS** | 16.0 | 52/44 | **11** | 0 |
+| WELL | **P53 PATHWAY** | 15.0 | 36/36 | **11** | **1** |
+| WELL | HYPOXIA | 14.4 | 32/46 | 3 | 0 |
+| MOD | **GLYCOLYSIS** | 14.0 | 30/34 | 5 | 0 |
+| MOD | **XENOBIOTIC METABOLISM** | 12.2 | 38/43 | 6 | **1** |
+| MOD | **Lysosomal Genes** | 12.0 | 22/34 | 5 | 0 |
+| MOD | **FATTY ACID METABOLISM** | 10.5 | 24/28 | 6 | 0 |
+| MOD | **APOPTOSIS** | 9.9 | 25/22 | 8 | 0 |
+| MOD | **COMPLEMENT** | 9.9 | 35/35 | **13** | 0 |
+| MOD | MTORC1 SIGNALING | 9.7 | 28/30 | 4 | 0 |
+
+**The lysosomal set is defensible** — eff_n 12.0, 22/34 non-zero genes, significant on both models
+in 5 of 17 group comparisons. It is better represented than most Hallmark sets.
+
+**Representation and effect size are uncorrelated** (eff_n vs n both-model-sig groups,
+Spearman rho = -0.11, p = 0.44; eff_n vs max |d|, rho = -0.09, p = 0.53). An earlier impression
+that poorly-represented sets produce *more* findings was **not** supported when tested. The two
+filters are simply independent.
+
+**Consequence: the two quality filters select almost disjoint sets.** Of the size-matched-null
+survivors, nearly all are POOR-tier: MITOTIC SPINDLE (eff_n 3.4, 3 survivors), G2M CHECKPOINT
+(3.4, 2), HEME METABOLISM (5.7, 2), E2F TARGETS (3.9, 1), MYC TARGETS (3.0, 1), ADIPOGENESIS
+(7.1, 1), APICAL JUNCTION (6.3, 1), INTERFERON ALPHA RESPONSE (5.9, 1), PROTEIN SECRETION
+(2.4, 1). **Exactly two gene sets pass both filters: P53 PATHWAY (eff_n 15.0) and XENOBIOTIC
+METABOLISM (eff_n 12.2).**
+
+Sets to avoid entirely for pathway-level statements, being both poorly represented and previously
+quoted as findings: PI3K AKT MTOR SIGNALING (eff_n **1.8**, and the basis of the proposed
+"DNA damage drives a shared mTOR component" claim), PROTEIN SECRETION (2.4, top-5 share 100%),
+REACTIVE OXYGEN SPECIES PATHWAY (2.4, 100%), WNT BETA CATENIN SIGNALING (2.7, only 4 non-zero
+genes, 100%), HEDGEHOG SIGNALING (2.9, 96%), MYC TARGETS (3.0), MITOTIC SPINDLE (3.4),
+G2M CHECKPOINT (3.4), SPERMATOGENESIS (3.4, 96%), E2F TARGETS (3.9).
+
 ## The same test on our most robust finding
 
 Melanocyte `HALLMARK INTERFERON ALPHA RESPONSE`, the one effect that survives the size-matched null
