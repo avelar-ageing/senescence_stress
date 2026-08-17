@@ -240,7 +240,23 @@ setting, and the melanocyte interferon finding can be neither confirmed nor refu
 outputs are kept for provenance but **should not be reported as pathway-level results**, and the
 Hallmark decomposition stands as the interpretable arm (as §4 already argued).
 
-## 6b. VALIDATION FAILURE — do not run the module clocks yet (added 2026-08-16)
+## 6b. RETRACTED 2026-08-17 — the diagnosis below is wrong
+
+> **This section's conclusion ("the imputer/scaler is unpublished, so the coefficients are
+> unusable") is WRONG and retracted.** MOESM7 sheet (A) col 27's published coefficients were
+> subsequently shown to equal the fitted pkl's coefficients to 9.9e-17 and to reconstruct
+> `model.predict()` to 2.6e-07, so published coefficients DO live in the pkl's standardised space
+> and the scaler is recoverable (StandardScaler statistics are per-feature). My two supporting
+> arguments were also weak: the "positive control" used 24 near-identical-age Klotho mice, where
+> correlating two clocks measures noise; and low r against the global clock is expected for a
+> 20-238-gene component clock, not diagnostic. Individual module clocks do behave coherently on
+> bulk data (ECM/EMT d = +0.78..+1.81 across all five conditions).
+>
+> The module clocks ARE nevertheless unusable, for a completely different reason found later: the
+> gene-to-module assignment in MOESM7 sheets (B)/(C) contradicts the paper's own enrichment tables.
+> **See `RECONCILIATION_MODULE_CLOCKS.md` §3.** The text below is kept for the record only.
+
+## 6b (retracted). Original text: validation failure — do not run the module clocks yet
 
 §6 says the module clocks "can be evaluated directly ... **No retraining required**". **That is not
 yet safe.** The naive evaluation fails a basic sanity check, so no module-level results should be

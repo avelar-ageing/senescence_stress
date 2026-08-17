@@ -2,8 +2,11 @@
 
 **Bottom line: do not use them.** They were run end to end, correctly, and they do not
 outperform MSigDB Hallmark on any axis we can measure. They are markedly *less* reproducible
-across the two EN normalisations, and they cannot be used to test our headline interferon
-result because the paper's interferon module contains none of the interferon genes.
+across the two EN normalisations, and they cannot be used to test our headline interferon result
+because the gene list published for the paper's interferon module contains none of the interferon
+genes — a defect in the published supplement, not in the modules themselves
+(`RECONCILIATION_MODULE_CLOCKS.md` §3). **Read that document alongside this one:** it retracts the
+route-A diagnosis in §2 below and corrects the interpretation in §5.4.
 
 Written 2026-08-16. Self-contained handoff. Every number below was computed on
 `rerun_outputs/` and is reproducible from the scripts named. Anything not verified is marked.
@@ -20,16 +23,24 @@ two. It was ranked the highest-value outstanding action.
 
 ## 2. Two routes, and why route A is dead
 
-**Route A — run the paper's module CLOCKS. Blocked, see `PARTIAL_TAGE_VS_PAPER.md` §6b.**
-Supplementary Table 5 (MOESM7) publishes every module clock's per-gene coefficients and
-intercept, which looks like the full linear model. It isn't: the fitted `SimpleImputer` and
-`StandardScaler` are **not** published, and elastic-net coefficients are meaningless without the
-standardisation they were fitted against. Evaluating them in our global model's feature space
-fails a positive control on the tAge package's **own example mouse data** (r = 0.48 rodent panel,
-0.22 multispecies, against the package's own `predict_tAge` output), and on our data it reverses
-the sign of the SIPS and OIS tAge elevations — the single most robust result in the study.
-This is not a bug on our side and not an input-convention issue (raw vs scaled input agree to
-4 d.p.). It needs the authors' scaler statistics.
+**Route A — run the paper's module CLOCKS. Blocked, but NOT for the reason first given.**
+
+> **This paragraph's original diagnosis was wrong and is retracted (2026-08-17).** It claimed the
+> fitted imputer/scaler is unpublished and the coefficients therefore unusable. In fact MOESM7
+> sheet (A) col 27's published coefficients equal the fitted pkl's to 9.9e-17 and reconstruct
+> `model.predict()` to 2.6e-07, so published coefficients DO live in the pkl's standardised space.
+> The "positive control failure" cited below was also a bad test (24 near-identical-age Klotho
+> mice). Route A is blocked instead by a gene-to-module assignment defect in MOESM7 sheets (B)/(C)
+> that contradicts the paper's own enrichment tables. Full evidence:
+> `RECONCILIATION_MODULE_CLOCKS.md` §1 and §3.
+
+Original text: Supplementary Table 5 (MOESM7) publishes every module clock's per-gene coefficients
+and intercept, which looks like the full linear model. It isn't: the fitted `SimpleImputer` and
+`StandardScaler` are **not** published [RETRACTED — they are recoverable]. Evaluating them in our
+global model's feature space fails a positive control on the tAge package's own example mouse data
+(r = 0.48 rodent panel, 0.22 multispecies) [RETRACTED — invalid control], and on our data it
+reverses the sign of the SIPS and OIS tAge elevations [this concerns the all-module composite;
+individual module clocks behave coherently].
 
 **Route B — use the module MEMBERSHIPS as a grouping for our own verified decomposition.**
 This keeps the estimator we have validated (exact linear decomposition of the fitted global
@@ -106,7 +117,15 @@ neutral background — it asks "does this set beat an arbitrary slice of the age
 a deliberately hard question. Structurally there is no alternative pool: a non-clock gene has
 coefficient exactly 0 and contributes nothing. Non-survival is not evidence of no effect.
 
-### 5.4 The module annotations do not describe their gene content
+### 5.4 The module gene lists do not match their annotations
+
+> **INTERPRETATION CORRECTED 2026-08-17.** The mismatch below is real, but the explanation given
+> at the end of this section (that WGCNA annotations are loose "top-enrichment labels" and
+> co-expression need not group canonical pathway members) is **wrong**. The paper's own enrichment
+> table gives darkmagenta an odds ratio of 594 for Hallmark Interferon Alpha Response at
+> padj = 8e-58 — it genuinely IS an interferon module. The gene lists published in MOESM7 sheets
+> (B)/(C) are what is wrong, not the labels. See `RECONCILIATION_MODULE_CLOCKS.md` §3 for the
+> evidence and two failed repair attempts.
 This is the most important finding for anyone hoping to interpret module results.
 
 `HALLMARK INTERFERON ALPHA RESPONSE` (85 clock genes) and the paper's
