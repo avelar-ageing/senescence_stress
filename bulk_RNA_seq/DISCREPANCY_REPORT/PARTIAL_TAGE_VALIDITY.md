@@ -1,4 +1,4 @@
-# Is the Hallmark partial-tAge decomposition valid? Three tests
+# Is the Hallmark partial-tAge decomposition valid? Four tests
 
 Written 2026-08-17 to answer the question directly, rather than by argument from method
 description. Prompted by the scRNA arm noting our approach does not match the paper's.
@@ -210,6 +210,51 @@ quoted as findings: PI3K AKT MTOR SIGNALING (eff_n **1.8**, and the basis of the
 REACTIVE OXYGEN SPECIES PATHWAY (2.4, 100%), WNT BETA CATENIN SIGNALING (2.7, only 4 non-zero
 genes, 100%), HEDGEHOG SIGNALING (2.9, 96%), MYC TARGETS (3.0), MITOTIC SPINDLE (3.4),
 G2M CHECKPOINT (3.4), SPERMATOGENESIS (3.4, 96%), E2F TARGETS (3.9).
+
+## Test 4 — label-permutation null: fair, but adds nothing (run 2026-08-17)
+
+`exploratory/15_partial_tage_label_permutation.py` -> `rerun_outputs/partial_tage_label_permutation.csv`.
+2,000 permutations of the group labels per set per group per model, gene set held fixed, so there is
+no background pool to choose and none of Test 1's unfairness. 1,700 tests.
+
+**It is redundant with what we already had.** The Wilcoxon rank-sum test *is* an exact permutation
+test, differing only in statistic (ranks vs means), so the two share a null:
+
+| comparison vs the existing Wilcoxon p | result |
+|---|---|
+| Spearman rho(p_permutation, uncorrected wilcox_p) | **0.956** |
+| same call at 0.05 (uncorrected) | **94.8%** |
+| same call vs BH-adjusted p_adj | 93.4% |
+
+**And it is blind to the property that actually matters.** Pass rates are identical across
+representation tiers — WELL 64.0%, MODERATE 65.5%, POOR 63.8% — because the set is held fixed, so
+neither size nor concentration can influence the result. It therefore does **not** substitute for
+what Test 1 was attempting.
+
+**What it is worth:** a confirmation that the Wilcoxon-based findings are not artefacts of the rank
+statistic or of any asymptotic approximation. That is a real if modest contribution, and it means
+the BH-adjusted Wilcoxon results can be reported as-is without a distribution-free caveat.
+
+Under this test the well-represented sets perform strongly — both-model survivors out of 17
+comparisons: COMPLEMENT 16, P53 PATHWAY 12, TNFA SIGNALING VIA NFKB 12, APOPTOSIS 11,
+MYOGENESIS 11, FATTY ACID METABOLISM 7, GLYCOLYSIS 6, MTORC1 SIGNALING 6, XENOBIOTIC METABOLISM 6,
+HYPOXIA 5, Lysosomal Genes 5.
+
+### Consequence for the interferon decision
+
+Melanocyte `HALLMARK INTERFERON ALPHA RESPONSE` passes decisively under the fair test:
+p_permutation = 0.0005 pooled (both models) and 0.0011-0.0043 at every individual timepoint, against
+a floor of 0.0022 for 6v6. So **the only argument against it is representation** (eff_n 5.9; `Isg15`
+alone 38-51% of the effect), which is an argument about the *level* of the claim, not about whether
+the effect is real. Recommended resolution unchanged: report it as a gene-level finding
+(`Isg15`, `Herc6`, `Usp18`), not as "the interferon pathway".
+
+### Net position on filters
+
+Neither null discriminates usefully: Test 1 is unfair and selects *for* gene concentration; Test 4
+is fair but redundant and blind to concentration. **The representation filter (Tests 3/3b) is the
+only quality filter that discriminates**, so pathway-level claims should rest on: both-model
+agreement in sign, BH-adjusted Wilcoxon significance, and eff_n tier. Nothing else earns its place.
 
 ## The same test on our most robust finding
 
