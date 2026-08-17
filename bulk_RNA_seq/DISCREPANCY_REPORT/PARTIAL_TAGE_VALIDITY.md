@@ -3,8 +3,12 @@
 Written 2026-08-17 to answer the question directly, rather than by argument from method
 description. Prompted by the scRNA arm noting our approach does not match the paper's.
 
-**Short answer: the quantity is exactly what we say it is, but it does not support
-pathway-level biological claims. It supports gene-level ones.**
+**Short answer: the quantity is exactly what we say it is. Whether it supports a pathway-level
+claim depends on the gene set — 15 of 50 sets are adequately represented in the clock, the other 35
+are carried by <=5 genes and support only gene-level statements.**
+
+*Note: Test 1 below (size-matched null) was subsequently EXCLUDED — see its header for why. The
+conclusions here rest on Tests 2, 3 and 3b.*
 
 ---
 
@@ -22,7 +26,45 @@ pathway-level biological claims. It supports gene-level ones.**
    fitted global clock. Different estimators, and they can disagree. This is a real difference but
    not by itself an error — see below for what actually limits us.
 
-## Test 1 — size-matched null: 10% survive
+## Test 1 — size-matched null: EXCLUDED (decision 2026-08-17)
+
+> **This test is excluded from the analysis and should not be cited.** It was run to completion
+> (1,700 tests, `exploratory/12_partial_tage_size_matched_null.py`,
+> `rerun_outputs/partial_tage_size_matched_null.csv`) and is kept for provenance only. Reasons:
+>
+> 1. **The draw pool is not a neutral background.** Draws come from the clock's own 10,487
+>    features — genes selected precisely *because* they change with age across mammals. The test
+>    therefore asks "is this set more informative than an arbitrary slice of an age clock", which
+>    is a specificity question, not the question any Results claim makes.
+> 2. **The null is not centred on no effect.** Because every clock feature carries age signal and
+>    the groups genuinely differ, random draws already separate them: median null mean |d| was
+>    0.55-0.80 (meta) and 1.0-2.1 (temporal). A "null" distribution centred on a real effect does
+>    not test what a null is supposed to test.
+> 3. **Empirically it selects for the wrong property.** Every gene set surviving in >=2 comparisons
+>    is POOR-represented (MITOTIC SPINDLE eff_n 3.4 with 5 survivals, INTERFERON ALPHA 5.9 with 4,
+>    APICAL JUNCTION / E2F / G2M / HEME 3 each). **No WELL or MODERATE set survives more than
+>    once**, and only 3 of ~850 group x set combinations pass both this test and the representation
+>    filter. A test that anti-correlates with the property we actually care about is not a quality
+>    filter. (Mechanism unverified; concentration does not simply inflate effect size, eff_n vs
+>    max |d| rho = -0.09, p = 0.53.)
+>
+> **What is lost by excluding it:** no guard remains against the size dependence that motivated it
+> (signed d vs set size, rho = 0.325). Test 3/3b's representation filter partly covers this — it
+> directly measures whether a set's signal is carried by few genes — but it does not ask whether an
+> equally-sized arbitrary set would do as well.
+>
+> **The replacement that does answer the Results question is a label-permutation null**: hold the
+> gene set fixed (removing size and concentration confounds entirely) and permute group labels,
+> testing whether the set separates *these groups* more than chance. It requires no choice of
+> background gene pool. **Proposed, not yet run — this is the top outstanding methodological item.**
+>
+> **Knock-on effect on conclusions:** the retraction of the "universal / shared core" framing
+> originally rested on this null. That retraction still stands, but now on representation grounds
+> instead — of the seven sets in that framing, only P53 PATHWAY (eff_n 15.0) and COMPLEMENT (9.9)
+> clear the representation filter; E2F TARGETS (3.9), PI3K AKT MTOR SIGNALING (1.8), SPERMATOGENESIS
+> (3.4), HEDGEHOG SIGNALING (2.9) and UV RESPONSE UP (5.0) do not.
+
+## Test 1 (excluded). Original text: size-matched null, 10% survive
 
 1,000 random equal-size draws from the clock's own 10,487 features, per set per group per model.
 **Coverage completed 2026-08-17** — the first run covered the meta-analysis and pooled temporal

@@ -100,6 +100,14 @@ span only 12% of the clock's features, so model-specific coefficient differences
 down far less than in the broader Hallmark sets.
 
 ### 5.3 They do not beat a size-matched null any better than Hallmark
+> **NULL TEST EXCLUDED (2026-08-17).** Statements below that rest on the size-matched null are
+> superseded: the null draws from the clock's own age-selected features, so it is not a neutral
+> background, its distribution is not centred on no effect, and it empirically selects
+> gene-concentrated sets over well-represented ones. See `PARTIAL_TAGE_VALIDITY.md` Test 1 for the
+> full reasoning and for what replaces it. The *relative* module-vs-Hallmark comparison below is
+> less affected than absolute pass rates, since both arms were scored against the same null, but it
+> should not be the load-bearing argument.
+
 1,000 equal-size draws from the clock's own 10,487 features, per set per group per model:
 
 | | p_emp < 0.05 | survivors on BOTH models | median \|d\| | median \|d\| / null q95 |

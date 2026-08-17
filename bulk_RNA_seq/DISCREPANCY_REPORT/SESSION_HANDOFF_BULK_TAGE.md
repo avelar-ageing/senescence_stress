@@ -87,7 +87,23 @@ construction. Effect size is the only thing carrying resolution at that level, a
 in that figure are **not** comparable to the pooled figures where n is doubled. Documented
 in the script header.
 
-## 5. The size-matched null, and what it broke (`8e2376d`)
+## 5. The size-matched null — SUBSEQUENTLY EXCLUDED (`8e2376d`, reversed 2026-08-17)
+
+> **Excluded.** The null draws from the clock's own age-selected feature pool, so it is not a
+> neutral background and its distribution is not centred on no effect (median null mean |d|
+> 0.55-2.1). It also selects for gene concentration rather than against it: every set surviving in
+> >=2 comparisons is POOR-represented and no well-represented set survives more than once. Kept for
+> provenance; not to be cited. Full reasoning in `PARTIAL_TAGE_VALIDITY.md` Test 1.
+>
+> **The "universal core" retraction below still stands, but on different grounds** — the
+> representation filter, not the null. Of the seven sets in that framing only P53 PATHWAY (eff_n
+> 15.0) and COMPLEMENT (9.9) are adequately represented; E2F TARGETS, PI3K AKT MTOR SIGNALING,
+> SPERMATOGENESIS, HEDGEHOG SIGNALING and UV RESPONSE UP are not.
+>
+> **Replacement still outstanding:** a label-permutation null, which holds the gene set fixed and
+> permutes group labels. This is the top open methodological item.
+
+## 5 (excluded). Original text: the size-matched null, and what it broke
 
 `PARTIAL_TAGE_VS_PAPER.md` §5 flagged that partial-tAge effect size partly tracks how many
 clock features a set contains (confirmed: Spearman rho = **0.325**). Implemented
