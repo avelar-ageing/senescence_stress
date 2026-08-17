@@ -15,6 +15,12 @@
 # dendrogram, pheatmap wasn't buying anything but its annotation strips,
 # which facet_wrap reproduces directly and more controllably.
 
+# EFFECT SIZE: fill is contrib_diff = mean(test) - mean(control) in
+# species-adjusted tAge units, NOT Cohen's d. d divides by the pooled
+# within-group SD, which makes the tight 6-sample temporal design produce
+# values ~10x the meta-analysis for near-identical real differences, and is
+# not comparable across analyses. See 05_consolidate_partial_scores.R header.
+
 source("R/config.R")
 suppressPackageStartupMessages({
   library(dplyr)
@@ -63,14 +69,14 @@ plot_df <- meta %>%
     stars = sig_symbol(p_adj)
   )
 
-cap <- min(6, ceiling(quantile(abs(plot_df$cohens_d), 0.97, na.rm = TRUE)))
+cap <- ceiling(quantile(abs(plot_df$contrib_diff), 0.97, na.rm = TRUE))
 
-p <- ggplot(plot_df, aes(x = model_label, y = pathway_short, fill = cohens_d)) +
+p <- ggplot(plot_df, aes(x = model_label, y = pathway_short, fill = contrib_diff)) +
   geom_tile(colour = "grey80") +
   geom_text(aes(label = stars), size = 4) +
   facet_grid(~label) +
   scale_fill_gradient2(low = "#2166AC", mid = "white", high = "#B2182B", midpoint = 0,
-                       limits = c(-cap, cap), oob = scales::squish, name = "Cohen's d") +
+                       limits = c(-cap, cap), oob = scales::squish, name = "tAge units") +
   theme_minimal(base_size = 16) +
   theme(
     axis.text.y = element_text(size = 11),

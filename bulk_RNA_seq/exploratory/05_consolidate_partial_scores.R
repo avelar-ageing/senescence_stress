@@ -8,11 +8,23 @@
 source("R/config.R")
 PT <- file.path(RERUN_DIR, "partial_tage")
 
-cohens_d <- function(x, y) {
+# EFFECT SIZE CONVENTION (revised 2026-08-17).
+# PRIMARY: contrib_diff = mean(test) - mean(control), in species-adjusted tAge
+# units -- the same units as the whole-transcriptome tAge values reported for
+# each condition. Directly interpretable and comparable across analyses.
+# SECONDARY: Cohen's d, retained for continuity but NOT comparable between the
+# meta-analysis and the time course. Because d divides by the pooled within-group
+# SD, the tight 6-sample single-study temporal design inflates it: COMPLEMENT in
+# Fibroblast at 20 days gives d = 18.3 against d = 1.6 in meta OIS, while the
+# actual contribution difference is +4.76 vs +3.78 -- a 1.26x difference reported
+# as 11x. d also rewards low variance over magnitude within an analysis
+# (|d| vs |contrib_diff| correlate only rho 0.81 in meta, 0.67 temporal).
+# Report contrib_diff; use d only within a single comparison.
+pooled_sd <- function(x, y) {
   nx <- length(x); ny <- length(y)
-  pooled_sd <- sqrt(((nx - 1) * var(x) + (ny - 1) * var(y)) / (nx + ny - 2))
-  (mean(x) - mean(y)) / pooled_sd
+  sqrt(((nx - 1) * var(x) + (ny - 1) * var(y)) / (nx + ny - 2))
 }
+cohens_d <- function(x, y) (mean(x) - mean(y)) / pooled_sd(x, y)
 
 score_pathways <- function(scores_csv, groups_df, test_label, control_label, label, analysis, cell_type = NA, timepoint = NA) {
   # check.names=FALSE: pathway names (e.g. "HALLMARK MYC TARGETS") are column
@@ -24,10 +36,14 @@ score_pathways <- function(scores_csv, groups_df, test_label, control_label, lab
   pathway_cols <- setdiff(colnames(scores), c("sample_id", "full_tAge_direct", "full_tAge_reconstructed"))
 
   do.call(rbind, lapply(pathway_cols, function(pw) {
-    d <- cohens_d(test_rows[[pw]], ctrl_rows[[pw]])
-    p <- tryCatch(wilcox.test(test_rows[[pw]], ctrl_rows[[pw]])$p.value, error = function(e) NA)
+    x <- test_rows[[pw]]; y <- ctrl_rows[[pw]]
+    p <- tryCatch(wilcox.test(x, y)$p.value, error = function(e) NA)
     data.frame(analysis = analysis, label = label, cell_type = cell_type, timepoint = timepoint,
-               pathway = pw, cohens_d = d, wilcox_p = p, n_test = nrow(test_rows), n_control = nrow(ctrl_rows))
+               pathway = pw,
+               contrib_diff = mean(x) - mean(y),      # PRIMARY, tAge units
+               cohens_d = cohens_d(x, y),             # secondary
+               pooled_sd = pooled_sd(x, y),
+               wilcox_p = p, n_test = length(x), n_control = length(y))
   }))
 }
 
