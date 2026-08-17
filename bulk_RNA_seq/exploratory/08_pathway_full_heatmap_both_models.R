@@ -25,11 +25,36 @@ suppressPackageStartupMessages({
 df <- read.csv(file.path(RERUN_DIR, "partial_tage_ALL.csv"), check.names = FALSE)
 meta <- df[df$analysis == "meta_analysis", ]
 meta$pathway_short <- gsub("^HALLMARK ", "", meta$pathway)
+# ---------------------------------------------------------------------------
+# REPRESENTATION FILTER (added 2026-08-17)
+# A gene set can only support a pathway-level claim if the clock's prediction
+# for it is spread across many genes rather than carried by one or two. Sets are
+# tiered by effective number of contributing genes (eff_n = 1/sum(share^2)) in
+# exploratory/14_pathway_representation.py; only WELL (eff_n>=14) and MODERATE
+# (>=9) sets are plotted. Row labels carry the evidence: clock genes in the set,
+# then the % with a non-zero coefficient under each model (scaled/yugene) --
+# genes with a zero coefficient contribute exactly nothing, ever.
+# ---------------------------------------------------------------------------
+rep_csv <- file.path(RERUN_DIR, "pathway_representation.csv")
+if (!file.exists(rep_csv)) {
+  stop("pathway_representation.csv not found -- run exploratory/14_pathway_representation.py first.")
+}
+rep <- read.csv(rep_csv, check.names = FALSE)
+rep <- rep[rep$tier %in% c("WELL", "MODERATE"), ]
+rep$label_full <- sprintf("%s  (%d; %.0f%%/%.0f%%)",
+                          gsub("^HALLMARK ", "", rep$pathway),
+                          rep$n_clock_scaled,
+                          100 * rep$n_nonzero_scaled / rep$n_clock_scaled,
+                          100 * rep$n_nonzero_yugene / rep$n_clock_yugene)
+cat(sprintf("Representation filter: keeping %d of 50 gene sets (WELL/MODERATE)\n", nrow(rep)))
+
 
 sig_symbol <- function(p) ifelse(p < 0.001, "***", ifelse(p < 0.01, "**", ifelse(p < 0.05, "*", "")))
 
 plot_df <- meta %>%
+  filter(pathway %in% rep$pathway) %>%
   mutate(
+    pathway_short = rep$label_full[match(pathway, rep$pathway)],
     pathway_short = factor(pathway_short, levels = sort(unique(pathway_short), decreasing = TRUE)),
     label = factor(label, levels = c("CICQ", "SSCQ", "RS", "SIPS", "OIS")),
     model_label = ifelse(model == "scaled", "Scaled", "YuGene"),
@@ -48,7 +73,7 @@ p <- ggplot(plot_df, aes(x = model_label, y = pathway_short, fill = cohens_d)) +
   theme_minimal(base_size = 16) +
   theme(
     axis.text.y = element_text(size = 11),
-    axis.text.x = element_text(size = 14),
+    axis.text.x = element_text(size = 12, angle = 45, hjust = 1),
     axis.ticks.y = element_line(colour = "grey40"),
     axis.title = element_blank(),
     strip.text = element_text(size = 16, face = "plain"),
@@ -58,7 +83,7 @@ p <- ggplot(plot_df, aes(x = model_label, y = pathway_short, fill = cohens_d)) +
     panel.spacing = unit(0.4, "lines")
   )
 
-ggsave(file.path(RERUN_DIR, "figure_pathway_heatmap_all_both_models.png"), p, width = 13, height = 16, dpi = 300)
+ggsave(file.path(RERUN_DIR, "figure_pathway_heatmap_all_both_models.png"), p, width = 12, height = 7.5, dpi = 300)
 cat(sprintf("Saved -> %s\n", file.path(RERUN_DIR, "figure_pathway_heatmap_all_both_models.png")))
 
 n_sig <- meta %>% group_by(pathway_short) %>% summarise(n_sig = sum(p_adj < 0.05))
