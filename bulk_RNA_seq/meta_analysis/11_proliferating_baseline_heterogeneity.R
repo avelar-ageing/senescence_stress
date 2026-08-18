@@ -35,6 +35,9 @@ suppressPackageStartupMessages(library(dplyr))
 d <- read.csv(file.path(RERUN_DIR, "tage_all_conditions.csv"))
 ann <- read.csv(file.path(RERUN_DIR, "immortalisation_annotation_corrected.csv"))
 d$immortalised <- ann$immortalised[match(d$external_id, ann$external_id)]
+# `cell_line` in the metadata lumps 8 strains under "Primary" and puts
+# IMR90-hTERT inside "IMR-90"; use the strain-level column from script 10.
+d$cell_line <- ann$cell_line_resolved[match(d$external_id, ann$external_id)]
 
 MODELS <- c(scaled_diff = "scaled_diff_EN_tAge", yugene_diff = "yugene_diff_EN_tAge")
 p <- d[d$condition == "Proliferating", ]

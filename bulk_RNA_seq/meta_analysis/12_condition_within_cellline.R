@@ -3,24 +3,33 @@
 # Do the condition effects survive when each condition is compared to
 # Proliferating controls OF THE SAME CELL LINE?
 #
+# SUPERSEDED FOR THE HEADLINE ESTIMATE - see 13_condition_within_study.R. Cell
+# line is the wrong stratum: a line is shared across studies (IMR90 appears in 15
+# of them) while batch, passage, protocol and library prep are study-specific, so
+# a within-line contrast can still be a cross-study contrast. Script 13 uses
+# study, which holds line AND batch constant. This script is retained because it
+# answers the narrower question of whether an effect reproduces on more than one
+# genetic background, which study-level stratification does not show directly.
+#
 # WHY. 11_proliferating_baseline_heterogeneity.R showed the untreated controls are
-# not exchangeable: among Proliferating samples alone, IMR-90 sits at -11.9 tAge
-# units and Primary dermal/foreskin fibroblasts at +45.0 on scaled_diff, a
-# 57-unit gap, and study medians span 87.8 units. Condition effects are 8-61
-# units, so the pooled comparison in 2.1.5.1 is only interpretable if condition
-# and cell line are not confounded. They are:
-#   CICQ  is 16/19 "Primary" (baseline +45.0) and contains NO IMR-90
-#   OIS   is 32/48 IMR-90    (baseline -11.9)
-#   while Proliferating is 44/91 IMR-90 and 21/91 Primary
-# So a naive CICQ-vs-Proliferating contrast compares a high-baseline line against
-# a control group dominated by a low-baseline line. This script removes that by
-# contrasting within cell line.
+# not exchangeable: among Proliferating samples alone, IMR90 sits at -15.3 tAge
+# units and HCA2/BJ primary fibroblasts at +45.4 on scaled_diff, a 61-unit gap,
+# study medians span 87.8 units, and cell-line medians span 70.7. Condition
+# effects are 8-61 units, so the pooled comparison in 2.1.5.1 is only
+# interpretable if condition and cell line are not confounded. They are: CICQ
+# contains no IMR90 at all, OIS is 28/48 IMR90-derived, while Proliferating is
+# 33/91 IMR90.
+#
+# CELL LINE HERE IS THE RESOLVED STRAIN, not the metadata's `cell_line`, which
+# lumps 8 unrelated strains under "Primary" and hides IMR90-hTERT inside
+# "IMR-90" (see script 10).
 #
 # LIMITS OF THIS TEST, stated up front. Stratifying costs power and not every
-# condition x line cell exists: there is no CICQ IMR-90 and no OIS Primary, so
+# condition x line cell exists: there is no CICQ IMR90 and no OIS HDF strain, so
 # those conditions can never be compared on the same line. Where a stratum has
-# n < 3 on either side it is skipped. A surviving effect in >= 2 lines is
-# evidence the effect is not a line artefact; a single-stratum effect is not.
+# n < 3 on either side it is skipped, which drops RS to a single line and drops
+# every 2-vs-2 CICQ study. A surviving effect in >= 2 lines is evidence the
+# effect is not a line artefact; a single-stratum effect is not.
 #
 # Output: rerun_outputs/condition_within_cellline.csv
 
@@ -29,6 +38,11 @@ suppressPackageStartupMessages(library(dplyr))
 
 d <- read.csv(file.path(RERUN_DIR, "tage_all_conditions.csv"))
 d$condition <- factor(d$condition, levels = c("Proliferating", "CICQ", "SSCQ", "RS", "SIPS", "OIS"))
+# Strain-level cell line from script 10. The metadata's own `cell_line` cannot be
+# used here: "Primary" lumps 8 unrelated strains from 8 studies and "IMR-90"
+# contains IMR90-hTERT, so stratifying on it does not hold cell line constant.
+ann <- read.csv(file.path(RERUN_DIR, "immortalisation_annotation_corrected.csv"))
+d$cell_line <- ann$cell_line_resolved[match(d$external_id, ann$external_id)]
 MODELS <- c(scaled_diff = "scaled_diff_EN_tAge", yugene_diff = "yugene_diff_EN_tAge")
 CONDS <- setdiff(levels(d$condition), "Proliferating")
 MIN_N <- 3
