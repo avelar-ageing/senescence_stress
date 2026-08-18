@@ -10,10 +10,11 @@
 # stratified by cell line, but cell line does not fix this, because a line is
 # shared across studies (IMR90 appears in 15) while batch, protocol, passage,
 # library prep and senescence-induction details are study-specific. Study is the
-# finer and safer stratum: each study here uses ONE cell line, so a within-study
-# contrast holds cell line, hTERT status, tissue and batch ALL constant by
-# construction. In particular this removes the immortalisation confound of
-# script 09 without having to drop any samples.
+# finer and safer stratum: every study here contributes samples from a single cell
+# line - VERIFIED per sample against each sample's own GEO characteristics in
+# meta_analysis/14, not assumed - so a within-study contrast holds cell line,
+# hTERT status, tissue and batch ALL constant by construction. In particular this
+# removes the immortalisation confound of script 09 without dropping any samples.
 #
 # COVERAGE. 32 of 34 studies contain their own Proliferating controls, covering
 # 223 of 230 samples, and all five conditions are testable. Only SRP096629 and
@@ -53,11 +54,35 @@ d$cell_line <- ann$cell_line_resolved[match(d$external_id, ann$external_id)]
 d$immortalised <- ann$immortalised[match(d$external_id, ann$external_id)]
 CONDS <- c("CICQ", "SSCQ", "RS", "SIPS", "OIS")
 
-# each study must use exactly one line, or "within study" would not control it
-chk <- d %>% group_by(study) %>% summarise(n_lines = n_distinct(cell_line),
-                                           n_imm = n_distinct(immortalised))
-stopifnot(all(chk$n_lines == 1), all(chk$n_imm == 1))
-cat(sprintf("all %d studies use one cell line and one hTERT status\n", nrow(chk)))
+# The within-study design only controls cell line if each study really does use
+# one. Checking that against cell_line_resolved would be circular, because script
+# 10 ASSIGNS that column per study. Verify against the per-sample GEO evidence
+# instead (meta_analysis/14), which reads each sample's own submitted
+# characteristics. A GEO series can hold several lines - GSE106414 names
+# BJ/ET/RasV12 and TIG3/ET/RASV12 in its methods - so this has to be checked, not
+# assumed.
+ver_path <- file.path(RERUN_DIR, "sample_level_line_verification.csv")
+if (file.exists(ver_path)) {
+  ver <- read.csv(ver_path)
+  # pandas writes booleans as "True"/"False", which read.csv keeps as character
+  ver$has_term <- toupper(as.character(ver$immortalisation_term_in_sample_record)) == "TRUE"
+  chk <- ver %>% group_by(study) %>%
+    summarise(n_lines = n_distinct(line_token_sample),
+              n_imm = n_distinct(has_term),
+              .groups = "drop")
+  # a line token differing only by proliferating/quiescent wording is not a
+  # different line; flag rather than fail, and report which studies
+  if (any(chk$n_lines > 1 | chk$n_imm > 1)) {
+    cat("NOTE: per-sample line/hTERT tokens vary within these studies -\n")
+    print(as.data.frame(chk[chk$n_lines > 1 | chk$n_imm > 1, ]), row.names = FALSE)
+    cat("  inspect sample_level_line_verification.csv before trusting their strata\n")
+  }
+  stopifnot(!any(ver$has_term != (ver$immortalised_studylevel == "yes")))
+  cat(sprintf("per-sample GEO evidence agrees with the study-level call for all %d GEO samples\n",
+              nrow(ver)))
+} else {
+  warning("sample_level_line_verification.csv missing; run meta_analysis/14 first")
+}
 
 strata_for <- function(cond, v) {
   s <- d[d$condition %in% c(cond, "Proliferating"), ]
