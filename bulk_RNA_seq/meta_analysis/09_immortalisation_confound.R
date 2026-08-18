@@ -3,20 +3,28 @@
 # Is the meta-analysis tAge result confounded by immortalisation status (and by
 # cell line)?
 #
-# WHY THIS MATTERS. 20 of the 230 samples are hTERT-immortalised. Within the
-# Proliferating control group alone, immortalised samples score far higher on the
-# scaled_diff model than primary ones, so any condition containing immortalised
-# samples may be inflated on that model.
+# ANNOTATION PROVENANCE. This script does NOT use the hand-curated
+# `immortalised` column in sample_metadata_RERUN.csv. That column was audited in
+# 10_immortalisation_annotation_audit.R and found to have 8 false negatives in 3
+# studies (SRP017378 n=5, whose line is literally named "BJ hTERT"; SRP123346
+# n=2, which was also internally inconsistent - 2 of its 3 samples flagged one
+# way and 1 the other; SRP136727 n=1). The corrected count is 28 immortalised
+# samples, not 20. The corrected annotation is read in below.
+#
+# WHY THIS MATTERS. Within the Proliferating control group alone, immortalised
+# samples score far higher on the scaled_diff model than primary ones, so any
+# condition containing immortalised samples may be inflated on that model.
 #
 # WHY IMMORTALISATION CANNOT BE A COVARIATE. It is partly confounded with
 # condition by biology rather than by chance:
-#   - Proliferating / CICQ / OIS CAN be immortalised. Quiescence is reversible
-#     arrest and OIS runs through RAS/BRAF, neither telomere-dependent.
+#   - Proliferating / CICQ / OIS / SSCQ CAN be immortalised. Quiescence is
+#     reversible arrest and OIS runs through RAS/BRAF, neither
+#     telomere-dependent.
 #   - RS CANNOT be immortalised, by definition: hTERT maintains telomeres, so
 #     there is no attrition and no route into replicative senescence. Its count
 #     is structurally zero, not a sampling accident.
-#   - SIPS and SSCQ could in principle be immortalised (irradiation and serum
-#     starvation are not telomere-dependent) but happen to have none here.
+#   - SIPS could in principle be immortalised (irradiation is not
+#     telomere-dependent) but happens to have none here.
 # Because immortalisation is perfectly separable for RS, it cannot be fitted as a
 # covariate across all conditions. The only clean option is to exclude
 # immortalised samples and compare primary cells like for like.
@@ -35,6 +43,13 @@ suppressPackageStartupMessages(library(dplyr))
 
 d <- read.csv(file.path(RERUN_DIR, "tage_all_conditions.csv"))
 d$condition <- factor(d$condition, levels = c("Proliferating", "CICQ", "SSCQ", "RS", "SIPS", "OIS"))
+
+# Replace the curated flag with the audited one (see header, and script 10).
+ann <- read.csv(file.path(RERUN_DIR, "immortalisation_annotation_corrected.csv"))
+stopifnot(setequal(d$external_id, ann$external_id))
+d$immortalised <- ann$immortalised[match(d$external_id, ann$external_id)]
+cat(sprintf("Using AUDITED annotation: %d immortalised (curated column said %d)\n",
+            sum(d$immortalised == "yes"), sum(ann$immortalised_curated == "yes")))
 MODELS <- c(scaled_diff = "scaled_diff_EN_tAge", yugene_diff = "yugene_diff_EN_tAge")
 
 cat("== composition ==\n")

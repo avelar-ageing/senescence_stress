@@ -1,0 +1,117 @@
+"model","n","median","IQR","SD","range","n_studies","study_median_range","study_median_IQR","cell_line_median_range","test","attribute","n_levels","statistic","p","p_adj","level","level_a","level_b","n_a","n_b","median_diff"
+"scaled_diff",91,2.60739854954245,45.4307929712869,27.3485607402736,103.95857551681,32,87.8077965710364,47.3589538620617,56.9441361826966,"control_spread",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"yugene_diff",91,0.960679264500986,18.7336928660605,15.7399663634025,79.9416524491418,32,71.9514457942901,15.9364795749781,24.851531832756,"control_spread",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"scaled_diff",91,NA,NA,NA,NA,NA,NA,NA,NA,"kruskal_within_proliferating","cell_line",7,64.3755564311465,5.78556824928408e-12,1.15711364985682e-11,NA,NA,NA,NA,NA,NA
+"yugene_diff",91,NA,NA,NA,NA,NA,NA,NA,NA,"kruskal_within_proliferating","cell_line",7,23.0862427427645,0.000768102200135823,0.00153620440027165,NA,NA,NA,NA,NA,NA
+"scaled_diff",91,NA,NA,NA,NA,NA,NA,NA,NA,"kruskal_within_proliferating","tissue",3,54.5615251462721,1.41943448571243e-12,5.67773794284973e-12,NA,NA,NA,NA,NA,NA
+"yugene_diff",91,NA,NA,NA,NA,NA,NA,NA,NA,"kruskal_within_proliferating","tissue",3,6.68636845691725,0.035324297814966,0.0368056205488233,NA,NA,NA,NA,NA,NA
+"scaled_diff",91,NA,NA,NA,NA,NA,NA,NA,NA,"kruskal_within_proliferating","immortalised",2,14.6224545954871,0.000131340246167293,0.000131340246167293,NA,NA,NA,NA,NA,NA
+"yugene_diff",91,NA,NA,NA,NA,NA,NA,NA,NA,"kruskal_within_proliferating","immortalised",2,4.35938359933959,0.0368056205488233,0.0368056205488233,NA,NA,NA,NA,NA,NA
+"scaled_diff",68,NA,NA,NA,NA,NA,NA,NA,NA,"kruskal_within_proliferating","study",17,61.7142654163115,2.68467297783153e-07,3.57956397044204e-07,NA,NA,NA,NA,NA,NA
+"yugene_diff",68,NA,NA,NA,NA,NA,NA,NA,NA,"kruskal_within_proliferating","study",17,60.4158851946576,4.45328328007045e-07,1.78131331202818e-06,NA,NA,NA,NA,NA,NA
+"scaled_diff",6,35.5053341179504,18.554297865843,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","cell_line",NA,NA,NA,NA,"BJ",NA,NA,NA,NA,NA
+"scaled_diff",3,44.208838986892,6.1741722748368,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","cell_line",NA,NA,NA,NA,"BJ hTERT",NA,NA,NA,NA,NA
+"scaled_diff",44,-11.9083204447506,12.0871480342557,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","cell_line",NA,NA,NA,NA,"IMR-90",NA,NA,NA,NA,NA
+"scaled_diff",3,-4.10327738461881,0.869357230934869,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","cell_line",NA,NA,NA,NA,"MRC-5",NA,NA,NA,NA,NA
+"scaled_diff",21,45.035815737946,17.0907973966754,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","cell_line",NA,NA,NA,NA,"Primary",NA,NA,NA,NA,NA
+"scaled_diff",9,19.2806351807508,9.0768527904613,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","cell_line",NA,NA,NA,NA,"TIG-3",NA,NA,NA,NA,NA
+"scaled_diff",5,3.1590858828731,4.21538800058698,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","cell_line",NA,NA,NA,NA,"WI-38",NA,NA,NA,NA,NA
+"yugene_diff",6,1.64696514713437,12.0834093274369,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","cell_line",NA,NA,NA,NA,"BJ",NA,NA,NA,NA,NA
+"yugene_diff",3,17.6338624178705,8.8654405071736,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","cell_line",NA,NA,NA,NA,"BJ hTERT",NA,NA,NA,NA,NA
+"yugene_diff",44,-3.91056173919532,17.5345821200775,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","cell_line",NA,NA,NA,NA,"IMR-90",NA,NA,NA,NA,NA
+"yugene_diff",3,9.15645927180725,0.70011848775205,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","cell_line",NA,NA,NA,NA,"MRC-5",NA,NA,NA,NA,NA
+"yugene_diff",21,8.01896920583103,14.5639907903258,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","cell_line",NA,NA,NA,NA,"Primary",NA,NA,NA,NA,NA
+"yugene_diff",9,3.1960593459149,13.6805694550595,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","cell_line",NA,NA,NA,NA,"TIG-3",NA,NA,NA,NA,NA
+"yugene_diff",5,20.9409700935607,8.7622126175478,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","cell_line",NA,NA,NA,NA,"WI-38",NA,NA,NA,NA,NA
+"scaled_diff",25,42.8330522036561,14.8840914914931,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","tissue",NA,NA,NA,NA,"Foreskin",NA,NA,NA,NA,NA
+"scaled_diff",61,-8.01231062739908,19.9488363950993,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","tissue",NA,NA,NA,NA,"Lung",NA,NA,NA,NA,NA
+"scaled_diff",5,50.3980994076584,4.6979787411701,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","tissue",NA,NA,NA,NA,"Skin",NA,NA,NA,NA,NA
+"yugene_diff",25,8.01896920583103,15.5226347935175,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","tissue",NA,NA,NA,NA,"Foreskin",NA,NA,NA,NA,NA
+"yugene_diff",61,-0.806575073655454,21.926902697464,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","tissue",NA,NA,NA,NA,"Lung",NA,NA,NA,NA,NA
+"yugene_diff",5,8.0602522054543,2.79028457719089,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","tissue",NA,NA,NA,NA,"Skin",NA,NA,NA,NA,NA
+"scaled_diff",79,-4.10327738461881,40.0185905159407,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","immortalised",NA,NA,NA,NA,"no",NA,NA,NA,NA,NA
+"scaled_diff",12,45.6763238724586,17.5537494848386,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","immortalised",NA,NA,NA,NA,"yes",NA,NA,NA,NA,NA
+"yugene_diff",79,0.740003519923138,20.7409447601479,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","immortalised",NA,NA,NA,NA,"no",NA,NA,NA,NA,NA
+"yugene_diff",12,10.5312589972433,12.1714418220298,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","immortalised",NA,NA,NA,NA,"yes",NA,NA,NA,NA,NA
+"scaled_diff",6,45.4430612751532,2.93280188818569,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"ERP021140",NA,NA,NA,NA,NA
+"scaled_diff",3,6.31544044706102,2.40875416917827,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP017142",NA,NA,NA,NA,NA
+"scaled_diff",3,44.208838986892,6.1741722748368,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP017378",NA,NA,NA,NA,NA
+"scaled_diff",3,-4.10327738461881,0.869357230934869,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP045867",NA,NA,NA,NA,NA
+"scaled_diff",3,-6.93870758903728,0.786320788534004,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP046254",NA,NA,NA,NA,NA
+"scaled_diff",3,-22.1009225790695,1.50026083512495,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP060598",NA,NA,NA,NA,NA
+"scaled_diff",8,-17.7264644255233,4.76750311588933,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP062872",NA,NA,NA,NA,NA
+"scaled_diff",6,-12.7452258549,11.0834211178209,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP065206",NA,NA,NA,NA,NA
+"scaled_diff",9,19.2806351807508,9.0768527904613,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP066947",NA,NA,NA,NA,NA
+"scaled_diff",3,50.3980994076584,2.34898937058504,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP089801",NA,NA,NA,NA,NA
+"scaled_diff",3,-20.4106514808643,4.77202842231355,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP098713",NA,NA,NA,NA,NA
+"scaled_diff",3,-11.4274869787872,3.53432993137148,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP113324",NA,NA,NA,NA,NA
+"scaled_diff",3,-13.3085279394756,1.46127979085505,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP113329",NA,NA,NA,NA,NA
+"scaled_diff",3,-2.94719940975062,37.8370816510524,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP117883",NA,NA,NA,NA,NA
+"scaled_diff",3,2.60739854954245,3.78377026058271,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP136071",NA,NA,NA,NA,NA
+"scaled_diff",3,33.307302010983,9.5189462297679,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP154382",NA,NA,NA,NA,NA
+"scaled_diff",3,30.7425858415932,4.77130957482155,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP154577",NA,NA,NA,NA,NA
+"yugene_diff",6,9.53769503973837,4.53964129922607,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"ERP021140",NA,NA,NA,NA,NA
+"yugene_diff",3,21.8110452368108,0.551600652977452,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP017142",NA,NA,NA,NA,NA
+"yugene_diff",3,17.6338624178705,8.8654405071736,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP017378",NA,NA,NA,NA,NA
+"yugene_diff",3,9.15645927180725,0.70011848775205,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP045867",NA,NA,NA,NA,NA
+"yugene_diff",3,20.3822072090989,0.854817351896699,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP046254",NA,NA,NA,NA,NA
+"yugene_diff",3,-39.3919268407255,6.0396762109353,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP060598",NA,NA,NA,NA,NA
+"yugene_diff",8,-15.8213424220882,2.570573080757,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP062872",NA,NA,NA,NA,NA
+"yugene_diff",6,-3.72648028113901,10.119009648335,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP065206",NA,NA,NA,NA,NA
+"yugene_diff",9,3.1960593459149,13.6805694550595,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP066947",NA,NA,NA,NA,NA
+"yugene_diff",3,9.83120387201622,2.09519741382253,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP089801",NA,NA,NA,NA,NA
+"yugene_diff",3,-24.6742437910644,2.46762464477585,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP098713",NA,NA,NA,NA,NA
+"yugene_diff",3,-4.35092476328557,2.93660577909609,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP113324",NA,NA,NA,NA,NA
+"yugene_diff",3,-2.38385134446098,0.693972157544115,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP113329",NA,NA,NA,NA,NA
+"yugene_diff",3,6.38180688652489,3.98671036516318,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP117883",NA,NA,NA,NA,NA
+"yugene_diff",3,19.3618031561123,6.15564992836783,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP136071",NA,NA,NA,NA,NA
+"yugene_diff",3,-18.5199278583877,6.353179810958,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP154382",NA,NA,NA,NA,NA
+"yugene_diff",3,-3.33267666785536,8.51018421437244,NA,NA,NA,NA,NA,NA,"level_median_within_proliferating","study",NA,NA,NA,NA,"SRP154577",NA,NA,NA,NA,NA
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.547619047619048,0.605263157894737,NA,"BJ","BJ hTERT",6,3,-8.7035048689416
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,5.53783030325914e-06,2.90736090921105e-05,NA,"BJ","IMR-90",6,44,47.4136545627009
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.0238095238095238,0.0416666666666667,NA,"BJ","MRC-5",6,3,39.6086115025692
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.798324380933077,0.805335968379447,NA,"BJ","Primary",6,21,-9.53048161999561
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.0003996003996004,0.0013986013986014,NA,"BJ","TIG-3",6,9,16.2246989371996
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.00432900432900433,0.0101010101010101,NA,"BJ","WI-38",6,5,32.3462482350773
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.000863398088189948,0.00259019426456984,NA,"BJ hTERT","IMR-90",3,44,56.1171594316425
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.1,0.123529411764706,NA,"BJ hTERT","MRC-5",3,3,48.3121163715108
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.805335968379447,0.805335968379447,NA,"BJ hTERT","Primary",3,21,-0.826976751054005
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.00909090909090909,0.0190909090909091,NA,"BJ hTERT","TIG-3",3,9,24.9282038061412
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.0357142857142857,0.0545454545454545,NA,"BJ hTERT","WI-38",3,5,41.0497531040189
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.0709219858156028,0.0930851063829787,NA,"IMR-90","MRC-5",44,3,-7.80504306013174
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,3.05692345878933e-13,6.41953926345759e-12,NA,"IMR-90","Primary",44,21,-56.9441361826966
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,2.52007533463743e-06,2.6460791013693e-05,NA,"IMR-90","TIG-3",44,9,-31.1889556255014
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.0395031894965819,0.0553044652952146,NA,"IMR-90","WI-38",44,5,-15.0674063276237
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.000988142292490119,0.00259387351778656,NA,"MRC-5","Primary",3,21,-49.1390931225648
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.0363636363636364,0.0545454545454545,NA,"MRC-5","TIG-3",3,9,-23.3839125653696
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.25,0.291666666666667,NA,"MRC-5","WI-38",3,5,-7.26236326749191
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,4.19370734213313e-06,2.90736090921105e-05,NA,"Primary","TIG-3",21,9,25.7551805571952
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,3.04043782304652e-05,0.000127698388567954,NA,"Primary","WI-38",21,5,41.8767298550729
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.011988011988012,0.0228862047043865,NA,"TIG-3","WI-38",9,5,16.1215492978777
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.0238095238095238,0.0714285714285714,NA,"BJ","BJ hTERT",6,3,-15.9868972707361
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.14251392323812,0.199519492533369,NA,"BJ","IMR-90",6,44,5.55752688632969
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.547619047619048,0.654808959156785,NA,"BJ","MRC-5",6,3,-7.50949412467288
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.711901624945103,0.786838638097219,NA,"BJ","Primary",6,21,-6.37200405869666
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.775624375624376,0.814405594405594,NA,"BJ","TIG-3",6,9,-1.54909419878053
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.051948051948052,0.109646480002211,NA,"BJ","WI-38",6,5,-19.2940049464263
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.0151711378353377,0.0530989824236818,NA,"BJ hTERT","IMR-90",3,44,21.5444241570658
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.1,0.161538461538462,NA,"BJ hTERT","MRC-5",3,3,8.47740314606325
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.0108695652173913,0.0456521739130435,NA,"BJ hTERT","Primary",3,21,9.61489321203947
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.00909090909090909,0.0456521739130435,NA,"BJ hTERT","TIG-3",3,9,14.4378030719556
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,1,1,NA,"BJ hTERT","WI-38",3,5,-3.3071076756902
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.056490903484428,0.109646480002211,NA,"IMR-90","MRC-5",44,3,-13.0670210110026
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.00596159448711996,0.0456521739130435,NA,"IMR-90","Primary",44,21,-11.9295309450264
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.140691016255242,0.199519492533369,NA,"IMR-90","TIG-3",44,9,-7.10662108511022
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.00424671873066217,0.0456521739130435,NA,"IMR-90","WI-38",44,5,-24.851531832756
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.561264822134387,0.654808959156785,NA,"MRC-5","Primary",3,21,1.13749006597622
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.00909090909090909,0.0456521739130435,NA,"MRC-5","TIG-3",3,9,5.96039992589235
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.25,0.328125,NA,"MRC-5","WI-38",3,5,-11.7845108217535
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.085569662721087,0.149746909761902,NA,"Primary","TIG-3",21,9,4.82290985991613
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.0574338704773487,0.109646480002211,NA,"Primary","WI-38",21,5,-12.9220008877297
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","cell_line",NA,NA,0.028971028971029,0.076048951048951,NA,"TIG-3","WI-38",9,5,-17.7449107476458
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","tissue",NA,NA,4.40536496171262e-12,1.32160948851379e-11,NA,"Foreskin","Lung",25,61,50.8453628310552
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","tissue",NA,NA,0.327158154744362,0.327158154744362,NA,"Foreskin","Skin",25,5,-7.5650472040023
+"scaled_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","tissue",NA,NA,0.000441822434238981,0.000662733651358472,NA,"Lung","Skin",61,5,-58.4104100350575
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","tissue",NA,NA,0.0203125952841463,0.0609377858524389,NA,"Foreskin","Lung",25,61,8.82554427948648
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","tissue",NA,NA,0.829298415505312,0.829298415505312,NA,"Foreskin","Skin",25,5,-0.0412829996232702
+"yugene_diff",NA,NA,NA,NA,NA,NA,NA,NA,NA,"pairwise_within_proliferating","tissue",NA,NA,0.139354309412952,0.209031464119429,NA,"Lung","Skin",61,5,-8.86682727910975
