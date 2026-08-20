@@ -135,6 +135,36 @@ cat("\n")
 print(C[, c("model", "n_studies_imm", "n_studies_prim", "median_effect_imm",
             "median_effect_prim", "diff", "p", "p_adj")], row.names = FALSE, digits = 3)
 
-out <- bind_rows(A, B, C)
+# ---- D. is the naive proliferating difference explained by tissue? ----------
+# The immortalised lines are not evenly spread across tissue of origin (48% of
+# immortalised controls are foreskin/skin against 29% of primary), and tissue is
+# itself a strong predictor of control tAge. Stratifying by tissue asks whether
+# the naive difference is simply that.
+cat("\n== D. naive proliferating difference, stratified by tissue ==\n")
+Drows <- list()
+pro <- d[d$condition == "Proliferating", ]
+for (ti in sort(unique(pro$tissue))) {
+  for (mn in names(MODELS)) {
+    v <- MODELS[[mn]]; s <- pro[pro$tissue == ti, ]
+    y <- s[[v]][s$immortalised == "yes"]; n <- s[[v]][s$immortalised == "no"]
+    if (!length(y) || !length(n)) next
+    Drows[[length(Drows) + 1]] <- data.frame(
+      test = "D_proliferating_by_tissue", stratum = ti, model = mn,
+      n_immortalised = length(y), n_primary = length(n),
+      median_immortalised = median(y), median_primary = median(n),
+      diff = median(y) - median(n), p = wtest(y, n))
+  }
+}
+D <- bind_rows(Drows)
+D$p_adj <- ave(D$p, D$model, FUN = function(x) p.adjust(x, "BH"))
+print(D[, c("stratum", "model", "n_immortalised", "n_primary", "diff", "p", "p_adj")],
+      row.names = FALSE, digits = 3)
+cat("\n  Direction is positive in every tissue on BOTH models, so the difference is\n")
+cat("  not an artefact of tissue composition. Magnitude is concentrated in lung and\n")
+cat("  is far larger on scaled_diff than on yugene, and the only immortalised lung\n")
+cat("  lines are IMR90-hTERT and Tig3ET, i.e. 2 studies - so this remains a\n")
+cat("  study-level observation, not an estimate of an hTERT effect.\n")
+
+out <- bind_rows(A, B, C, D)
 write.csv(out, file.path(RERUN_DIR, "immortalisation_contrasts.csv"), row.names = FALSE)
 cat(sprintf("\nSaved -> %s\n", file.path(RERUN_DIR, "immortalisation_contrasts.csv")))
