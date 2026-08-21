@@ -362,3 +362,77 @@ Delete the cross-arm comparability clause noted under 2.1.5.4.
    rather than a positive declaration of primary status.
 4. **Induction protocol still varies within condition across studies**; within-study
    estimation removes baseline confounding, not protocol heterogeneity.
+
+---
+
+## 2.1.5.2 SECOND REVISION: the yardstick result (2026-08-21)
+
+`exploratory/20_pathway_specificity_yardstick.py` supplies what the section was
+missing - a scale against which a set's contribution can be called large or small.
+The result substantially demotes the section, so it is recorded separately from the
+first revision above rather than folded into it.
+
+### The yardstick
+
+A set's contribution is a sum of coef_i x z_i, so what it should contribute if it
+were unremarkable is set by how much of the clock's coefficient weight it holds:
+
+    expected_s = (sum |coef| in set / sum |coef| overall) x whole-transcriptome shift
+
+Significance comes from random sets matched to the real set on gene count AND on
+the distribution of |coef| (stratified by coefficient decile, zero-coefficient
+genes forming their own stratum), drawn from the clock's own features, B = 20,000,
+all computed on the within-study contrasts. Validation: the per-gene decomposition
+sums exactly to the whole-transcriptome within-study effects of script 13
+(CICQ +5.88, SSCQ -3.43, RS +42.33, SIPS +23.29, OIS +33.30 on scaled_diff), and
+the matched null's mean tracks the weight-share expectation (r = 0.93).
+
+Why this null is legitimate where the earlier size-matched one was not: that null
+was asked "does this set have an effect", for which a pool of age-selected genes is
+unfair. This one is asked "does this set carry more of the shift than an arbitrary
+equally-weighted slice of the same clock". For a question about disproportion,
+other clock genes are the correct comparator, and no alternative exists - a
+non-clock gene has coefficient exactly 0 and cannot contribute.
+
+### The result: almost nothing is disproportionate
+
+Of 85 interpretable set x condition tests per model, **two** survive BH, both on
+the scaled-difference model and both the same set: KRAS SIGNALING UP in
+contact-inhibited quiescence (observed +7.17 against +0.14 expected, z = 4.24, FDR
+= 0.030) and in serum-starved quiescence (+5.06, z = 3.85, FDR = 0.045). **Nothing
+survives on both models.**
+
+Across all interpretable tests the median |z| is 0.22 (scaled) and 0.26 (yugene),
+and only 11% and 8% exceed |z| = 2 - close to what chance produces. The 17
+interpretable sets hold 40% of the clock's coefficient weight and carry between
+43% and 126% of each condition's shift.
+
+Strongest sub-threshold cases, for completeness: OIS XENOBIOTIC METABOLISM
+(yugene z = 3.97, FDR 0.127), OIS KRAS SIGNALING UP (scaled z = 3.12, FDR 0.095),
+OIS MYOGENESIS (scaled z = 3.03, FDR 0.095), SIPS P53 PATHWAY (yugene z = 3.09,
+FDR 0.293).
+
+### What this means for the text
+
+The contributions reported in the first revision are real - non-zero,
+direction-consistent across studies - but they are **proportional to each set's
+weight in the clock**. The pathway decomposition therefore describes how the
+prediction is COMPOSED; it does not identify programmes that are specifically
+implicated. Three consequences:
+
+1. Remove "the largest single effect" and any comparative ranking of sets. A set's
+   contribution being large is mostly a statement about its size and weight.
+2. KRAS SIGNALING UP is the one set that exceeds its share, and only on
+   scaled_diff - the model this work otherwise argues against. It should be
+   reported as the single exception with that caveat, not as a headline.
+3. The honest framing of the section is that arrest raises transcriptomic age
+   broadly across the clock rather than through identifiable programmes. That is a
+   result, and it is the opposite of what the original draft implied.
+
+### Reporting caveat
+
+observed/expected divides by (weight share x total shift), so where a condition's
+shift is near zero the ratio explodes and flips sign meaninglessly: CICQ on
+scaled_diff (+5.9 units) yields ratios up to 52 and SSCQ on scaled_diff (-3.4) down
+to -63. Report z, not ratio. The output carries a `ratio_reliable` flag
+(|total shift| >= 10 units), false for CICQ-scaled, SSCQ-scaled and SSCQ-yugene.
