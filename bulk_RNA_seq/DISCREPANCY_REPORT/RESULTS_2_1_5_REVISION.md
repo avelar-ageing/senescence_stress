@@ -142,7 +142,7 @@ Results, after the model-preference sentence in 2.1.5.1:
 > Immortalisation status was unevenly distributed across conditions: hTERT-
 > immortalised samples were present among proliferating controls (21 of 91), in both
 > quiescence conditions (3 of 19 and 5 of 22) and in oncogene-induced senescence (17
-> of 48), but absent from replicative and stress-induced senescence. On the
+> of 48), but absent from stress-induced senescence. On the
 > scaled-difference model immortalised samples scored higher than primary ones among
 > proliferating controls (+31.1 units, FDR = 6.5x10-4) and in oncogene-induced
 > senescence (+28.2, FDR = 0.029), though not in either quiescence condition (+16.3
