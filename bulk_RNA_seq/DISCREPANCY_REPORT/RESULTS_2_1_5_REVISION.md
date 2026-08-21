@@ -436,3 +436,70 @@ shift is near zero the ratio explodes and flips sign meaninglessly: CICQ on
 scaled_diff (+5.9 units) yields ratios up to 52 and SSCQ on scaled_diff (-3.4) down
 to -63. Report z, not ratio. The output carries a `ratio_reliable` flag
 (|total shift| >= 10 units), false for CICQ-scaled, SSCQ-scaled and SSCQ-yugene.
+
+---
+
+## Modularity: now scripted, and re-checked (2026-08-21)
+
+`exploratory/21_tage_modularity.R`. Previously computed ad hoc in conversation, so
+neither reproducible nor checkable. All statistics are rank-based, which is what
+makes them safe across preprocessing runs where magnitudes are not.
+
+| original claim | status | corrected value |
+|---|---|---|
+| within-cell-type profile similarity 0.62 vs between 0.12 | **holds, numbers wrong** | 0.840 vs 0.272 (scaled), 0.761 vs 0.253 (yugene) |
+| three PCA axes for 80% of variance | **partly** | 2 axes (scaled), 3 (yugene) |
+| COMPLEMENT the only set significant in all three cell types | **holds** | confirmed, under the interpretable + both-models rule |
+| groups with equal aggregate tAge have unrelated composition | **dropped** | cross-run comparison, not recoverable |
+
+### 1. Composition is cell-type specific
+
+Profiles of the same cell type at different timepoints correlate at rho = 0.840
+(scaled) and 0.761 (yugene); profiles from different cell types at 0.272 and 0.253.
+The gap (0.568, 0.508) is significant against a null that shuffles which cell type
+each group belongs to (10,000 permutations, p = 0.0037 and 0.0030). This is the
+central modularity result and it now has a test, which the ad hoc version did not.
+Per cell type: fibroblast 0.928/0.857, melanocyte 0.867/0.791, keratinocyte
+0.724/0.636 - keratinocytes are the least internally consistent over time.
+
+### 2. The dominant axes ARE cell type
+
+More informative than the variance-explained count: of the spread on PC1, 96.6%
+(scaled) and 97.8% (yugene) lies between cell types rather than within them, and on
+PC2 87.8% and 69.1%. Melanocytes sit apart on PC1 (mean score +5.6 against
+keratinocyte -3.8 and fibroblast -1.8), which is the same divergence 2.1.5.4
+describes set by set. PC3 is not cell-type organised (12.7%, 29.7%).
+
+Note the PCA is run on per-group standardised profiles, so the shared magnitude of
+the tAge shift is removed before decomposition; PC1 is therefore compositional, not
+the global shift.
+
+### 3. Breadth
+
+Under the rule the text uses - interpretable sets, significant on both models -
+COMPLEMENT is the only set reaching significance in all three cell types, as
+claimed. Eight sets qualify before the interpretability gate (ADIPOGENESIS, APICAL
+JUNCTION, APICAL SURFACE, COMPLEMENT, E2F TARGETS, HEDGEHOG SIGNALING, PI3K AKT
+MTOR SIGNALING, UV RESPONSE UP) and only COMPLEMENT survives it. Counting loosely -
+all 50 sets, either model - gives 14 and 11, so the claim must always be stated
+with its qualifiers or it looks wrong.
+
+### 4. New: the meta-analysis conditions are modular too
+
+Condition profiles form two blocks. The quiescence conditions correlate with each
+other (CICQ-SSCQ rho = 0.84 scaled, 0.73 yugene) and the senescence subtypes with
+each other (RS-SIPS-OIS 0.65-0.85), while across the blocks correlation is low
+(CICQ-RS 0.26, SSCQ-RS 0.22-0.34). So composition separates quiescence from
+senescence even where aggregate tAge does not - CICQ's aggregate elevation is
+comparable to the senescence subtypes on yugene, but what carries it is not.
+
+### Reconciling this with the yardstick result
+
+These look contradictory and are not. The yardstick asks whether an individual set
+carries more than a weight-matched slice of the clock WITHIN one comparison, and
+almost none does. Modularity asks whether the pattern across sets is the same in
+different cell types, and it is not. Were contributions purely proportional to
+weight share, every group's profile would be identical and between-cell-type
+correlation would approach 1; it is 0.25. So no single set stands out, yet the
+ensemble differs by cell type. Both statements should appear together, because
+either alone is misleading.
