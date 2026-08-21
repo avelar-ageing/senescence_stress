@@ -123,22 +123,33 @@ induction agent (BRAFV600E rather than HRASG12V in the largest) and exposure
 duration (10-28 days versus 6). Scripts 09, 12 and 16 are retained as provenance.
 It gets one sentence in each of Results and Discussion, no table and no figure.
 
-NOTE ON WORDING: this concerns OIS, not senescence generally. RS and SIPS contain
-NO immortalised samples, so "immortalised senescent cells" would be wrong; OIS is
-the only arrest condition with both. On YuGene the OIS difference is also
-NEGATIVE, so "older" is specific to the scaled-difference model and must not be
-stated as a general direction.
+NOTE ON WORDING (corrected 2026-08-21): an earlier draft of this sentence said OIS
+was "the only arrest condition containing both". That is WRONG. Immortalised
+samples occur in four conditions - Proliferating 21/91, CICQ 3/19, SSCQ 5/22 and
+OIS 17/48 - and are absent only from RS (0/11) and SIPS (0/39). OIS is the only
+SENESCENCE SUBTYPE with both, which is the defensible version of the claim.
+
+Two further constraints:
+  - "Older" is specific to the scaled-difference model. On YuGene nothing is
+    significant and the OIS difference is NEGATIVE (-4.5).
+  - Even on scaled_diff the direction is inconsistent across conditions:
+    Proliferating +31.1 (FDR 6.5e-4) and OIS +28.2 (FDR 0.029) are significant,
+    CICQ is +16.3 (p 0.36) and SSCQ is -13.8 (p 0.70). So the sentence must not
+    imply a uniform elevation.
 
 Results, after the model-preference sentence in 2.1.5.1:
 
-> hTERT-immortalised samples scored higher than primary ones on the
-> scaled-difference model, both among proliferating controls (+31.1 units, FDR =
-> 6.5x10-4) and within oncogene-induced senescence, the only arrest condition
-> containing both (+28.2 units, FDR = 0.029); neither difference was significant on
-> YuGene (+6.6, p = 0.14 and -4.5, p = 0.44). Because immortalisation status is
-> perfectly nested within study, this difference cannot be separated from the
-> laboratories and protocols that use immortalised lines, and we do not interpret it
-> as an effect of immortalisation.
+> Immortalisation status was unevenly distributed across conditions: hTERT-
+> immortalised samples were present among proliferating controls (21 of 91), in both
+> quiescence conditions (3 of 19 and 5 of 22) and in oncogene-induced senescence (17
+> of 48), but absent from replicative and stress-induced senescence. On the
+> scaled-difference model immortalised samples scored higher than primary ones among
+> proliferating controls (+31.1 units, FDR = 6.5x10-4) and in oncogene-induced
+> senescence (+28.2, FDR = 0.029), though not in either quiescence condition (+16.3
+> and -13.8, both n.s.), and no difference was significant on YuGene. Because
+> immortalisation status is perfectly nested within study, none of these differences
+> can be separated from the laboratories and protocols that use immortalised lines,
+> and we do not interpret them as effects of immortalisation.
 
 Discussion:
 
