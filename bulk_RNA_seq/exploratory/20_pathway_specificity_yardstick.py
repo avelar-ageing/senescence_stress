@@ -81,6 +81,12 @@ MODELS = {"scaled": ("EN_Chronoage_Multispecies_Multitissue_scaleddiff.pkl",
                      "meta_scaled_diff.csv"),
           "yugene": ("EN_Chronoage_Multispecies_Multitissue_yugenediff.pkl",
                      "meta_yugene_diff.csv")}
+# The mortality clock is a separate instrument, not a third normalisation: pure
+# ridge (l1_ratio 0) so all 10,487 features carry weight, against 1,839 for the
+# sparse chronological clock. Run with --mortality. No species adjustment is
+# applied to it (see meta_analysis/18_mortality_clock.py).
+MORTALITY = {"mortality": ("EN_Mortality_Multispecies_Multitissue_scaleddiff.pkl",
+                           "meta_scaled_diff.csv")}
 CONDS = {"Contact_inhibited CQ": "CICQ", "Serum_starved CQ": "SSCQ",
          "Replicative CS": "RS", "Stress-induced CS": "SIPS",
          "Oncogene-induced CS": "OIS"}
@@ -106,7 +112,10 @@ def per_gene_within_study(C, groups, cond):
     return acc / wsum
 
 
-def main(rerun_dir, model_dir, n_null=2000):
+def main(rerun_dir, model_dir, n_null=2000, which="chronoage"):
+    models = MORTALITY if which == "mortality" else MODELS
+    adj = 1.0 if which == "mortality" else ADJ
+    suffix = "_mortality" if which == "mortality" else ""
     PT = f"{rerun_dir}/partial_tage"
     rng = np.random.default_rng(SEED)
     pw = pd.read_csv(f"{PT}/hallmark_pathway_mouse_ids.csv")
@@ -114,7 +123,7 @@ def main(rerun_dir, model_dir, n_null=2000):
     study_of = dict(zip(meta.external_id, meta.study))
 
     rows = []
-    for mdl, (pkl, expr) in MODELS.items():
+    for mdl, (pkl, expr) in models.items():
         m = joblib.load(f"{model_dir}/{pkl}")
         _patch(m.named_steps["imputation"])
         feats = list(map(str, m.feature_names_in_))
@@ -131,7 +140,7 @@ def main(rerun_dir, model_dir, n_null=2000):
             e[g] = np.nan
         X = e.loc[:, feats]
         Z = m.named_steps["scaler"].transform(m.named_steps["imputation"].transform(X))
-        C = Z * coef[np.newaxis, :] * ADJ
+        C = Z * coef[np.newaxis, :] * adj
 
         groups = pd.read_csv(f"{PT}/meta_groups.csv")
         groups = groups.set_index(pd.Index(range(len(groups))))
@@ -197,8 +206,8 @@ def main(rerun_dir, model_dir, n_null=2000):
         out.loc[sel, "p_emp_adj"] = _bh(out.loc[sel, "p_emp"].values)
     print(f"\nBH family per model: {int(out[out.model == out.model.iloc[0]].interpretable.sum())} "
           f"interpretable tests; {int((~out.interpretable).sum() / 2)} sets reported unadjusted")
-    out.to_csv(f"{rerun_dir}/pathway_specificity_yardstick.csv", index=False)
-    print(f"\nSaved -> {rerun_dir}/pathway_specificity_yardstick.csv")
+    out.to_csv(f"{rerun_dir}/pathway_specificity_yardstick{suffix}.csv", index=False)
+    print(f"\nSaved -> {rerun_dir}/pathway_specificity_yardstick{suffix}.csv")
 
 
 def _bh(p):
@@ -212,4 +221,5 @@ def _bh(p):
 
 if __name__ == "__main__":
     main(sys.argv[1], sys.argv[2],
-         int(sys.argv[3]) if len(sys.argv) > 3 else 2000)
+         int(sys.argv[3]) if len(sys.argv) > 3 else 2000,
+         "mortality" if "--mortality" in sys.argv else "chronoage")
