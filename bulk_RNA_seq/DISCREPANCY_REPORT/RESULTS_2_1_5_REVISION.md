@@ -114,6 +114,43 @@ Two specific claims do not survive:
   maintains telomeres and so structurally precludes replicative senescence. Keep
   this as a stated limitation, not a gap to be filled.
 
+### Immortalisation: one Results sentence, one Discussion sentence
+
+Decision (2026-08-21): the immortalisation work is NOT written up as a result. The
+effect is not estimable - hTERT status is perfectly nested within study (0 of 34
+studies contain both), and the immortalised OIS studies additionally differ in
+induction agent (BRAFV600E rather than HRASG12V in the largest) and exposure
+duration (10-28 days versus 6). Scripts 09, 12 and 16 are retained as provenance.
+It gets one sentence in each of Results and Discussion, no table and no figure.
+
+NOTE ON WORDING: this concerns OIS, not senescence generally. RS and SIPS contain
+NO immortalised samples, so "immortalised senescent cells" would be wrong; OIS is
+the only arrest condition with both. On YuGene the OIS difference is also
+NEGATIVE, so "older" is specific to the scaled-difference model and must not be
+stated as a general direction.
+
+Results, after the model-preference sentence in 2.1.5.1:
+
+> hTERT-immortalised samples scored higher than primary ones on the
+> scaled-difference model, both among proliferating controls (+31.1 units, FDR =
+> 6.5x10-4) and within oncogene-induced senescence, the only arrest condition
+> containing both (+28.2 units, FDR = 0.029); neither difference was significant on
+> YuGene (+6.6, p = 0.14 and -4.5, p = 0.44). Because immortalisation status is
+> perfectly nested within study, this difference cannot be separated from the
+> laboratories and protocols that use immortalised lines, and we do not interpret it
+> as an effect of immortalisation.
+
+Discussion:
+
+> The apparent elevation of transcriptomic age in hTERT-immortalised cells warrants
+> dedicated study. It cannot be resolved in a meta-analysis, because immortalisation
+> status is confounded with study; it requires parental and immortalised cells of the
+> same strain arrested and profiled together. Doing so would also establish whether
+> the transcriptomic age of senescent cells depends on immortalisation status, which
+> matters for interpretation well beyond this dataset, since immortalised fibroblasts
+> are widely used in oncogene-induced senescence work - 5 of the 15 such studies
+> analysed here - and replicative senescence cannot be modelled in them at all.
+
 ---
 
 ## 2.1.5.2 Pathway-level Transcriptomic Age Differences
