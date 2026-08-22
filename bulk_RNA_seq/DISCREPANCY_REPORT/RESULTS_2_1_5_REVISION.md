@@ -503,3 +503,70 @@ weight share, every group's profile would be identical and between-cell-type
 correlation would approach 1; it is 0.25. So no single set stands out, yet the
 ensemble differs by cell type. Both statements should appear together, because
 either alone is misleading.
+
+---
+
+## Mortality-only set-level sections: gate, exclusions, and the two tests (2026-08-22)
+
+Three decisions, recorded because each changes reported numbers.
+
+### 1. The interpretability gate is clock-specific
+
+The 65% top-5 gate was originally computed on the chronological clocks and wrongly
+applied to mortality-clock results. Gene domination is a property of the model's
+sparsity:
+
+| clock | non-zero genes per set | median top-5 share | sets passing |
+|---|---|---|---|
+| chronological scaled | 20 | 0.729 | 18/50 |
+| chronological YuGene | 22 | 0.644 | 26/50 |
+| mortality | 125 | 0.246 | 49/50 |
+
+Only HALLMARK PANCREAS BETA CELLS fails on the mortality clock. The old gate
+discarded 32 well-represented sets and set the BH family to 85 tests where it
+should have been 245 (meta) and 441 (temporal). `exploratory/14 --mortality` now
+emits `pathway_representation_mortality.csv`; scripts 20 and 22 read the gate
+matching their clock.
+
+### 2. Proliferation-associated sets are excluded
+
+E2F targets, MYC targets, G2M checkpoint and mitotic spindle are dropped from
+interpretation, leaving 45 sets. Every contrast in this work is arrested against
+dividing cells, so these sets must move by construction and their movement is
+confirmation that arrest occurred, not a finding. This removes E2F TARGETS in SIPS
+from the cross-sectional hits (3 -> 2) and E2F TARGETS in fibroblasts and
+keratinocytes plus MYC TARGETS in fibroblasts from the temporal hits (12 -> 9).
+
+### 3. Two different tests, and where they disagree
+
+The Wilcoxon asks whether a set's contribution differs from zero; the matched-null
+yardstick asks whether it exceeds what the set's weight in the clock predicts. The
+first is nearly always significant, because the whole transcriptome shifts. Only
+the second is evidence of specificity, and the two can disagree.
+
+HYPOXIA is the case that matters. It passes the Wilcoxon decisively in all three
+cell types (FDR 1e-4 to 1e-3) AND runs about elevenfold above its expected share
+in all nine cell type x timepoint tests, reaching nominal significance in seven,
+but no single test survives BH over 441. P53 PATHWAY is roughly twice as large per
+test (median obs/exp 19 versus 11, median z 3.4 versus 2.1) and does survive. So
+the difference is multiplicity, not effect size, and hypoxia is reported as a
+consistent but sub-threshold excess following the same pattern as p53 rather than
+as an independent result. In the cross-sectional arm hypoxia is likewise the next
+strongest set in exactly the two conditions where p53 survives (RS z = 3.20,
+SIPS z = 2.86; nominal p = 0.003 and 0.006).
+
+An earlier note in this file described hypoxia as "consistently non-zero, not
+disproportionate". That was wrong: it is disproportionate, by about elevenfold,
+and fails only on correction.
+
+### Current hit lists
+
+Cross-sectional (245 tests, 45 sets x 5 conditions, cell-cycle sets excluded):
+P53 PATHWAY in SIPS (z 4.61, FDR 0.012) and RS (4.19, 0.018). Nothing else.
+
+Temporal (441 tests): P53 PATHWAY in melanocytes at 4, 10 and 20 days (4.01, 4.31,
+5.35) and fibroblasts at 4 days (4.03); ANGIOGENESIS in keratinocytes at 10 and 20
+days (4.11, 4.60); ADIPOGENESIS in keratinocytes at 10 days (3.45); and negative
+excesses in fibroblasts for IL6 JAK STAT3 SIGNALING (-3.93) and TNFA SIGNALING VIA
+NFKB (-3.31) at 20 days. Keratinocyte 4-day and fibroblast 10-day P53 fall just
+outside (both FDR 0.061).
