@@ -43,6 +43,18 @@ TOP5_CUT = 0.65   # five largest genes may carry at most this share, both models
 MODELS = {"scaled": "EN_Chronoage_Multispecies_Multitissue_scaleddiff.pkl",
           "yugene": "EN_Chronoage_Multispecies_Multitissue_yugenediff.pkl"}
 EXPR = {"scaled": "meta_scaled_diff.csv", "yugene": "meta_yugene_diff.csv"}
+# THE GATE IS CLOCK-SPECIFIC. Gene domination is a property of the model's
+# sparsity, so the gate has to be recomputed for whichever clock a section
+# reports. On the chronological clocks a typical set is carried by 20-22
+# non-zero genes and its five largest carry a median 65-73% of the
+# contribution, so the gate excludes most sets. The mortality clock is dense
+# ridge: a typical set is carried by 125 genes, median top-5 share is 25%, and
+# 49 of 50 sets pass - only HALLMARK PANCREAS BETA CELLS fails. Using the
+# chronological gate for mortality results would discard 32 sets that are well
+# represented in the model actually being used, and would also set the wrong
+# BH family. Run with --mortality for the mortality gate.
+MORTALITY_MODELS = {"mortality": "EN_Mortality_Multispecies_Multitissue_scaleddiff.pkl"}
+MORTALITY_EXPR = {"mortality": "meta_scaled_diff.csv"}
 
 
 def _patch(imp):
@@ -50,18 +62,21 @@ def _patch(imp):
         imp._fill_dtype = imp.statistics_.dtype if hasattr(imp, "statistics_") else np.float64
 
 
-def representation(rerun_dir, model_dir, mapping="hallmark_pathway_mouse_ids.csv"):
+def representation(rerun_dir, model_dir, mapping="hallmark_pathway_mouse_ids.csv",
+                   which="chronoage"):
     PT = f"{rerun_dir}/partial_tage"
     pw = pd.read_csv(f"{PT}/{mapping}")
+    models = MORTALITY_MODELS if which == "mortality" else MODELS
+    exprs = MORTALITY_EXPR if which == "mortality" else EXPR
     frames = {}
-    for mdl, mfile in MODELS.items():
+    for mdl, mfile in models.items():
         m = joblib.load(f"{model_dir}/{mfile}")
         _patch(m.named_steps["imputation"])
         feats = list(map(str, m.feature_names_in_))
         idx = {g: i for i, g in enumerate(feats)}
         coef = m.named_steps["estimator"].coef_
 
-        e = pd.read_csv(f"{PT}/{EXPR[mdl]}").drop(columns=["sample_id"])
+        e = pd.read_csv(f"{PT}/{exprs[mdl]}").drop(columns=["sample_id"])
         e.columns = e.columns.map(str)
         for g in [g for g in feats if g not in e.columns]:
             e[g] = np.nan
@@ -88,6 +103,14 @@ def representation(rerun_dir, model_dir, mapping="hallmark_pathway_mouse_ids.csv
             ))
         frames[mdl] = pd.DataFrame(rows).set_index("pathway")
 
+    if which == "mortality":
+        d = frames["mortality"].add_suffix("_mortality")
+        d["top5_max"] = d.top5_mortality
+        d["top1_max"] = d.top1_mortality
+        d["eff_n_min"] = d.eff_n_mortality
+        d["interpretable"] = d.top5_max <= TOP5_CUT
+        d["tier"] = np.where(d.interpretable, "INTERPRETABLE", "GENE-DOMINATED")
+        return d.sort_values("top5_max")
     d = frames["scaled"].join(frames["yugene"], lsuffix="_scaled", rsuffix="_yugene")
     d["eff_n_min"] = d[["eff_n_scaled", "eff_n_yugene"]].min(axis=1)
     # PRIMARY CRITERION (top5_max): worst-case share of the set's total contribution
@@ -106,12 +129,17 @@ def representation(rerun_dir, model_dir, mapping="hallmark_pathway_mouse_ids.csv
 
 if __name__ == "__main__":
     rerun_dir, model_dir = sys.argv[1], sys.argv[2]
-    mapping = sys.argv[3] if len(sys.argv) > 3 else "hallmark_pathway_mouse_ids.csv"
-    d = representation(rerun_dir, model_dir, mapping)
-    out = f"{rerun_dir}/pathway_representation.csv"
+    which = "mortality" if "--mortality" in sys.argv else "chronoage"
+    args = [a for a in sys.argv[3:] if not a.startswith("--")]
+    mapping = args[0] if args else "hallmark_pathway_mouse_ids.csv"
+    d = representation(rerun_dir, model_dir, mapping, which)
+    out = (f"{rerun_dir}/pathway_representation_mortality.csv" if which == "mortality"
+           else f"{rerun_dir}/pathway_representation.csv")
     d.to_csv(out)
-    print(d[["n_clock_scaled", "n_nonzero_scaled", "n_nonzero_yugene",
-             "top1_max", "top5_max", "eff_n_min", "tier"]].to_string(
-             float_format=lambda x: f"{x:7.2f}"))
+    cols = ([c for c in ["n_clock_mortality", "n_nonzero_mortality"] if c in d]
+            if which == "mortality"
+            else ["n_clock_scaled", "n_nonzero_scaled", "n_nonzero_yugene"])
+    print(d[cols + ["top1_max", "top5_max", "eff_n_min", "tier"]].to_string(
+          float_format=lambda x: f"{x:7.2f}"))
     print(f"\ntiers (top5 <= {TOP5_CUT:.0%}): {dict(d.tier.value_counts())}")
     print(f"Saved -> {out}")

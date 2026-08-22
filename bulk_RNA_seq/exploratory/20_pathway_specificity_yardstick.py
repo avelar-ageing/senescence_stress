@@ -197,7 +197,10 @@ def main(rerun_dir, model_dir, n_null=2000, which="chronoage"):
     # and should be used instead; ratio is flagged unreliable below 10 units.
     out["ratio_reliable"] = out.total_shift.abs() >= 10
     # BH within model, over the interpretable family only (see header)
-    rep = pd.read_csv(f"{rerun_dir}/pathway_representation.csv")
+    # the gate is clock-specific (see exploratory/14): use the mortality gate for
+    # the mortality clock, or the BH family is built on the wrong set list
+    rep = pd.read_csv(f"{rerun_dir}/pathway_representation"
+                      f"{'_mortality' if which == 'mortality' else ''}.csv")
     interp = set(rep.loc[rep.tier == "INTERPRETABLE", "pathway"])
     out["interpretable"] = out.pathway.isin(interp)
     out["p_emp_adj"] = np.nan

@@ -155,7 +155,7 @@ def main(rerun_dir, model_dir, n_null=20000):
     out.to_csv(f"{rerun_dir}/mortality_partial_tage_ALL.csv", index=False)
 
     y = pd.DataFrame(yrows)
-    rep = pd.read_csv(f"{rerun_dir}/pathway_representation.csv")
+    rep = pd.read_csv(f"{rerun_dir}/pathway_representation_mortality.csv")
     interp = set(rep.loc[rep.tier == "INTERPRETABLE", "pathway"])
     y["interpretable"] = y.pathway.isin(interp)
     y["p_emp_adj"] = np.nan
