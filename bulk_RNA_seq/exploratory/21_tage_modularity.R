@@ -174,14 +174,14 @@ interp <- rep$pathway[rep$tier == "INTERPRETABLE"]
 pooled_all <- df %>% filter(analysis == "temporal_pooled", p_adj < 0.05) %>%
   distinct(pathway, cell_type, model) %>%
   count(pathway, model) %>% filter(n == 3) %>%
-  count(pathway) %>% filter(n == 2)          # all 3 cell types, on both models
+  count(pathway) %>% filter(n == length(MODELS_USED))   # all 3 cell types, every model
 both3 <- sort(pooled_all$pathway)
 res[["breadth_rule"]] <- data.frame(
   test = "breadth_reporting_rule", model = "both",
   n_all_sets = length(both3),
   n_interpretable = sum(both3 %in% interp),
   sets_in_3 = paste(intersect(both3, interp), collapse = "; "))
-cat("\n=== 3b. all 3 cell types, BOTH models ===\n")
+cat(sprintf("\n=== 3b. all 3 cell types, on all %d model(s) ===\n", length(MODELS_USED)))
 cat(sprintf("  any set: %d  -> %s\n", length(both3), paste(both3, collapse = "; ")))
 cat(sprintf("  of these, INTERPRETABLE: %d -> %s\n", sum(both3 %in% interp),
             paste(intersect(both3, interp), collapse = "; ")))
