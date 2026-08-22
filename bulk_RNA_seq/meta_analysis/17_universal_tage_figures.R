@@ -35,23 +35,59 @@ suppressPackageStartupMessages({
 })
 
 COND <- c("CICQ", "SSCQ", "RS", "SIPS", "OIS")
-MODEL_LAB <- c(scaled_diff = "Scaled Difference", yugene_diff = "YuGene")
+MODEL_LAB <- c(scaled_diff = "Chronological, Scaled Difference",
+               yugene_diff = "Chronological, YuGene",
+               mortality   = "Mortality")
 sig_symbol <- function(p) ifelse(p < 0.001, "***",
                           ifelse(p < 0.01, "**", ifelse(p < 0.05, "*", "ns")))
 
 cw <- read.csv(file.path(RERUN_DIR, "condition_within_study.csv"))
+
+# The mortality clock has no per-study rows saved, so derive them here from the
+# per-sample values, using the same per-study difference of means and the same
+# precision weight as the chronological arm.
+mt <- read.csv(file.path(RERUN_DIR, "mortality_tage.csv"))
+mort_per <- do.call(rbind, lapply(COND, function(cond) {
+  s <- mt[mt$condition %in% c(cond, "Proliferating"), ]
+  do.call(rbind, lapply(split(s, s$study), function(g) {
+    x <- g$mortality_tAge[g$condition == cond]
+    y <- g$mortality_tAge[g$condition == "Proliferating"]
+    if (!length(x) || !length(y)) return(NULL)
+    data.frame(test = "per_study_contrast", condition = cond, model = "mortality",
+               study = g$study[1], n_test = length(x), n_control = length(y),
+               diff = mean(x) - mean(y))
+  }))
+}))
+mort_comb <- do.call(rbind, lapply(COND, function(cond) {
+  d <- mort_per[mort_per$condition == cond, ]
+  w <- d$n_test * d$n_control / (d$n_test + d$n_control)
+  m <- read.csv(file.path(RERUN_DIR, "mortality_within_study.csv"))
+  m <- m[m$test == "condition_within_study" & m$condition == cond, ]
+  data.frame(test = "condition_within_study_stratified", condition = cond,
+             model = "mortality", diff_within_study = sum(w * d$diff) / sum(w),
+             p_perm_adj = m$p_perm_adj[1])
+}))
+cw <- dplyr::bind_rows(cw, mort_per, mort_comb)
+
 per <- cw %>% filter(test == "per_study_contrast") %>%
   mutate(condition = factor(condition, levels = rev(COND)),
-         model_label = MODEL_LAB[model],
+         model_label = factor(MODEL_LAB[model], levels = unname(MODEL_LAB)),
          weight = n_test * n_control / (n_test + n_control))
 comb <- cw %>% filter(test == "condition_within_study_stratified") %>%
   mutate(condition = factor(condition, levels = rev(COND)),
-         model_label = MODEL_LAB[model],
-         lab = sprintf("%+.1f %s", diff_within_study, sig_symbol(p_perm_adj)))
+         model_label = factor(MODEL_LAB[model], levels = unname(MODEL_LAB)),
+         # 2 decimals where the clock's units are small (mortality), 1 where they are large
+         lab = ifelse(abs(diff_within_study) < 5,
+                      sprintf("%+.2f %s", diff_within_study, sig_symbol(p_perm_adj)),
+                      sprintf("%+.1f %s", diff_within_study, sig_symbol(p_perm_adj))))
 
 # ---- Figure A -------------------------------------------------------------
-xr <- range(per$diff, na.rm = TRUE)
-pad <- diff(xr) * 0.20
+# labels placed per facet, because the mortality clock's units are ~40x smaller
+lab_pos <- per %>% group_by(model_label) %>%
+  summarise(xmax = max(diff, na.rm = TRUE), xmin = min(diff, na.rm = TRUE),
+            .groups = "drop") %>%
+  mutate(span = xmax - xmin, xlab = xmax + span * 0.14, xhi = xmax + span * 0.40)
+comb <- dplyr::left_join(comb, lab_pos, by = "model_label")
 A <- ggplot(per, aes(x = diff, y = condition)) +
   geom_vline(xintercept = 0, linetype = "dashed", colour = "grey55") +
   geom_point(aes(size = weight), colour = "grey30", alpha = 0.55) +
@@ -60,11 +96,11 @@ A <- ggplot(per, aes(x = diff, y = condition)) +
                    y = as.numeric(condition) - 0.30,
                    yend = as.numeric(condition) + 0.30),
                linewidth = 1.1, colour = "black", inherit.aes = FALSE) +
-  geom_text(data = comb, aes(x = xr[2] + pad * 0.62, y = condition, label = lab),
-            size = 5.6, hjust = 0) +
-  facet_wrap(~model_label, ncol = 1) +
+  geom_text(data = comb, aes(x = xlab, y = condition, label = lab),
+            size = 5.2, hjust = 0) +
+  geom_blank(data = comb, aes(x = xhi, y = condition)) +
+  facet_wrap(~model_label, ncol = 1, scales = "free_x") +
   scale_size_continuous(range = c(1.6, 7), guide = "none") +
-  scale_x_continuous(limits = c(xr[1] - pad * 0.15, xr[2] + pad * 1.9)) +
   theme_bw(base_size = 20) +
   theme(strip.text = element_text(face = "plain", size = 20),
         strip.background = element_blank(),
@@ -72,9 +108,10 @@ A <- ggplot(per, aes(x = diff, y = condition)) +
         panel.grid.major.y = element_blank(),
         axis.text = element_text(size = 18),
         axis.title = element_text(size = 20)) +
-  labs(x = "tAge difference from same-study proliferating controls", y = NULL)
+  labs(x = "Difference from same-study proliferating controls (each clock's own units)",
+       y = NULL)
 ggsave(file.path(RERUN_DIR, "figure_universal_tage_within_study.png"), A,
-       width = 11, height = 10, dpi = 300)
+       width = 11, height = 13, dpi = 300)
 
 # ---- Figure B -------------------------------------------------------------
 d <- read.csv(file.path(RERUN_DIR, "tage_all_conditions.csv"))
