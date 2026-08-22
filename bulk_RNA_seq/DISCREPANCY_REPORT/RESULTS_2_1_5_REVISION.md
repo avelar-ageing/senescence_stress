@@ -570,3 +570,32 @@ days (4.11, 4.60); ADIPOGENESIS in keratinocytes at 10 days (3.45); and negative
 excesses in fibroblasts for IL6 JAK STAT3 SIGNALING (-3.93) and TNFA SIGNALING VIA
 NFKB (-3.31) at 20 days. Keratinocyte 4-day and fibroblast 10-day P53 fall just
 outside (both FDR 0.061).
+
+### REVERSED same day: proliferation sets are NOT excluded
+
+The exclusion recorded immediately above was a misreading of an instruction to
+remove chronological-clock material; it was not an instruction to drop cell-cycle
+sets. They are restored. The reasoning for keeping them is sound on the clock being
+used: E2F targets, MYC targets, G2M checkpoint and mitotic spindle are well
+represented in the dense mortality clock (all four inside the gate), and the
+yardstick asks whether a set carries MORE than its weight share, which arrest alone
+does not guarantee. A set moving because the cells stopped dividing would move by
+about its weight share and fail the test; exceeding it is a real observation.
+
+Restored hits, and the gate stays at 49 sets, so no BH value changes - the earlier
+removal was a reporting filter applied after the fact, not a re-run:
+
+  cross-sectional, 3 of 245: P53 PATHWAY in SIPS (z 4.61) and RS (4.19), and
+  E2F TARGETS in SIPS (4.12).
+
+  temporal, 12 of 441: adds E2F TARGETS in fibroblasts (4.10) and keratinocytes
+  (4.16) at 4 days, and MYC TARGETS contributing significantly LESS than its weight
+  predicts in fibroblasts at 4 days (-3.74).
+
+E2F TARGETS appearing in stress-induced senescence and in both fibroblasts and
+keratinocytes at 4 days is coherent with the p53 result, since the two are
+mechanistically linked through p21. Note the direction guard still applies: a
+positive contribution can arise from downregulated genes with negative
+coefficients, which is what cell-cycle genes do during arrest, so these remain
+statements about the contribution to the prediction rather than about pathway
+activity.
