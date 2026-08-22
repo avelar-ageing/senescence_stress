@@ -80,6 +80,15 @@ est <- bind_rows(cw, mw) %>%
 pos <- d %>% group_by(clock) %>%
   summarise(lo = min(dev), hi = max(dev), .groups = "drop") %>%
   mutate(span = hi - lo, xlab = hi + span * 0.06, xend = hi + span * 0.30)
+# The Proliferating row's estimate is EXACTLY zero by construction, since each
+# control is centred on the mean of its own study's controls (verified: mean
+# 3e-16). Drawing its bar at zero makes the reference explicit rather than leaving
+# the row conspicuously bar-less, and labels it as the reference instead of a
+# tested effect.
+ref_row <- data.frame(condition = factor("Proliferating", levels = rev(ROWS)),
+                      clock = factor(levels(d$clock), levels = levels(d$clock)),
+                      est = 0, p = NA_real_, lab = "reference")
+est <- bind_rows(est, ref_row)
 est <- left_join(est, pos, by = "clock")
 
 base <- function(colour_by) {
@@ -102,7 +111,9 @@ base <- function(colour_by) {
           panel.grid.major.y = element_blank(),
           axis.text = element_text(size = 16),
           axis.title = element_text(size = 17)) +
-    labs(x = "Difference from the mean of the same study's proliferating controls (each clock's own units)",
+    labs(x = paste("Difference from the mean of the same study's proliferating controls",
+                   "(each clock's own units)\nbar = precision-weighted mean of per-study",
+                   "differences, the quantity tested"),
          y = NULL)
 }
 
