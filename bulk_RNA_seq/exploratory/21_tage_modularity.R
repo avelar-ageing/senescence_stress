@@ -38,13 +38,28 @@ suppressPackageStartupMessages({ library(dplyr) })
 set.seed(1)
 NPERM <- 10000
 
-df <- read.csv(file.path(RERUN_DIR, "partial_tage_ALL.csv"), check.names = FALSE)
+# CLOCK. Set-level sections are reported on the mortality clock (see
+# exploratory/22 for why: it is dense ridge and therefore decomposable, where the
+# chronological clock is sparse). Modularity is computed on BOTH so the structural
+# claim can be shown not to depend on that choice. Pass "chronoage" as the first
+# argument to use the chronological contributions instead.
+CLOCK <- if (length(commandArgs(TRUE))) commandArgs(TRUE)[1] else "mortality"
+if (CLOCK == "mortality") {
+  df <- read.csv(file.path(RERUN_DIR, "mortality_partial_tage_ALL.csv"), check.names = FALSE)
+  df$contrib_diff <- df$contrib_diff_within_study
+  df$model <- "mortality"
+  MODELS_USED <- "mortality"
+} else {
+  df <- read.csv(file.path(RERUN_DIR, "partial_tage_ALL.csv"), check.names = FALSE)
+  MODELS_USED <- c("scaled", "yugene")
+}
+cat(sprintf("clock: %s\n", CLOCK))
 tp <- df %>% filter(analysis == "temporal_bytimepoint")
 res <- list()
 
 spear <- function(M) suppressWarnings(cor(M, method = "spearman", use = "pairwise.complete.obs"))
 
-for (mdl in c("scaled", "yugene")) {
+for (mdl in MODELS_USED) {
   s <- tp %>% filter(model == mdl) %>%
     mutate(group = paste(cell_type, timepoint, sep = "_"))
   M <- reshape(s[, c("pathway", "group", "contrib_diff")], idvar = "pathway",
@@ -126,8 +141,13 @@ for (mdl in c("scaled", "yugene")) {
 }
 
 # ---- meta-analysis conditions, within-study contributions -----------------
-w <- read.csv(file.path(RERUN_DIR, "partial_tage_within_study.csv"), check.names = FALSE)
-for (mdl in c("scaled", "yugene")) {
+w <- if (CLOCK == "mortality") {
+  x <- read.csv(file.path(RERUN_DIR, "mortality_partial_tage_ALL.csv"), check.names = FALSE)
+  x <- x[x$analysis == "meta_analysis", ]
+  x$model <- "mortality"
+  x
+} else read.csv(file.path(RERUN_DIR, "partial_tage_within_study.csv"), check.names = FALSE)
+for (mdl in MODELS_USED) {
   s <- w %>% filter(model == mdl)
   M <- reshape(s[, c("pathway", "label", "contrib_diff_within_study")],
                idvar = "pathway", timevar = "label", direction = "wide")
@@ -167,7 +187,7 @@ cat(sprintf("  of these, INTERPRETABLE: %d -> %s\n", sum(both3 %in% interp),
             paste(intersect(both3, interp), collapse = "; ")))
 
 out <- bind_rows(res)
-write.csv(out, file.path(RERUN_DIR, "tage_modularity.csv"), row.names = FALSE)
+write.csv(out, file.path(RERUN_DIR, sprintf("tage_modularity_%s.csv", CLOCK)), row.names = FALSE)
 cat("\n\n=== 1. profile similarity (temporal) ===\n")
 print(out %>% filter(test == "profile_similarity") %>%
         select(model, n_groups, within_celltype_rho, between_celltype_rho, gap, p_perm),
@@ -196,4 +216,4 @@ cat("\n=== meta-analysis conditions ===\n")
 print(out %>% filter(test == "meta_conditions") %>%
         select(model, n_groups, mean_rho_between_conditions, pc1, pc1_3, n_pc_for_80),
       row.names = FALSE, digits = 3)
-cat(sprintf("\nSaved -> %s\n", file.path(RERUN_DIR, "tage_modularity.csv")))
+cat(sprintf("\nSaved -> %s\n", file.path(RERUN_DIR, sprintf("tage_modularity_%s.csv", CLOCK))))

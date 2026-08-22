@@ -1,0 +1,15 @@
+"test","model","n_groups","within_celltype_rho","between_celltype_rho","gap","p_perm","cell_type","mean_rho","pc1","pc1_2","pc1_3","n_pc_for_80","PC1_mean","PC2_mean","PC3_mean","PC","between_ss_frac","n_sets_in_3_celltypes","n_sets_in_2","n_sets_in_1","sets_in_3","mean_rho_between_conditions","n_all_sets","n_interpretable"
+"profile_similarity","mortality",9,0.802416966786715,0.351363656573741,0.451053310212974,0.0036996300369963,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"within_one_celltype","mortality",NA,NA,NA,NA,NA,"Fibroblast",0.825850340136054,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"within_one_celltype","mortality",NA,NA,NA,NA,NA,"Keratinocyte",0.813717486994798,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"within_one_celltype","mortality",NA,NA,NA,NA,NA,"Melanocyte",0.767683073229292,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"pca_variance","mortality",NA,NA,NA,NA,NA,NA,NA,0.558665020899686,0.786813496188517,0.890224417791681,3,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"pc_scores_by_celltype","mortality",NA,NA,NA,NA,NA,"Fibroblast",NA,NA,NA,NA,NA,-1.2889197632024,2.96795881569957,-0.0453986080185205,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"pc_scores_by_celltype","mortality",NA,NA,NA,NA,NA,"Keratinocyte",NA,NA,NA,NA,NA,-3.30310569371149,-2.20058480754036,-0.25875216378842,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"pc_scores_by_celltype","mortality",NA,NA,NA,NA,NA,"Melanocyte",NA,NA,NA,NA,NA,4.59202545691389,-0.767374008159208,0.30415077180694,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"pc_celltype_separation","mortality",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,1,0.955144994394557,NA,NA,NA,NA,NA,NA,NA
+"pc_celltype_separation","mortality",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,2,0.989520468406721,NA,NA,NA,NA,NA,NA,NA
+"pc_celltype_separation","mortality",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,3,0.0247622133962873,NA,NA,NA,NA,NA,NA,NA
+"breadth_pooled","mortality",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,4,20,21,"HALLMARK E2F TARGETS; HALLMARK GLYCOLYSIS; HALLMARK HYPOXIA; HALLMARK XENOBIOTIC METABOLISM",NA,NA,NA
+"meta_conditions","mortality",5,NA,NA,NA,NA,NA,NA,0.672261850512943,NA,0.945519944911695,2,NA,NA,NA,NA,NA,NA,NA,NA,NA,0.520662665066026,NA,NA
+"breadth_reporting_rule","both",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"",NA,0,0
