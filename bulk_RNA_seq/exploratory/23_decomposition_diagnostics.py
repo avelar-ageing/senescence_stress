@@ -36,6 +36,19 @@ FOUR QUESTIONS, each previously asserted without evidence:
 All computation is on the MORTALITY clock, matching the set-level sections, and on
 the within-study contrasts for the meta-analysis.
 
+TWO BH FAMILIES, deliberately, and they must not be confused. The project convention
+elsewhere (exploratory/05, 18, 22) corrects WITHIN AN ANALYSIS - 250 tests for the
+five arrest conditions, 450 for the nine temporal groups - and that is the family the
+Results sections quote. The subsampling test here cannot use it, because under
+subsampling the other groups' p-values are not recomputed, so there is no
+analysis-wide family to correct within; it therefore corrects within each group over
+50 tests, applied identically to the full and subsampled data so the comparison is
+internally consistent. Both counts are written out: n_sig_sets_analysiswide is the
+figure to quote, n_sig_sets_pergroup the one the subsampling uses. They differ by at
+most 5 sets and give the same correlations (rho = 0.94 versus 0.92 against effect
+size in the temporal arm), so nothing rests on the choice, but the Results text must
+use one consistently.
+
 Output: rerun_outputs/decomposition_diagnostics.csv
         rerun_outputs/decomposition_subsampling.csv
 
@@ -191,7 +204,17 @@ def main(rerun_dir, model_dir, n_draws=10000):
                   f"   cancellation {r['cancellation_ratio']:>5.0f}x"
                   f"   net {r['net']:+.3f}")
 
-    out = pd.DataFrame(rows)
+    out = pd.DataFrame(rows).rename(columns={"n_sig_sets_full": "n_sig_sets_pergroup"})
+    # add the analysis-wide count, which is the project convention and the figure to quote
+    try:
+        allsets = pd.read_csv(f"{rerun_dir}/mortality_partial_tage_ALL.csv")
+        conv = {}
+        for a, gg in allsets.groupby("analysis"):
+            for lb, g2 in gg.groupby("label"):
+                conv[lb] = int((g2.p_adj < 0.05).sum())
+        out["n_sig_sets_analysiswide"] = out.group.map(conv)
+    except Exception as e:
+        print(f"analysis-wide counts not added: {e}")
     # B: differential expression, the claim that IS supported
     try:
         deg = pd.read_csv(f"{rerun_dir}/deg_count_RERUN.csv").groupby("group_1").n.sum()
@@ -209,12 +232,12 @@ def main(rerun_dir, model_dir, n_draws=10000):
     c = out[out.arm == "cross_sectional"]
     print("\n== what the counts track ==")
     print(f"  temporal (n constant at 6v6): count vs effect size rho = "
-          f"{spearmanr(t.n_sig_sets_full, t.median_abs_auc_dev).statistic:+.2f}, "
-          f"count vs net shift rho = {spearmanr(t.n_sig_sets_full, t.net).statistic:+.2f}")
+          f"{spearmanr(t.n_sig_sets_analysiswide, t.median_abs_auc_dev).statistic:+.2f}, "
+          f"count vs net shift rho = {spearmanr(t.n_sig_sets_analysiswide, t.net).statistic:+.2f}")
     print(f"  cross-sectional (n varies)  : count vs n rho = "
-          f"{spearmanr(c.n_sig_sets_full, c.n_test).statistic:+.2f}, "
+          f"{spearmanr(c.n_sig_sets_analysiswide, c.n_test).statistic:+.2f}, "
           f"count vs effect size rho = "
-          f"{spearmanr(c.n_sig_sets_full, c.median_abs_auc_dev).statistic:+.2f}"
+          f"{spearmanr(c.n_sig_sets_analysiswide, c.median_abs_auc_dev).statistic:+.2f}"
           f"  (n and effect size themselves correlate rho = "
           f"{spearmanr(c.n_test, c.median_abs_auc_dev).statistic:+.2f}, which is why"
           f" the subsampling above is needed)")

@@ -767,3 +767,33 @@ Differential expression, against 19,439 tested genes: CICQ 5,567 (28.6%), SSCQ 4
 (21.9%), OIS 4,185 (21.5%), RS 3,775 (19.4%), SIPS 2,667 (13.7%). So a
 transcriptome-wide change is real; what is not supported is that it is a coherent
 shift carrying every set with it.
+
+### BH family audit across all scripts (2026-08-24)
+
+Checked every p.adjust/BH call in the arm after noticing the two sections quoted
+counts from different families.
+
+CONVENTION, used consistently by exploratory/05, 18 and 22: correct WITHIN AN
+ANALYSIS. That gives 250 tests for the five arrest conditions (50 sets x 5), 450 for
+the nine temporal groups, 150 for the three pooled temporal comparisons. The
+whole-transcriptome scripts follow the analogous rule, correcting within model:
+meta_analysis/05 uses 10 tests vs-Proliferating and 30 for all pairs; 09, 11, 12, 13
+and 16 all correct within model; temporal_analysis/07 uses one 36-test family and 08
+one 18-test family.
+
+THE INCONSISTENCY. exploratory/23 corrected within each GROUP over 50 tests, and
+2.2.4 had been quoting its 12-42 range while 2.1.5.2 quoted 19-38 from the
+analysis-wide family. Same kind of statement, two different families.
+
+RESOLVED. Script 23 now writes both columns and its header explains why it needs
+both: the subsampling test cannot use the analysis-wide family, because under
+subsampling the other groups' p-values are not recomputed and so no such family
+exists; it therefore corrects within group, applied identically to full and
+subsampled data so the comparison stays internally consistent. The Results sections
+quote the analysis-wide figures throughout: 19 to 38 of 50 in the arrest conditions,
+17 to 41 across the temporal groups.
+
+Nothing rests on the choice - the two families differ by at most 5 sets and give
+rho = 0.94 versus 0.92 against effect size in the temporal arm - but the text now
+uses one consistently. 2.2.4 updated from 12-42 and rho 0.92/0.44 to 17-41 and rho
+0.94/0.49.
