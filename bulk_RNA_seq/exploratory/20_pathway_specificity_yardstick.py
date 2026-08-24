@@ -112,7 +112,7 @@ def per_gene_within_study(C, groups, cond):
     return acc / wsum
 
 
-def main(rerun_dir, model_dir, n_null=2000, which="chronoage"):
+def main(rerun_dir, model_dir, n_null=20000, which="chronoage"):
     models = MORTALITY if which == "mortality" else MODELS
     adj = 1.0 if which == "mortality" else ADJ
     suffix = "_mortality" if which == "mortality" else ""
@@ -224,5 +224,5 @@ def _bh(p):
 
 if __name__ == "__main__":
     main(sys.argv[1], sys.argv[2],
-         int(sys.argv[3]) if len(sys.argv) > 3 else 2000,
+         int(sys.argv[3]) if len(sys.argv) > 3 else 20000,
          "mortality" if "--mortality" in sys.argv else "chronoage")
