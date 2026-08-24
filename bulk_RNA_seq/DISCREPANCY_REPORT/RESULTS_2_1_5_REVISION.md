@@ -708,3 +708,62 @@ REORDERS the conditions: RS rises from last to mid-rank, so its apparently low c
 is indeed a power artefact and per sample it is among the strongest; SSCQ falls to
 last, consistent with its small shift. So both factors operate and neither alone
 explains the counts, which is what the text now says.
+
+---
+
+## Decomposition diagnostics, scripted and tested (2026-08-24)
+
+`exploratory/23_decomposition_diagnostics.py` and `24_figure_cancellation.R`. These
+replace ad hoc checks and two claims that had been asserted. B = 10,000 draws, chosen
+from the Monte Carlo error rather than by habit: MCSE of a median is 1.253 SD/sqrt(B),
+so about +-0.06 sets here against +-0.4 at the B = 200 an earlier version used. That
+200 had no statistical justification - the Mann-Whitney call simply had not been
+vectorised, and scipy computes all 50 sets in one call across an axis.
+
+### Cancellation: measured, and it applies to BOTH arms
+
+Summed positive and negative per-gene contributions against the net:
+
+  cross-sectional   CICQ 34x   SSCQ 71x   RS 12x   SIPS 12x   OIS 21x
+  temporal          17x to 87x across the nine cell type x timepoint groups
+
+In every one of the fourteen groups, contributions in either direction reach 4 to 9
+units while the net is 0.17 to 1.18, and the fraction of measured clock genes moving
+in the net direction is 49.8% to 51.0% - indistinguishable from chance. So the
+question "does the temporal arm behave the same way" is answered yes, and if anything
+more strongly: keratinocytes at 20 days show the largest cancellation of any group
+(87x on a net of +0.19).
+
+### A test I designed that could not work
+
+The temporal arm was initially subsampled to 3 v 3 to mirror the cross-sectional
+test. That is void: the smallest attainable two-sided Mann-Whitney p at 3 v 3 is
+2/C(6,3) = 0.100, so nothing can reach significance after correction whatever the
+data, and it returned nine zeros that were arithmetic rather than biology. The script
+now refuses to subsample where the floor exceeds 0.05 and says so. For reference the
+floor is 2.8e-6 at 11 v 11 (cross-sectional, usable) and 2.2e-3 at 6 v 6.
+
+### What the counts track, tested separately per arm
+
+  cross-sectional, n varies 11 to 48: count vs n rho = 0.80, count vs effect size
+  rho = 0.60 - but n and effect size themselves correlate at 0.60, so correlation
+  cannot separate them. Subsampling to 11 v 11 can, and does: counts fall from
+  24/20/17/40/36 to 6/2/11/15/16, compressing the spread from 23 to 14 and reordering
+  the conditions. Replicative senescence rises from last to mid-rank, so its low count
+  is a power artefact and per sample it is among the strongest; serum-starved
+  quiescence falls to last, consistent with its small shift.
+
+  temporal, n constant at 6 v 6: no power explanation is available by construction, so
+  the counts are compared against effect size directly. Count vs median separation
+  rho = 0.92; count vs net shift rho = 0.44. Range 12 to 42 of 50.
+
+Note the temporal counts here (12-42) use BH within each group over 50 tests, whereas
+the 17-41 quoted earlier used BH within the whole temporal analysis over 450. Quote
+the per-group figures, which are what script 23 reproduces.
+
+### The claim that IS supported
+
+Differential expression, against 19,439 tested genes: CICQ 5,567 (28.6%), SSCQ 4,263
+(21.9%), OIS 4,185 (21.5%), RS 3,775 (19.4%), SIPS 2,667 (13.7%). So a
+transcriptome-wide change is real; what is not supported is that it is a coherent
+shift carrying every set with it.
