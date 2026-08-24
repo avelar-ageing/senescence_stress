@@ -652,3 +652,20 @@ and the fewest significant sets, because it has the fewest samples. So the Wilco
 count measures power, not biology, which is a sharper reason to disregard it than
 "most sets are significant" ever was - and it is the direct motivation for the
 weight-matched yardstick.
+
+### The same caveat holds in the temporal arm, for a different reason
+
+Asked whether the power explanation carries over. It cannot: every temporal
+comparison is 6 versus 6, so n is constant. With n fixed the count instead tracks
+the whole-transcriptome shift, but only loosely (rho = 0.49 over the nine cell type
+x timepoint groups, against 0.80 for sample size in the cross-sectional arm):
+
+  Fibroblast    4d 28/50 (shift 0.481)   10d 30/50 (0.618)   20d 41/50 (0.710)
+  Keratinocyte  4d 17/50 (0.486)         10d 22/50 (0.326)   20d 20/50 (0.192)
+  Melanocyte    4d 28/50 (0.709)         10d 29/50 (0.256)   20d 21/50 (0.413)
+
+Fibroblasts at 20 days give 41 of 50 on a shift of 0.71 while keratinocytes at 4
+days give 17 on a comparable 0.49, so the relationship is weak. The conclusion is
+unchanged - the Wilcoxon count is not a readout of which sets matter - but 2.2.4
+now states its own reason rather than inheriting the cross-sectional one, which
+would be wrong there.
