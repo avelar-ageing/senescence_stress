@@ -43,7 +43,18 @@ exploratory/18: per gene, the precision-weighted mean of per-study
 per-gene vector, which makes the real sets, the matched random sets and the whole
 transcriptome all the same operation.
 
-PERMUTATION COUNT AND THE BH FAMILY. An empirical p cannot fall below
+PERMUTATION COUNT, AND WHY THESE P-VALUES ARE NOT BH-CORRECTED.
+
+HOUSE CONVENTION: Monte Carlo nulls are reported as raw empirical p, alongside the
+p-floor and an effect size, and are NOT put through BH. A simulation null is a
+statement about one set against its own matched background, not a draw from a
+discovery family, and adjusting it conflates the two. What replaces correction is
+(i) the excess over what chance produces at a given threshold, (ii) the effect size
+z, and (iii) recurrence of the same set across independent conditions or groups.
+Earlier versions of these scripts BH-adjusted p_emp; the column is retained for
+provenance but should not be used.
+
+ON THE PERMUTATION COUNT. An empirical p cannot fall below
 1/(B+1), so B must be large enough that BH can reach 0.05. The discovery family is
 the 17 INTERPRETABLE sets x 5 conditions = 85 tests per model - the sets whose
 contributions are interpreted at set level at all - so the smallest adjusted value
@@ -203,10 +214,19 @@ def main(rerun_dir, model_dir, n_null=20000, which="chronoage"):
                       f"{'_mortality' if which == 'mortality' else ''}.csv")
     interp = set(rep.loc[rep.tier == "INTERPRETABLE", "pathway"])
     out["interpretable"] = out.pathway.isin(interp)
-    out["p_emp_adj"] = np.nan
+    # NOT the reported statistic - see header. Kept for provenance only.
+    out["p_emp_adj_DEPRECATED"] = np.nan
     for mdl in out.model.unique():
         sel = (out.model == mdl) & out.interpretable
-        out.loc[sel, "p_emp_adj"] = _bh(out.loc[sel, "p_emp"].values)
+        out.loc[sel, "p_emp_adj_DEPRECATED"] = _bh(out.loc[sel, "p_emp"].values)
+    out["p_floor"] = 1.0 / (n_null + 1)
+    # what replaces correction: excess over chance at each threshold
+    for mdl in out.model.unique():
+        sub = out[out.model == mdl]
+        print(f"\n  {mdl}: {len(sub)} comparisons, floor {1/(n_null+1):.1e}")
+        for thr in (0.05, 0.01, 0.001):
+            print(f"    raw p < {thr:<6}: {(sub.p_emp < thr).sum():>3}"
+                  f"   expected by chance {len(sub)*thr:.0f}")
     print(f"\nBH family per model: {int(out[out.model == out.model.iloc[0]].interpretable.sum())} "
           f"interpretable tests; {int((~out.interpretable).sum() / 2)} sets reported unadjusted")
     out.to_csv(f"{rerun_dir}/pathway_specificity_yardstick{suffix}.csv", index=False)

@@ -818,3 +818,32 @@ ratio. A draft said "what is left is about six times smaller than either side" a
 "the two sides being twelve to eighty-seven times larger than the difference", both
 wrong by a factor of two for exactly this reason. The text now avoids the ratio
 altogether and gives a worked example instead: in CICQ, +7.3 up, -6.9 down, +0.4 net.
+
+### No BH on the simulation nulls (2026-08-24)
+
+House convention applied: Monte Carlo nulls are reported as raw empirical p with the
+p-floor and an effect size, not BH-adjusted. A simulation null asks whether one set
+beats its own matched background; it is not a draw from a discovery family, and
+adjusting it conflates the two. Scripts 20 and 22 now print the excess over chance
+instead, and their p_emp_adj column is renamed p_emp_adj_DEPRECATED and kept only for
+provenance.
+
+What replaces correction, in the text:
+
+  excess over chance   cross-sectional, of 250 comparisons: 40 at p<0.05 against 12
+                       expected, 17 at p<0.01 against 2, 3 at p<0.001 against none.
+                       Temporal, of 450: 74, 31 and 10 against 22, 4 and none.
+  effect size          z against the matched null, quoted with every result.
+  recurrence           in the temporal arm HYPOXIA exceeds expectation in 7 of the 9
+                       groups and P53 PATHWAY in 6, which is stronger evidence than
+                       any single comparison.
+
+The interpreted results are unchanged, because the three cross-sectional comparisons
+at p < 0.001 are exactly the three that had survived BH: SIPS P53 (z 4.61), RS P53
+(4.19), SIPS E2F (4.12). The framing changes from "three survive correction" to "the
+excess over chance is concentrated in three strong results", which is both more honest
+and more informative.
+
+NUMBER CORRECTED: a draft gave HYPOXIA as z = 3.20 and 3.12 in RS and SIPS. The SIPS
+value is 2.86; 3.12 is SIPS MYOGENESIS. Temporal maxima are HYPOXIA 2.58 and P53 5.35,
+quoted as 2.6 and 5.4.

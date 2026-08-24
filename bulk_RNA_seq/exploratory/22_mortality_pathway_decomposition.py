@@ -158,9 +158,18 @@ def main(rerun_dir, model_dir, n_null=20000):
     rep = pd.read_csv(f"{rerun_dir}/pathway_representation_mortality.csv")
     interp = set(rep.loc[rep.tier == "INTERPRETABLE", "pathway"])
     y["interpretable"] = y.pathway.isin(interp)
-    y["p_emp_adj"] = np.nan
+    # NOT the reported statistic - see header. Kept for provenance only.
+    y["p_emp_adj_DEPRECATED"] = np.nan
     sel = y.interpretable
-    y.loc[sel, "p_emp_adj"] = bh(y.loc[sel, "p_emp"].values)
+    y.loc[sel, "p_emp_adj_DEPRECATED"] = bh(y.loc[sel, "p_emp"].values)
+    y["p_floor"] = 1.0 / n_null
+    print(f"\n  temporal yardstick: {len(y)} comparisons, floor {1/n_null:.1e}")
+    for thr in (0.05, 0.01, 0.001):
+        print(f"    raw p < {thr:<6}: {(y.p_emp < thr).sum():>3}"
+              f"   expected by chance {len(y)*thr:.0f}")
+    rec = y[y.p_emp < 0.05].pathway.value_counts()
+    print(f"    sets passing in 4+ of the 9 groups: "
+          f"{ {k.replace('HALLMARK ',''): int(v) for k, v in rec[rec >= 4].items()} }")
     y.to_csv(f"{rerun_dir}/pathway_specificity_yardstick_mortality_temporal.csv", index=False)
     print(f"\nSaved -> mortality_partial_tage_ALL.csv ({len(out)} rows)")
     print(f"Saved -> pathway_specificity_yardstick_mortality_temporal.csv "
