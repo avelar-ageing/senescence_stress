@@ -669,3 +669,42 @@ days give 17 on a comparable 0.49, so the relationship is weak. The conclusion i
 unchanged - the Wilcoxon count is not a readout of which sets matter - but 2.2.4
 now states its own reason rather than inheriting the cross-sectional one, which
 would be wrong there.
+
+### Two assertions about the significance count, tested (2026-08-24)
+
+Asked for proof of two things the text had been asserting.
+
+CLAIM 1: "the whole transcriptome shifts, so most sets follow". FALSE as written.
+Gene-level contributions to the mortality tAge difference are large in BOTH
+directions and largely cancel; the net shift is the residual:
+
+  cond  sum(+)  sum(-)     net   cancellation
+  CICQ   +7.26   -6.85   +0.413      34x
+  SSCQ   +6.01   -5.84   +0.167      71x
+  RS     +7.46   -6.28   +1.183      12x
+  SIPS   +5.02   -4.26   +0.763      12x
+  OIS    +6.98   -6.35   +0.634      21x
+
+Only about 50% of measured clock genes move in the net direction - indistinguishable
+from chance - and 3 to 20 genes account for half the net shift. There IS a
+transcriptome-wide change (14-29% of 19,439 tested genes are differentially
+expressed, 2,667-5,567 per condition) but it is not a coherent shift that carries
+every set with it. The sentence has been removed.
+
+CLAIM 2: "the count tracks power rather than effect size". PARTLY true; the clean
+version was also an assertion. Correlation cannot settle it because n and effect
+size are themselves correlated across the five conditions (rho = 0.60). Subsampling
+every condition to 11 versus 11, 200 draws, does settle it:
+
+  cond  full n  count(full)  count(11v11)
+  CICQ      19           24     6 [1-13]
+  SSCQ      22           20     2 [0-9]
+  RS        11           17    11 [8-14]
+  SIPS      39           40    15 [9-23]
+  OIS       48           36    16 [10-22]
+
+Matching n compresses the spread from 23 to 14 but does not remove it, and it
+REORDERS the conditions: RS rises from last to mid-rank, so its apparently low count
+is indeed a power artefact and per sample it is among the strongest; SSCQ falls to
+last, consistent with its small shift. So both factors operate and neither alone
+explains the counts, which is what the text now says.
