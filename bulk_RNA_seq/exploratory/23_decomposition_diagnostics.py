@@ -6,10 +6,14 @@ in the text with tests. Covers BOTH arms.
 
 FOUR QUESTIONS, each previously asserted without evidence:
 
-  A  CANCELLATION. Is the net tAge difference a coherent shift, or a residual of
-     opposing gene contributions? Reports the summed positive and negative per-gene
-     contributions, their ratio to the net, the fraction of genes moving in the net
-     direction, and how many genes account for half the net.
+  A  CANCELLATION, at both levels at which contributions are summed. Reports the
+     summed positive and negative per-gene contributions against the net, the
+     fraction of genes moving in the net direction, and how many genes account for
+     half the net - once TRANSCRIPTOME-WIDE (all measured clock genes, giving the
+     condition's total) and once WITHIN EACH GENE SET (giving that set's own
+     contribution). The two are about fortyfold apart in absolute units and must not
+     be conflated: a claim about what a set's contribution means needs the
+     within-set figures, not the transcriptome-wide ones.
 
   B  DOES THE TRANSCRIPTOME ACTUALLY CHANGE? Reports the differentially expressed
      gene count against the tested background, which is the claim that IS supported
@@ -46,7 +50,8 @@ conditions supply the rest of the family exactly as they do in the real analysis
 subsampled and observed counts are on the same footing and comparable with the figures
 quoted in the Results.
 
-Output: rerun_outputs/decomposition_diagnostics.csv
+Output: rerun_outputs/decomposition_diagnostics.csv      (transcriptome-wide)
+        rerun_outputs/withinset_cancellation.csv        (per set x condition)
         rerun_outputs/decomposition_subsampling.csv
 
 NUMBER OF DRAWS. B = 10,000, chosen so the Monte Carlo error is negligible against
@@ -212,6 +217,38 @@ def main(rerun_dir, model_dir, n_draws=10000):
                   f"   effect |AUC-0.5| {r['median_abs_auc_dev']:.3f}"
                   f"   cancellation {r['cancellation_ratio']:>5.0f}x"
                   f"   net {r['net']:+.3f}")
+
+    # A, within-set level: the same cancellation computed inside each gene set
+    wrows = []
+    for cv, lab in CONDS.items():
+        acc = np.zeros(C.shape[1]); w = 0.0
+        for st_ in np.unique(study):
+            ti = np.where((study == st_) & (g == cv))[0]
+            ci = np.where((study == st_) & (g == "Proliferating"))[0]
+            if len(ti) and len(ci):
+                ww = len(ti) * len(ci) / (len(ti) + len(ci))
+                acc += ww * (C[ti].mean(0) - C[ci].mean(0)); w += ww
+        dd = acc / w
+        for name, ix in sets.items():
+            ixm = ix[obs[ix]]
+            if not len(ixm):
+                continue
+            v = dd[ixm]; pos = v[v > 0].sum(); neg = v[v < 0].sum(); net = v.sum()
+            wrows.append(dict(condition=lab, pathway=name, n_measured_genes=len(ixm),
+                              set_net=net, set_sum_positive=pos, set_sum_negative=neg,
+                              cancellation_ratio=(pos - neg) / abs(net) if net else np.nan,
+                              frac_genes_with_set_net=float((np.sign(v) == np.sign(net)).mean())))
+    W = pd.DataFrame(wrows)
+    W.to_csv(f"{rerun_dir}/withinset_cancellation.csv", index=False)
+    print(f"\n== within-set cancellation, {len(W)} set x condition combinations ==")
+    print(f"  median set net {W.set_net.abs().median():.4f} against +{W.set_sum_positive.median():.4f}"
+          f" and {W.set_sum_negative.median():.4f}")
+    print(f"  median cancellation {W.cancellation_ratio.median():.1f}x"
+          f" (10th-90th {W.cancellation_ratio.quantile(.1):.1f}x-{W.cancellation_ratio.quantile(.9):.1f}x)")
+    print(f"  median fraction of a set's genes moving with its own net:"
+          f" {100*W.frac_genes_with_set_net.median():.1f}%")
+    print(f"  sets above 2x, per condition: "
+          f"{dict(W.assign(x=W.cancellation_ratio>2).groupby('condition').x.sum())}")
 
     out = pd.DataFrame(rows)
     # temporal counts on the 450-test family: all nine groups corrected together

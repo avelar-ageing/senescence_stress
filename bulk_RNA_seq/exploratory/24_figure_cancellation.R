@@ -15,6 +15,13 @@
 # reason the yardstick asks whether a set exceeds its expected SHARE rather than
 # whether its contribution is non-zero.
 #
+# LEVEL. This figure is TRANSCRIPTOME-WIDE: the bars sum over all measured clock
+# genes and the diamond is the condition's whole-transcriptome net. The same
+# cancellation occurs WITHIN individual gene sets, at a median of six-fold - see
+# withinset_cancellation.csv from exploratory/23 - which is the level the text
+# quotes when discussing what a set's own contribution means. The two must not be
+# conflated: the within-set figures are about fortyfold smaller in absolute units.
+#
 # Reads exploratory/23's output; makes no calculation of its own beyond layout.
 # Output: figure_contribution_cancellation.png
 
@@ -60,7 +67,7 @@ p <- ggplot(bars, aes(x = value, y = pretty, fill = side)) +
         panel.grid.major.y = element_blank(),
         axis.text = element_text(size = 14),
         axis.title = element_text(size = 16)) +
-  labs(x = "Summed per-gene contribution to the mortality tAge difference (diamond = net)",
+  labs(x = "Summed contribution of all measured clock genes to the mortality tAge difference (diamond = net)",
        y = NULL)
 
 out <- file.path(RERUN_DIR, "figure_contribution_cancellation.png")
