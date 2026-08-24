@@ -802,3 +802,19 @@ last. MCSE 0.027-0.053 sets at B = 10,000, so the draw count is ample.
 2.2.4 updated to 17-41 and rho 0.94/0.49. The meta count range is no longer quoted in
 2.1.5.2, the rewritten paragraph having dropped it - that avoids the earlier "most
 sets" error and loses nothing, since the subsampling result is what carries the point.
+
+### DEFINITION TO GET RIGHT: the cancellation ratio is BOTH sides, not one
+
+`cancellation_ratio` in both diagnostics files is (sum of positive - sum of negative)
+/ |net|, i.e. the TOTAL movement in either direction divided by what survives it.
+Per side the figure is roughly half that:
+
+                            combined ratio    each side alone
+  within a gene set          6.0 (median)      3.1 up, 3.0 down
+  whole transcriptome        12 to 87          5 to 44
+
+Prose saying "each side is N times the net" must use the per-side column, not the
+ratio. A draft said "what is left is about six times smaller than either side" and
+"the two sides being twelve to eighty-seven times larger than the difference", both
+wrong by a factor of two for exactly this reason. The text now avoids the ratio
+altogether and gives a worked example instead: in CICQ, +7.3 up, -6.9 down, +0.4 net.
