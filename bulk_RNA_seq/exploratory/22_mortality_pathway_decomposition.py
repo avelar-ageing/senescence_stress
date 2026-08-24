@@ -158,10 +158,8 @@ def main(rerun_dir, model_dir, n_null=20000):
     rep = pd.read_csv(f"{rerun_dir}/pathway_representation_mortality.csv")
     interp = set(rep.loc[rep.tier == "INTERPRETABLE", "pathway"])
     y["interpretable"] = y.pathway.isin(interp)
-    # NOT the reported statistic - see header. Kept for provenance only.
-    y["p_emp_adj_DEPRECATED"] = np.nan
-    sel = y.interpretable
-    y.loc[sel, "p_emp_adj_DEPRECATED"] = bh(y.loc[sel, "p_emp"].values)
+    # BH over every comparison: 50 sets x 9 groups = 450, matching the Results
+    y["p_emp_adj"] = bh(y.p_emp.values)
     y["p_floor"] = 1.0 / n_null
     print(f"\n  temporal yardstick: {len(y)} comparisons, floor {1/n_null:.1e}")
     rule = 1.0 / len(y)

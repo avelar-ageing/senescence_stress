@@ -875,3 +875,32 @@ This is more permissive than BH was and reinstates results BH had discarded:
 The headline is unchanged and slightly strengthened: everything elevated in the
 cross-sectional arm is confined to the two damage-triggered subtypes, and p53 now
 appears in every cell type of the time course rather than two of three.
+
+### Reverted to BH on the simulation p-values (2026-08-24)
+
+Reversal of the decision two entries above, at the author's direction. The house
+convention against correcting Monte Carlo nulls is written for pre-registered
+robustness grids, where each simulation answers its own question. This is a discovery
+scan of every gene set against every condition, so the multiplicity is real and BH is
+the appropriate treatment - and it is far easier to defend than any threshold rule
+chosen by us.
+
+The family is now every comparison, 250 cross-sectional and 450 temporal, matching
+what the Results state. Previously BH ran over the 245 and 441 "interpretable"
+comparisons, a leftover from the gate that was dropped; the difference shifts the FDRs
+by about 0.001 and changes no result.
+
+  cross-sectional, 3 of 250: P53 PATHWAY in SIPS (z 4.61, FDR 0.012) and RS (4.19,
+  0.019), E2F TARGETS in SIPS (4.12, 0.021). HYPOXIA in RS (3.20) and MYOGENESIS in
+  SIPS (3.12) fall just short and are reported as following the same pattern.
+
+  temporal, 12 of 450: P53 PATHWAY in melanocytes at all three timepoints and
+  fibroblasts at 4 days; E2F TARGETS in fibroblasts and keratinocytes at 4 days;
+  ANGIOGENESIS in keratinocytes at 10 and 20 days; ADIPOGENESIS in keratinocytes at 10
+  days; and depletions of IL6 JAK STAT3 SIGNALING and TNFA SIGNALING VIA NFKB in
+  fibroblasts at 20 days and MYC TARGETS at 4 days. Keratinocyte 4-day and fibroblast
+  10-day P53 sit at FDR 0.063.
+
+Raw p, the floor and z stay in the output, and the scripts still print what an
+uncorrected p < 0.05 would pass (40 and 74 against 12 and 22 expected) as the reason
+not to use it.
