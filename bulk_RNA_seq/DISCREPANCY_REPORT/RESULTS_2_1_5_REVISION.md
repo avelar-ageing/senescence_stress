@@ -599,3 +599,28 @@ positive contribution can arise from downregulated genes with negative
 coefficients, which is what cell-cycle genes do during arrest, so these remain
 statements about the contribution to the prediction rather than about pathway
 activity.
+
+### Gate dropped entirely for the mortality sections (2026-08-24)
+
+The 65% top-5 gate is removed from both set-level sections and all 50 sets are
+reported. Reasoning: on the mortality clock the gate excluded one set,
+HALLMARK PANCREAS BETA CELLS, and that set reaches nothing on the yardstick - 0 of
+5 cross-sectional tests and 1 of 9 temporal at nominal p, none after correction.
+Including it changes no result: hits stay at 3 and 12 with families of 250 and 450
+instead of 245 and 441.
+
+The quantity the gate measures is a chronological-clock problem that does not exist
+on the mortality clock. A typical Hallmark set has 125 genes in the clock's feature
+space on all three models, but only about 20 carry non-zero weight on the
+chronological clocks against all 125 on mortality, so five genes are 75% of a
+20-gene effective set there and 25% of a 125-gene one here. Reporting a criterion
+that filters nothing invites the reader to think it did work.
+
+The gate remains relevant to any chronological set-level analysis, where it
+excludes 33 of 50 sets, so the criterion stays documented in Methods and in
+exploratory/14.
+
+Text now reads: "between 19 and 38 of the 50" sets significant per condition;
+"Three of 250" and "Twelve of 450" tests surviving; "Of the 50 sets, only four
+contribute significantly in all three cell types"; "Thirty-one of the 50 differ in
+sign between cell types". Hypoxia's family reference updated to 450.
