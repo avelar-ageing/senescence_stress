@@ -847,3 +847,31 @@ and more informative.
 NUMBER CORRECTED: a draft gave HYPOXIA as z = 3.20 and 3.12 in RS and SIPS. The SIPS
 value is 2.86; 3.12 is SIPS MYOGENESIS. Temporal maxima are HYPOXIA 2.58 and P53 5.35,
 quoted as 2.6 and 5.4.
+
+### The interpretation rule, replacing correction (2026-08-24)
+
+Dropping BH left the question of which comparisons to interpret. Reporting "40 reach
+p < 0.05 but we discuss 3" is selection after the fact and would rightly be read as
+cherry-picking. The rule is therefore fixed by the size of the family, not chosen
+after looking:
+
+  interpret a comparison only at p < 1/N, N being the number of comparisons, so that
+  fewer than one is expected to pass by chance.
+
+That is p < 0.004 for the 250 cross-sectional comparisons, giving 8, and p < 0.0022
+for the 450 temporal ones, giving 14. Both scripts now compute an `interpreted`
+column so the rule lives in code rather than in prose, and print the conventional
+thresholds alongside for context.
+
+This is more permissive than BH was and reinstates results BH had discarded:
+
+  cross-sectional, 8: P53 PATHWAY in SIPS (z 4.61) and RS (4.19); E2F TARGETS (4.12)
+  and MYOGENESIS (3.12) in SIPS; HYPOXIA in RS (3.20); and three depletions - EMT in
+  both quiescence conditions (-3.30, -3.08) and MYC TARGETS in SIPS (-3.30).
+
+  temporal, 14: P53 PATHWAY in six of the nine groups, now including keratinocytes at
+  4 days and fibroblasts at 10 days, which BH had put "just outside" at FDR 0.061.
+
+The headline is unchanged and slightly strengthened: everything elevated in the
+cross-sectional arm is confined to the two damage-triggered subtypes, and p53 now
+appears in every cell type of the time course rather than two of three.

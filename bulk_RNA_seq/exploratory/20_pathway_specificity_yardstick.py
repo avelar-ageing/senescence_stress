@@ -48,9 +48,15 @@ PERMUTATION COUNT, AND WHY THESE P-VALUES ARE NOT BH-CORRECTED.
 HOUSE CONVENTION: Monte Carlo nulls are reported as raw empirical p, alongside the
 p-floor and an effect size, and are NOT put through BH. A simulation null is a
 statement about one set against its own matched background, not a draw from a
-discovery family, and adjusting it conflates the two. What replaces correction is
-(i) the excess over what chance produces at a given threshold, (ii) the effect size
-z, and (iii) recurrence of the same set across independent conditions or groups.
+discovery family, and adjusting it conflates the two. What replaces correction is a
+STATED INTERPRETATION RULE, fixed by the size of the family rather than chosen after
+looking: a comparison is interpreted only at p < 1/N, where N is the number of
+comparisons, so that fewer than one is expected to pass by chance. That is p < 0.004
+for the 250 cross-sectional comparisons and p < 0.0022 for the 450 temporal ones.
+Effect size z is reported with every result, and recurrence of the same set across
+independent conditions or groups is treated as the strongest evidence of all.
+Reporting the conventional p < 0.05 instead would pass 40 and 74 comparisons where 12
+and 22 are expected by chance, which identifies nothing.
 Earlier versions of these scripts BH-adjusted p_emp; the column is retained for
 provenance but should not be used.
 
@@ -220,13 +226,17 @@ def main(rerun_dir, model_dir, n_null=20000, which="chronoage"):
         sel = (out.model == mdl) & out.interpretable
         out.loc[sel, "p_emp_adj_DEPRECATED"] = _bh(out.loc[sel, "p_emp"].values)
     out["p_floor"] = 1.0 / (n_null + 1)
+    out["interpreted"] = out.p_emp < (1.0 / out.groupby("model").p_emp.transform("size"))
     # what replaces correction: excess over chance at each threshold
     for mdl in out.model.unique():
         sub = out[out.model == mdl]
         print(f"\n  {mdl}: {len(sub)} comparisons, floor {1/(n_null+1):.1e}")
+        rule = 1.0 / len(sub)
+        print(f"    INTERPRETED at p < 1/{len(sub)} = {rule:.5f}:"
+              f" {(sub.p_emp < rule).sum()} comparisons (1.0 expected by chance)")
         for thr in (0.05, 0.01, 0.001):
-            print(f"    raw p < {thr:<6}: {(sub.p_emp < thr).sum():>3}"
-                  f"   expected by chance {len(sub)*thr:.0f}")
+            print(f"      for context, p < {thr:<6}: {(sub.p_emp < thr).sum():>3}"
+                  f"   expected {len(sub)*thr:.0f}")
     print(f"\nBH family per model: {int(out[out.model == out.model.iloc[0]].interpretable.sum())} "
           f"interpretable tests; {int((~out.interpretable).sum() / 2)} sets reported unadjusted")
     out.to_csv(f"{rerun_dir}/pathway_specificity_yardstick{suffix}.csv", index=False)

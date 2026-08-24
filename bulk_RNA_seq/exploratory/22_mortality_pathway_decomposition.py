@@ -164,9 +164,13 @@ def main(rerun_dir, model_dir, n_null=20000):
     y.loc[sel, "p_emp_adj_DEPRECATED"] = bh(y.loc[sel, "p_emp"].values)
     y["p_floor"] = 1.0 / n_null
     print(f"\n  temporal yardstick: {len(y)} comparisons, floor {1/n_null:.1e}")
+    rule = 1.0 / len(y)
+    y["interpreted"] = y.p_emp < rule
+    print(f"    INTERPRETED at p < 1/{len(y)} = {rule:.5f}: {int(y.interpreted.sum())}"
+          f" comparisons (1.0 expected by chance)")
     for thr in (0.05, 0.01, 0.001):
-        print(f"    raw p < {thr:<6}: {(y.p_emp < thr).sum():>3}"
-              f"   expected by chance {len(y)*thr:.0f}")
+        print(f"      for context, p < {thr:<6}: {(y.p_emp < thr).sum():>3}"
+              f"   expected {len(y)*thr:.0f}")
     rec = y[y.p_emp < 0.05].pathway.value_counts()
     print(f"    sets passing in 4+ of the 9 groups: "
           f"{ {k.replace('HALLMARK ',''): int(v) for k, v in rec[rec >= 4].items()} }")
