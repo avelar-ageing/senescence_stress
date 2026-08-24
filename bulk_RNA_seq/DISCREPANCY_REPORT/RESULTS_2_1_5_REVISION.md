@@ -632,3 +632,23 @@ neither chronological clock and is meaningful only as the gate criterion, since 
 gate required a set to pass on both. Prose comparing "the chronological clocks"
 must quote 73% and 64%, not 75%. An earlier draft of the replacement sentence used
 75% and was corrected.
+
+### "Most sets reach significance" was wrong, and the fix is stronger
+
+The claim overstated: only two of five conditions reach a majority of the 50 sets
+(SIPS 38, OIS 36), with CICQ at 25, SSCQ 21 and RS 19. Checking what the count
+actually tracks gives a better version of the same argument:
+
+  condition  sig sets  n samples  whole-transcriptome effect
+  RS             19        11              +1.183
+  SIPS           38        39              +0.763
+  OIS            36        48              +0.634
+  CICQ           25        19              +0.413
+  SSCQ           21        22              +0.167
+
+The count correlates with SAMPLE SIZE at rho = 0.80 and with the whole-transcriptome
+effect at rho = 0.00. Replicative senescence has the largest effect of any condition
+and the fewest significant sets, because it has the fewest samples. So the Wilcoxon
+count measures power, not biology, which is a sharper reason to disregard it than
+"most sets are significant" ever was - and it is the direct motivation for the
+weight-matched yardstick.
