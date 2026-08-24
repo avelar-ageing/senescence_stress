@@ -624,3 +624,11 @@ Text now reads: "between 19 and 38 of the 50" sets significant per condition;
 "Three of 250" and "Twelve of 450" tests surviving; "Of the 50 sets, only four
 contribute significantly in all three cell types"; "Thirty-one of the 50 differ in
 sign between cell types". Hypoxia's family reference updated to 450.
+
+NUMBER TO WATCH. Four medians exist for the top-5 concentration and they are easily
+confused: scaled difference 0.729, YuGene 0.644, the per-set MAXIMUM across those
+two 0.750, and mortality 0.246. The 0.750 figure is a composite that describes
+neither chronological clock and is meaningful only as the gate criterion, since the
+gate required a set to pass on both. Prose comparing "the chronological clocks"
+must quote 73% and 64%, not 75%. An earlier draft of the replacement sentence used
+75% and was corrected.
