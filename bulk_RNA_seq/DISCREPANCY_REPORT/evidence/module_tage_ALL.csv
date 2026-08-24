@@ -1,0 +1,477 @@
+"analysis","label","cell_type","timepoint","pathway","cohens_d","wilcox_p","n_test","n_control","model","p_adj"
+"meta_analysis","CICQ",NA,NA,"Adaptive immunity/ T cell signaling (darkgreen)",-0.141844523487369,0.135047209256251,19,91,"scaled",0.175061197184029
+"meta_analysis","CICQ",NA,NA,"Cell cycle/ DNA replication (green)",0.345636406485547,0.0677598298741418,19,91,"scaled",0.0967997569630596
+"meta_analysis","CICQ",NA,NA,"Chromatin modification (orange)",1.65953184087957,1.39198254256456e-07,19,91,"scaled",9.74387779795194e-07
+"meta_analysis","CICQ",NA,NA,"ECM organization/ EMT (brown4)",0.132308305033457,0.457304880766486,19,91,"scaled",0.508116534184985
+"meta_analysis","CICQ",NA,NA,"Fatty acid metabolism/ Peroxisome (ivory)",0.476068923236334,0.0421342116058858,19,91,"scaled",0.0702236860098097
+"meta_analysis","CICQ",NA,NA,"Innate immunity/ Inflammation (turquoise)",0.572524523733987,0.0196653734516556,19,91,"scaled",0.0352968241439973
+"meta_analysis","CICQ",NA,NA,"Interferon signaling (darkmagenta)",1.04647597644683,0.000734293992729951,19,91,"scaled",0.00183573498182488
+"meta_analysis","CICQ",NA,NA,"Mitochondrial translation/ OxPhos (pink)",-2.31140177195527,2.13445446126334e-07,19,91,"scaled",1.24571793972776e-06
+"meta_analysis","CICQ",NA,NA,"Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",0.1342522128245,0.7880448703989,19,91,"scaled",0.820295124637166
+"meta_analysis","CICQ",NA,NA,"OxPhos/ Heme metabolism (white)",0.687667180011241,0.0642670420235838,19,91,"scaled",0.0937227696177264
+"meta_analysis","CICQ",NA,NA,"Protein folding/ Translation (plum1)",-1.21804331213776,1.88679144162271e-05,19,91,"scaled",6.60377004567948e-05
+"meta_analysis","CICQ",NA,NA,"Protein processing in ER/ UPR (darkslateblue)",1.07604828902579,0.00389940103009123,19,91,"scaled",0.00852993975332457
+"meta_analysis","CICQ",NA,NA,"VEGF signaling (sienna3)",-1.2282208282728,3.92538039335303e-05,19,91,"scaled",0.000119468098928136
+"meta_analysis","CICQ",NA,NA,"mRNA splicing (darkred)",0.495110882294491,0.0397907876929837,19,91,"scaled",0.0679354911831429
+"meta_analysis","SSCQ",NA,NA,"Adaptive immunity/ T cell signaling (darkgreen)",-0.230326456822555,0.359001730852503,22,91,"scaled",0.425934256943647
+"meta_analysis","SSCQ",NA,NA,"Cell cycle/ DNA replication (green)",0.890567507049465,0.00044278360078609,22,91,"scaled",0.00114795748351949
+"meta_analysis","SSCQ",NA,NA,"Chromatin modification (orange)",-0.564676247778098,0.00933507255815923,22,91,"scaled",0.0181515299741985
+"meta_analysis","SSCQ",NA,NA,"ECM organization/ EMT (brown4)",0.19933566824763,0.535276033656805,22,91,"scaled",0.58545816181213
+"meta_analysis","SSCQ",NA,NA,"Fatty acid metabolism/ Peroxisome (ivory)",-0.327547880084174,0.203169004403502,22,91,"scaled",0.258578732877185
+"meta_analysis","SSCQ",NA,NA,"Innate immunity/ Inflammation (turquoise)",0.440499528685698,0.046542780423845,22,91,"scaled",0.0740453324924806
+"meta_analysis","SSCQ",NA,NA,"Interferon signaling (darkmagenta)",0.627426803803807,0.132424090459798,22,91,"scaled",0.174899742116714
+"meta_analysis","SSCQ",NA,NA,"Mitochondrial translation/ OxPhos (pink)",-1.28276730578647,1.34569632347851e-06,22,91,"scaled",6.72848161739256e-06
+"meta_analysis","SSCQ",NA,NA,"Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",-0.530925113615855,0.386210012262675,22,91,"scaled",0.436043562232052
+"meta_analysis","SSCQ",NA,NA,"OxPhos/ Heme metabolism (white)",1.30797963308477,1.73451410634406e-06,22,91,"scaled",7.76308777317158e-06
+"meta_analysis","SSCQ",NA,NA,"Protein folding/ Translation (plum1)",-0.0289435027798302,0.858995595119595,22,91,"scaled",0.862955178497625
+"meta_analysis","SSCQ",NA,NA,"Protein processing in ER/ UPR (darkslateblue)",0.260202009188048,0.796858121076104,22,91,"scaled",0.820295124637166
+"meta_analysis","SSCQ",NA,NA,"VEGF signaling (sienna3)",-0.259650207443201,0.378310649898652,22,91,"scaled",0.435180884698479
+"meta_analysis","SSCQ",NA,NA,"mRNA splicing (darkred)",-0.392602433590223,0.050679738945422,22,91,"scaled",0.0757432899132025
+"meta_analysis","RS",NA,NA,"Adaptive immunity/ T cell signaling (darkgreen)",1.28493402094679,2.84064321571798e-05,11,91,"scaled",9.46881071905992e-05
+"meta_analysis","RS",NA,NA,"Cell cycle/ DNA replication (green)",0.897365690664901,0.0021072897339276,11,91,"scaled",0.00491700937916439
+"meta_analysis","RS",NA,NA,"Chromatin modification (orange)",0.0184779709167194,0.862955178497625,11,91,"scaled",0.862955178497625
+"meta_analysis","RS",NA,NA,"ECM organization/ EMT (brown4)",-1.81226243190734,2.55463544093595e-06,11,91,"scaled",1.05190871097362e-05
+"meta_analysis","RS",NA,NA,"Fatty acid metabolism/ Peroxisome (ivory)",-0.356720063631118,0.326228089830841,11,91,"scaled",0.393723556692394
+"meta_analysis","RS",NA,NA,"Innate immunity/ Inflammation (turquoise)",1.33384070546586,6.5604375806716e-05,11,91,"scaled",0.000191346096102922
+"meta_analysis","RS",NA,NA,"Interferon signaling (darkmagenta)",0.759466027837865,0.0447887715787683,11,91,"scaled",0.0729119537328786
+"meta_analysis","RS",NA,NA,"Mitochondrial translation/ OxPhos (pink)",0.653192981280331,0.0215664420591422,11,91,"scaled",0.0377412736034988
+"meta_analysis","RS",NA,NA,"Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",-0.957781300907092,0.00182186157956211,11,91,"scaled",0.00439759691618439
+"meta_analysis","RS",NA,NA,"OxPhos/ Heme metabolism (white)",0.950733924928583,0.00454917553146661,11,91,"scaled",0.00964976627886856
+"meta_analysis","RS",NA,NA,"Protein folding/ Translation (plum1)",0.568787049594375,0.0508562089417217,11,91,"scaled",0.0757432899132025
+"meta_analysis","RS",NA,NA,"Protein processing in ER/ UPR (darkslateblue)",1.12768265519509,0.000234309244246056,11,91,"scaled",0.000630832580662458
+"meta_analysis","RS",NA,NA,"VEGF signaling (sienna3)",0.560824027695113,0.103304415698847,11,91,"scaled",0.141467280603416
+"meta_analysis","RS",NA,NA,"mRNA splicing (darkred)",-0.5408152624262,0.0508562089417217,11,91,"scaled",0.0757432899132025
+"meta_analysis","SIPS",NA,NA,"Adaptive immunity/ T cell signaling (darkgreen)",0.32619831238929,0.00753298013219905,39,91,"scaled",0.0150659602643981
+"meta_analysis","SIPS",NA,NA,"Cell cycle/ DNA replication (green)",1.26693144697551,1.64585678419371e-10,39,91,"scaled",1.64585678419371e-09
+"meta_analysis","SIPS",NA,NA,"Chromatin modification (orange)",0.126137362555678,0.25299678049329,39,91,"scaled",0.316245975616613
+"meta_analysis","SIPS",NA,NA,"ECM organization/ EMT (brown4)",-0.648063126541851,0.0176648621866665,39,91,"scaled",0.0325405356070173
+"meta_analysis","SIPS",NA,NA,"Fatty acid metabolism/ Peroxisome (ivory)",-1.4596771021903,2.12144483299773e-12,39,91,"scaled",3.71252845774604e-11
+"meta_analysis","SIPS",NA,NA,"Innate immunity/ Inflammation (turquoise)",-0.0681580090180027,0.75277095445004,39,91,"scaled",0.810676412484658
+"meta_analysis","SIPS",NA,NA,"Interferon signaling (darkmagenta)",-0.595605796435707,0.00562555746910841,39,91,"scaled",0.0115820300834585
+"meta_analysis","SIPS",NA,NA,"Mitochondrial translation/ OxPhos (pink)",0.616169730222305,9.75109564811394e-05,39,91,"scaled",0.00027303067814719
+"meta_analysis","SIPS",NA,NA,"Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",0.365003577785324,0.0102989798575492,39,91,"scaled",0.0194845564872553
+"meta_analysis","SIPS",NA,NA,"OxPhos/ Heme metabolism (white)",1.68431065326098,1.11022302462516e-15,39,91,"scaled",3.88578058618805e-14
+"meta_analysis","SIPS",NA,NA,"Protein folding/ Translation (plum1)",-0.987060965464836,4.48275839856297e-06,39,91,"scaled",1.65154256789162e-05
+"meta_analysis","SIPS",NA,NA,"Protein processing in ER/ UPR (darkslateblue)",0.995286286792134,2.13551646810473e-07,39,91,"scaled",1.24571793972776e-06
+"meta_analysis","SIPS",NA,NA,"VEGF signaling (sienna3)",0.398782262255793,0.105089979876823,39,91,"scaled",0.141467280603416
+"meta_analysis","SIPS",NA,NA,"mRNA splicing (darkred)",-0.653244706733213,0.00258930126798552,39,91,"scaled",0.00584680931480602
+"meta_analysis","OIS",NA,NA,"Adaptive immunity/ T cell signaling (darkgreen)",0.647207386172035,3.09667223441501e-05,48,91,"scaled",9.85304801859321e-05
+"meta_analysis","OIS",NA,NA,"Cell cycle/ DNA replication (green)",0.817294090606134,3.55562714982049e-06,48,91,"scaled",1.38274389159686e-05
+"meta_analysis","OIS",NA,NA,"Chromatin modification (orange)",-0.193238313200205,0.379229056665818,48,91,"scaled",0.435180884698479
+"meta_analysis","OIS",NA,NA,"ECM organization/ EMT (brown4)",-2.26212739237282,4.76808792199332e-17,48,91,"scaled",3.33766154539532e-15
+"meta_analysis","OIS",NA,NA,"Fatty acid metabolism/ Peroxisome (ivory)",-1.62176576256548,2.70111077652143e-12,48,91,"scaled",3.78155508713e-11
+"meta_analysis","OIS",NA,NA,"Innate immunity/ Inflammation (turquoise)",-0.342524365324893,0.0760400477721502,48,91,"scaled",0.10645606688101
+"meta_analysis","OIS",NA,NA,"Interferon signaling (darkmagenta)",0.179010580016934,0.300967387327689,48,91,"scaled",0.369609072156811
+"meta_analysis","OIS",NA,NA,"Mitochondrial translation/ OxPhos (pink)",2.13493295697303,1.77635683940025e-15,48,91,"scaled",4.14483262526725e-14
+"meta_analysis","OIS",NA,NA,"Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",-0.0159553033583035,0.788696530006346,48,91,"scaled",0.820295124637166
+"meta_analysis","OIS",NA,NA,"OxPhos/ Heme metabolism (white)",0.864535034067779,1.77442006243922e-06,48,91,"scaled",7.76308777317158e-06
+"meta_analysis","OIS",NA,NA,"Protein folding/ Translation (plum1)",1.18005253041755,2.38461206336638e-09,48,91,"scaled",1.85469827150718e-08
+"meta_analysis","OIS",NA,NA,"Protein processing in ER/ UPR (darkslateblue)",0.796547734663755,7.0793364459476e-07,48,91,"scaled",3.81195039397179e-06
+"meta_analysis","OIS",NA,NA,"VEGF signaling (sienna3)",1.38238102648339,2.6529223262628e-11,48,91,"scaled",3.0950760473066e-10
+"meta_analysis","OIS",NA,NA,"mRNA splicing (darkred)",1.18373334249441,9.63420010435811e-10,48,91,"scaled",8.42992509131335e-09
+"meta_analysis","CICQ",NA,NA,"Adaptive immunity/ T cell signaling (darkgreen)",-0.511627126620107,0.00164881529664438,19,91,"yugene",0.00329763059328877
+"meta_analysis","CICQ",NA,NA,"Cell cycle/ DNA replication (green)",-0.534340500371112,0.00551195838847426,19,91,"yugene",0.0104280293835999
+"meta_analysis","CICQ",NA,NA,"Chromatin modification (orange)",0.288742266647175,0.375819863881753,19,91,"yugene",0.431268696257749
+"meta_analysis","CICQ",NA,NA,"ECM organization/ EMT (brown4)",0.711297897724741,0.00906933172821933,19,91,"yugene",0.0158713305243838
+"meta_analysis","CICQ",NA,NA,"Fatty acid metabolism/ Peroxisome (ivory)",0.382914896417236,0.268280646717777,19,91,"yugene",0.318299072377024
+"meta_analysis","CICQ",NA,NA,"Innate immunity/ Inflammation (turquoise)",1.44038522732835,7.90799747929505e-06,19,91,"yugene",2.69305433257353e-05
+"meta_analysis","CICQ",NA,NA,"Interferon signaling (darkmagenta)",-0.50703462436243,0.0566924742537377,19,91,"yugene",0.0793694639552327
+"meta_analysis","CICQ",NA,NA,"Mitochondrial translation/ OxPhos (pink)",-1.64299519176068,1.78774785251853e-06,19,91,"yugene",8.13465896212784e-06
+"meta_analysis","CICQ",NA,NA,"Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",-0.963118888598222,0.00147906685793916,19,91,"yugene",0.00304513764869827
+"meta_analysis","CICQ",NA,NA,"OxPhos/ Heme metabolism (white)",0.45549162793632,0.159276069826466,19,91,"yugene",0.202714997960957
+"meta_analysis","CICQ",NA,NA,"Protein folding/ Translation (plum1)",-0.412807114427533,0.987382201396969,19,91,"yugene",0.987382201396969
+"meta_analysis","CICQ",NA,NA,"Protein processing in ER/ UPR (darkslateblue)",0.716943679837808,0.00700912220562255,19,91,"yugene",0.0125804757536815
+"meta_analysis","CICQ",NA,NA,"VEGF signaling (sienna3)",-0.0665565904513333,0.843292264115483,19,91,"yugene",0.918943115872192
+"meta_analysis","CICQ",NA,NA,"mRNA splicing (darkred)",1.09610474600966,1.85935061991493e-06,19,91,"yugene",8.13465896212784e-06
+"meta_analysis","SSCQ",NA,NA,"Adaptive immunity/ T cell signaling (darkgreen)",-0.888375768465352,0.000535344383917984,22,91,"yugene",0.00113557899618966
+"meta_analysis","SSCQ",NA,NA,"Cell cycle/ DNA replication (green)",0.730453501620751,2.64526949969035e-05,22,91,"yugene",6.85810611030832e-05
+"meta_analysis","SSCQ",NA,NA,"Chromatin modification (orange)",-1.61900430753007,1.81654293123702e-07,22,91,"yugene",1.41286672429546e-06
+"meta_analysis","SSCQ",NA,NA,"ECM organization/ EMT (brown4)",0.826184692660791,0.000106304124953605,22,91,"yugene",0.000265760312384011
+"meta_analysis","SSCQ",NA,NA,"Fatty acid metabolism/ Peroxisome (ivory)",0.0904747749542698,0.238673082959519,22,91,"yugene",0.288053720813212
+"meta_analysis","SSCQ",NA,NA,"Innate immunity/ Inflammation (turquoise)",1.12482729135301,8.6442644886553e-06,22,91,"yugene",2.75044779184487e-05
+"meta_analysis","SSCQ",NA,NA,"Interferon signaling (darkmagenta)",-0.0410915994095115,0.956629597574444,22,91,"yugene",0.97049379464074
+"meta_analysis","SSCQ",NA,NA,"Mitochondrial translation/ OxPhos (pink)",-1.24900228817132,1.62663916891392e-05,22,91,"yugene",4.37941314707595e-05
+"meta_analysis","SSCQ",NA,NA,"Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",-0.863358093781795,0.0272462619108893,22,91,"yugene",0.0397341319533802
+"meta_analysis","SSCQ",NA,NA,"OxPhos/ Heme metabolism (white)",-0.400620856714268,0.0217339767334125,22,91,"yugene",0.0330734428551929
+"meta_analysis","SSCQ",NA,NA,"Protein folding/ Translation (plum1)",0.679286065420045,9.24702421123413e-06,22,91,"yugene",2.77925389323714e-05
+"meta_analysis","SSCQ",NA,NA,"Protein processing in ER/ UPR (darkslateblue)",-0.0904137039392574,0.916263530611408,22,91,"yugene",0.949787631760544
+"meta_analysis","SSCQ",NA,NA,"VEGF signaling (sienna3)",0.936081890632398,8.0791629977206e-06,22,91,"yugene",2.69305433257353e-05
+"meta_analysis","SSCQ",NA,NA,"mRNA splicing (darkred)",0.0556122526903339,0.853304321881321,22,91,"yugene",0.918943115872192
+"meta_analysis","RS",NA,NA,"Adaptive immunity/ T cell signaling (darkgreen)",0.36172971251156,0.0215664420591422,11,91,"yugene",0.0330734428551929
+"meta_analysis","RS",NA,NA,"Cell cycle/ DNA replication (green)",1.53254954792797,6.17467888641698e-06,11,91,"yugene",2.40126401138438e-05
+"meta_analysis","RS",NA,NA,"Chromatin modification (orange)",-1.09751515826396,0.0115871715418014,11,91,"yugene",0.0197829758030756
+"meta_analysis","RS",NA,NA,"ECM organization/ EMT (brown4)",-0.335817302771155,0.120298429579756,11,91,"yugene",0.161940193665055
+"meta_analysis","RS",NA,NA,"Fatty acid metabolism/ Peroxisome (ivory)",0.512647531987901,0.000355697770460406,11,91,"yugene",0.00079147337829974
+"meta_analysis","RS",NA,NA,"Innate immunity/ Inflammation (turquoise)",2.41546469622431,4.97251176900804e-07,11,91,"yugene",3.48075823830563e-06
+"meta_analysis","RS",NA,NA,"Interferon signaling (darkmagenta)",-0.109820590866084,0.914088116778618,11,91,"yugene",0.949787631760544
+"meta_analysis","RS",NA,NA,"Mitochondrial translation/ OxPhos (pink)",1.01152403445957,0.00574806429583541,11,91,"yugene",0.0105885394923284
+"meta_analysis","RS",NA,NA,"Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",-1.20094118312543,0.000152654862909297,11,91,"yugene",0.000356194680121692
+"meta_analysis","RS",NA,NA,"OxPhos/ Heme metabolism (white)",-1.71561744265475,1.02320732872161e-06,11,91,"yugene",5.11603664360803e-06
+"meta_analysis","RS",NA,NA,"Protein folding/ Translation (plum1)",-1.27500529523391,0.000122707910810742,11,91,"yugene",0.000296191508853515
+"meta_analysis","RS",NA,NA,"Protein processing in ER/ UPR (darkslateblue)",0.0455347427774663,0.922650842281671,11,91,"yugene",0.949787631760544
+"meta_analysis","RS",NA,NA,"VEGF signaling (sienna3)",0.254373857087801,0.214731343165554,11,91,"yugene",0.268414178956942
+"meta_analysis","RS",NA,NA,"mRNA splicing (darkred)",-0.48118395676287,0.0269935224388524,11,91,"yugene",0.0397341319533802
+"meta_analysis","SIPS",NA,NA,"Adaptive immunity/ T cell signaling (darkgreen)",-1.07390211965761,7.43098582116206e-06,39,91,"yugene",2.69305433257353e-05
+"meta_analysis","SIPS",NA,NA,"Cell cycle/ DNA replication (green)",1.44818565897727,1.56097357262297e-13,39,91,"yugene",1.09268150083608e-11
+"meta_analysis","SIPS",NA,NA,"Chromatin modification (orange)",-0.413144390509624,0.0179092728848707,39,91,"yugene",0.0291546302776965
+"meta_analysis","SIPS",NA,NA,"ECM organization/ EMT (brown4)",0.665626641348519,0.00416519043597097,39,91,"yugene",0.00809898140327688
+"meta_analysis","SIPS",NA,NA,"Fatty acid metabolism/ Peroxisome (ivory)",-0.106653523742792,0.823115493298185,39,91,"yugene",0.914572770331316
+"meta_analysis","SIPS",NA,NA,"Innate immunity/ Inflammation (turquoise)",1.27401552073892,6.96732671556788e-09,39,91,"yugene",6.09641087612189e-08
+"meta_analysis","SIPS",NA,NA,"Interferon signaling (darkmagenta)",-1.21269017294978,1.39640346597802e-09,39,91,"yugene",1.62913737697435e-08
+"meta_analysis","SIPS",NA,NA,"Mitochondrial translation/ OxPhos (pink)",0.558617080308433,0.000361816401508452,39,91,"yugene",0.00079147337829974
+"meta_analysis","SIPS",NA,NA,"Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",0.817110707147397,1.53600371928242e-05,39,91,"yugene",4.30081041399077e-05
+"meta_analysis","SIPS",NA,NA,"OxPhos/ Heme metabolism (white)",-0.286229925698881,0.326826352122993,39,91,"yugene",0.381297410810158
+"meta_analysis","SIPS",NA,NA,"Protein folding/ Translation (plum1)",0.421455812151305,0.139298003891273,39,91,"yugene",0.180571486525724
+"meta_analysis","SIPS",NA,NA,"Protein processing in ER/ UPR (darkslateblue)",0.297032511369217,0.0278186884822507,39,91,"yugene",0.0397409835460724
+"meta_analysis","SIPS",NA,NA,"VEGF signaling (sienna3)",1.34653038544127,1.73776548706428e-11,39,91,"yugene",2.43287168188999e-10
+"meta_analysis","SIPS",NA,NA,"mRNA splicing (darkred)",-0.962815226809745,4.02510585137053e-09,39,91,"yugene",4.02510585137053e-08
+"meta_analysis","OIS",NA,NA,"Adaptive immunity/ T cell signaling (darkgreen)",0.28059852477862,0.138400945894625,48,91,"yugene",0.180571486525724
+"meta_analysis","OIS",NA,NA,"Cell cycle/ DNA replication (green)",1.55671038188826,1.67821312402339e-12,48,91,"yugene",3.91583062272124e-11
+"meta_analysis","OIS",NA,NA,"Chromatin modification (orange)",0.0365681549886199,0.488142905638214,48,91,"yugene",0.551129087010887
+"meta_analysis","OIS",NA,NA,"ECM organization/ EMT (brown4)",-0.819591321693203,9.52887049109878e-06,48,91,"yugene",2.77925389323714e-05
+"meta_analysis","OIS",NA,NA,"Fatty acid metabolism/ Peroxisome (ivory)",1.08621726358762,4.46975789714088e-13,48,91,"yugene",1.56441526399931e-11
+"meta_analysis","OIS",NA,NA,"Innate immunity/ Inflammation (turquoise)",0.772858348915041,3.26319968757538e-06,48,91,"yugene",1.34367045958986e-05
+"meta_analysis","OIS",NA,NA,"Interferon signaling (darkmagenta)",-0.924627353529288,9.08692248231788e-07,48,91,"yugene",4.89295825970963e-06
+"meta_analysis","OIS",NA,NA,"Mitochondrial translation/ OxPhos (pink)",1.47835565324693,3.47544215628659e-12,48,91,"yugene",6.08202377350153e-11
+"meta_analysis","OIS",NA,NA,"Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",0.253381155114523,0.220634378527329,48,91,"yugene",0.270954499945843
+"meta_analysis","OIS",NA,NA,"OxPhos/ Heme metabolism (white)",-0.496244863825332,0.0142103786500282,48,91,"yugene",0.0236839644167137
+"meta_analysis","OIS",NA,NA,"Protein folding/ Translation (plum1)",-0.464858702317279,6.91968572628104e-07,48,91,"yugene",4.03648334033061e-06
+"meta_analysis","OIS",NA,NA,"Protein processing in ER/ UPR (darkslateblue)",0.916611570988433,6.17208426811899e-07,48,91,"yugene",3.927689988803e-06
+"meta_analysis","OIS",NA,NA,"VEGF signaling (sienna3)",0.479679910373136,0.0183304357995684,48,91,"yugene",0.0291620569538588
+"meta_analysis","OIS",NA,NA,"mRNA splicing (darkred)",0.423182297526725,0.0643933678534385,48,91,"yugene",0.0883830539164842
+"temporal_pooled","Fibroblast","Fibroblast",NA,"Adaptive immunity/ T cell signaling (darkgreen)",0.0516512832723197,0.820410710570894,18,6,"scaled",0.861431246099438
+"temporal_pooled","Fibroblast","Fibroblast",NA,"Cell cycle/ DNA replication (green)",10.3776285007331,1.48592825938364e-05,18,6,"scaled",5.20074890784273e-05
+"temporal_pooled","Fibroblast","Fibroblast",NA,"Chromatin modification (orange)",-1.13813296111645,0.014799845463461,18,6,"scaled",0.0258997295610568
+"temporal_pooled","Fibroblast","Fibroblast",NA,"ECM organization/ EMT (brown4)",-2.47018601575388,5.94371303753455e-05,18,6,"scaled",0.000192027651981885
+"temporal_pooled","Fibroblast","Fibroblast",NA,"Fatty acid metabolism/ Peroxisome (ivory)",-6.18059881741038,1.48592825938364e-05,18,6,"scaled",5.20074890784273e-05
+"temporal_pooled","Fibroblast","Fibroblast",NA,"Innate immunity/ Inflammation (turquoise)",-1.19747528319671,0.0657671847603198,18,6,"scaled",0.0986507771404797
+"temporal_pooled","Fibroblast","Fibroblast",NA,"Interferon signaling (darkmagenta)",0.273658921370044,0.672917471544474,18,6,"scaled",0.724680353970972
+"temporal_pooled","Fibroblast","Fibroblast",NA,"Mitochondrial translation/ OxPhos (pink)",2.28047636593093,1.48592825938364e-05,18,6,"scaled",5.20074890784273e-05
+"temporal_pooled","Fibroblast","Fibroblast",NA,"Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",0.73374961427487,0.0769265059882909,18,6,"scaled",0.107697108383607
+"temporal_pooled","Fibroblast","Fibroblast",NA,"OxPhos/ Heme metabolism (white)",4.11760113692904,1.48592825938364e-05,18,6,"scaled",5.20074890784273e-05
+"temporal_pooled","Fibroblast","Fibroblast",NA,"Protein folding/ Translation (plum1)",-0.592185689897029,0.155636125887842,18,6,"scaled",0.198082342039072
+"temporal_pooled","Fibroblast","Fibroblast",NA,"Protein processing in ER/ UPR (darkslateblue)",4.99122109168649,1.48592825938364e-05,18,6,"scaled",5.20074890784273e-05
+"temporal_pooled","Fibroblast","Fibroblast",NA,"VEGF signaling (sienna3)",1.24769466836728,0.00942078516449226,18,6,"scaled",0.0188415703289845
+"temporal_pooled","Fibroblast","Fibroblast",NA,"mRNA splicing (darkred)",-1.32495733803265,0.0330024666409106,18,6,"scaled",0.0513371703303053
+"temporal_pooled","Fibroblast","Fibroblast",NA,"Adaptive immunity/ T cell signaling (darkgreen)",-2.66934213177315,1.48592825938364e-05,18,6,"yugene",6.93433187712364e-05
+"temporal_pooled","Fibroblast","Fibroblast",NA,"Cell cycle/ DNA replication (green)",2.8987757178512,2.97185651876727e-05,18,6,"yugene",0.000104014978156855
+"temporal_pooled","Fibroblast","Fibroblast",NA,"Chromatin modification (orange)",-2.35546706528065,0.000282326369282891,18,6,"yugene",0.000846979107848673
+"temporal_pooled","Fibroblast","Fibroblast",NA,"ECM organization/ EMT (brown4)",3.74160074765185,1.48592825938364e-05,18,6,"yugene",6.93433187712364e-05
+"temporal_pooled","Fibroblast","Fibroblast",NA,"Fatty acid metabolism/ Peroxisome (ivory)",10.2000651142632,1.48592825938364e-05,18,6,"yugene",6.93433187712364e-05
+"temporal_pooled","Fibroblast","Fibroblast",NA,"Innate immunity/ Inflammation (turquoise)",4.56058636455893,1.48592825938364e-05,18,6,"yugene",6.93433187712364e-05
+"temporal_pooled","Fibroblast","Fibroblast",NA,"Interferon signaling (darkmagenta)",-1.76114913330194,0.00185741032422955,18,6,"yugene",0.00433395742320227
+"temporal_pooled","Fibroblast","Fibroblast",NA,"Mitochondrial translation/ OxPhos (pink)",1.31499873951159,0.00942078516449226,18,6,"yugene",0.0172031729090728
+"temporal_pooled","Fibroblast","Fibroblast",NA,"Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",1.11641619389113,0.0272965021248774,18,6,"yugene",0.0440943495863404
+"temporal_pooled","Fibroblast","Fibroblast",NA,"OxPhos/ Heme metabolism (white)",-0.553985583938772,0.494204879788404,18,6,"yugene",0.610488380915087
+"temporal_pooled","Fibroblast","Fibroblast",NA,"Protein folding/ Translation (plum1)",-0.499931094933422,0.494204879788404,18,6,"yugene",0.610488380915087
+"temporal_pooled","Fibroblast","Fibroblast",NA,"Protein processing in ER/ UPR (darkslateblue)",1.36970017462964,0.00739992273173051,18,6,"yugene",0.0141271252151219
+"temporal_pooled","Fibroblast","Fibroblast",NA,"VEGF signaling (sienna3)",4.54036283594255,1.48592825938364e-05,18,6,"yugene",6.93433187712364e-05
+"temporal_pooled","Fibroblast","Fibroblast",NA,"mRNA splicing (darkred)",-1.47918381443337,0.00185741032422955,18,6,"yugene",0.00433395742320227
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"Adaptive immunity/ T cell signaling (darkgreen)",1.58893805277209,0.00442806621296324,18,6,"scaled",0.00978835689181347
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"Cell cycle/ DNA replication (green)",3.88102635386695,1.48592825938364e-05,18,6,"scaled",5.20074890784273e-05
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"Chromatin modification (orange)",1.27261324926889,0.00739992273173051,18,6,"scaled",0.0155398377366341
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"ECM organization/ EMT (brown4)",-1.81999700661364,0.00133733543344527,18,6,"scaled",0.00374453921364677
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"Fatty acid metabolism/ Peroxisome (ivory)",-2.44755869142479,0.000178311391126036,18,6,"scaled",0.000534934173378109
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"Innate immunity/ Inflammation (turquoise)",-0.224437213350255,0.672917471544474,18,6,"scaled",0.724680353970972
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"Interferon signaling (darkmagenta)",0.400094114706898,0.310440131950429,18,6,"scaled",0.362180153942168
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"Mitochondrial translation/ OxPhos (pink)",1.72142246916217,0.00251121875835835,18,6,"scaled",0.00620418752065003
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",0.518565792320021,0.672917471544474,18,6,"scaled",0.724680353970972
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"OxPhos/ Heme metabolism (white)",1.7111291498113,0.00442806621296324,18,6,"scaled",0.00978835689181347
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"Protein folding/ Translation (plum1)",-1.68051609674639,0.00185741032422955,18,6,"scaled",0.00487570210110256
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"Protein processing in ER/ UPR (darkslateblue)",0.935283616297269,0.310440131950429,18,6,"scaled",0.362180153942168
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"VEGF signaling (sienna3)",0.138614677280254,0.871170019911439,18,6,"scaled",0.892418069177571
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"mRNA splicing (darkred)",1.22748969642008,0.0118428482272876,18,6,"scaled",0.0226090738884581
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"Adaptive immunity/ T cell signaling (darkgreen)",-2.07082359603817,0.0006538084341288,18,6,"yugene",0.00183066361556064
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"Cell cycle/ DNA replication (green)",3.90321224524943,1.48592825938364e-05,18,6,"yugene",6.93433187712364e-05
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"Chromatin modification (orange)",0.00493270327222831,0.820410710570894,18,6,"yugene",0.906769732736251
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"ECM organization/ EMT (brown4)",-0.431958892891875,0.414886029302505,18,6,"yugene",0.544537913459538
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"Fatty acid metabolism/ Peroxisome (ivory)",2.75151912268876,0.000282326369282891,18,6,"yugene",0.000846979107848673
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"Innate immunity/ Inflammation (turquoise)",0.485744996811835,0.250869268031739,18,6,"yugene",0.363327905425278
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"Interferon signaling (darkmagenta)",-0.47426640840315,0.279592261285625,18,6,"yugene",0.391429165799875
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"Mitochondrial translation/ OxPhos (pink)",0.150119481948518,0.922538559838331,18,6,"yugene",0.945039500322193
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",-0.367299291134583,0.536583553746025,18,6,"yugene",0.64390026449523
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"OxPhos/ Heme metabolism (white)",-3.58207203305545,1.48592825938364e-05,18,6,"yugene",6.93433187712364e-05
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"Protein folding/ Translation (plum1)",-0.609264917007477,0.155636125887842,18,6,"yugene",0.233454188831763
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"Protein processing in ER/ UPR (darkslateblue)",0.522499047865634,0.119245742815537,18,6,"yugene",0.185493377713057
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"VEGF signaling (sienna3)",1.29482711274915,0.0182769175904187,18,6,"yugene",0.0307052215519035
+"temporal_pooled","Keratinocyte","Keratinocyte",NA,"mRNA splicing (darkred)",1.42265817367041,0.0118428482272876,18,6,"yugene",0.0207249843977533
+"temporal_pooled","Melanocyte","Melanocyte",NA,"Adaptive immunity/ T cell signaling (darkgreen)",-5.02250736737135,1.48592825938364e-05,18,6,"scaled",5.20074890784273e-05
+"temporal_pooled","Melanocyte","Melanocyte",NA,"Cell cycle/ DNA replication (green)",-0.996414841782907,0.119245742815537,18,6,"scaled",0.156510037445392
+"temporal_pooled","Melanocyte","Melanocyte",NA,"Chromatin modification (orange)",-4.69211215540935,1.48592825938364e-05,18,6,"scaled",5.20074890784273e-05
+"temporal_pooled","Melanocyte","Melanocyte",NA,"ECM organization/ EMT (brown4)",0.880293048008978,0.103554340396446,18,6,"scaled",0.140299428924217
+"temporal_pooled","Melanocyte","Melanocyte",NA,"Fatty acid metabolism/ Peroxisome (ivory)",-1.10123992882661,0.0272965021248774,18,6,"scaled",0.0440943495863404
+"temporal_pooled","Melanocyte","Melanocyte",NA,"Innate immunity/ Inflammation (turquoise)",0.669668072640446,0.0769265059882909,18,6,"scaled",0.107697108383607
+"temporal_pooled","Melanocyte","Melanocyte",NA,"Interferon signaling (darkmagenta)",-1.16534489479341,0.0182769175904187,18,6,"scaled",0.0307052215519035
+"temporal_pooled","Melanocyte","Melanocyte",NA,"Mitochondrial translation/ OxPhos (pink)",-0.96590395120154,0.014799845463461,18,6,"scaled",0.0258997295610568
+"temporal_pooled","Melanocyte","Melanocyte",NA,"Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",-0.549874575827913,0.310440131950429,18,6,"scaled",0.362180153942168
+"temporal_pooled","Melanocyte","Melanocyte",NA,"OxPhos/ Heme metabolism (white)",0.019253623947406,0.974100270438943,18,6,"scaled",0.974100270438943
+"temporal_pooled","Melanocyte","Melanocyte",NA,"Protein folding/ Translation (plum1)",-4.61860971052469,1.48592825938364e-05,18,6,"scaled",5.20074890784273e-05
+"temporal_pooled","Melanocyte","Melanocyte",NA,"Protein processing in ER/ UPR (darkslateblue)",2.705797506226,1.48592825938364e-05,18,6,"scaled",5.20074890784273e-05
+"temporal_pooled","Melanocyte","Melanocyte",NA,"VEGF signaling (sienna3)",3.86344398507039,1.48592825938364e-05,18,6,"scaled",5.20074890784273e-05
+"temporal_pooled","Melanocyte","Melanocyte",NA,"mRNA splicing (darkred)",-2.61519561888757,1.48592825938364e-05,18,6,"scaled",5.20074890784273e-05
+"temporal_pooled","Melanocyte","Melanocyte",NA,"Adaptive immunity/ T cell signaling (darkgreen)",1.72881139772185,0.00442806621296324,18,6,"yugene",0.00885613242592648
+"temporal_pooled","Melanocyte","Melanocyte",NA,"Cell cycle/ DNA replication (green)",-0.490952902984019,0.871170019911439,18,6,"yugene",0.938183098366165
+"temporal_pooled","Melanocyte","Melanocyte",NA,"Chromatin modification (orange)",-3.97175179458436,2.97185651876727e-05,18,6,"yugene",0.000104014978156855
+"temporal_pooled","Melanocyte","Melanocyte",NA,"ECM organization/ EMT (brown4)",-0.0797387806878124,0.721120984278879,18,6,"yugene",0.841307814992026
+"temporal_pooled","Melanocyte","Melanocyte",NA,"Fatty acid metabolism/ Peroxisome (ivory)",0.464195598339947,0.922538559838331,18,6,"yugene",0.945039500322193
+"temporal_pooled","Melanocyte","Melanocyte",NA,"Innate immunity/ Inflammation (turquoise)",-1.71700218944523,0.000950994086005528,18,6,"yugene",0.00249635947576451
+"temporal_pooled","Melanocyte","Melanocyte",NA,"Interferon signaling (darkmagenta)",-0.495183697927314,0.310440131950429,18,6,"yugene",0.420596307803808
+"temporal_pooled","Melanocyte","Melanocyte",NA,"Mitochondrial translation/ OxPhos (pink)",2.06573774873608,0.00442806621296324,18,6,"yugene",0.00885613242592648
+"temporal_pooled","Melanocyte","Melanocyte",NA,"Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",1.39187783221208,0.00337305714880086,18,6,"yugene",0.0074562315920861
+"temporal_pooled","Melanocyte","Melanocyte",NA,"OxPhos/ Heme metabolism (white)",-0.29041963742102,0.820410710570894,18,6,"yugene",0.906769732736251
+"temporal_pooled","Melanocyte","Melanocyte",NA,"Protein folding/ Translation (plum1)",0.323634170984701,0.974100270438943,18,6,"yugene",0.974100270438943
+"temporal_pooled","Melanocyte","Melanocyte",NA,"Protein processing in ER/ UPR (darkslateblue)",3.49834805950805,1.48592825938364e-05,18,6,"yugene",6.93433187712364e-05
+"temporal_pooled","Melanocyte","Melanocyte",NA,"VEGF signaling (sienna3)",-2.54828763284269,2.97185651876727e-05,18,6,"yugene",0.000104014978156855
+"temporal_pooled","Melanocyte","Melanocyte",NA,"mRNA splicing (darkred)",-2.69160473890628,1.48592825938364e-05,18,6,"yugene",6.93433187712364e-05
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","Adaptive immunity/ T cell signaling (darkgreen)",4.00408352290756,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","Cell cycle/ DNA replication (green)",14.7459335930994,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","Chromatin modification (orange)",-6.22885876682152,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","ECM organization/ EMT (brown4)",-2.63416598606819,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","Fatty acid metabolism/ Peroxisome (ivory)",-9.74827436679366,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","Innate immunity/ Inflammation (turquoise)",-1.1426361755356,0.24025974025974,6,6,"scaled",0.312089971883786
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","Interferon signaling (darkmagenta)",0.327892998155176,0.484848484848485,6,6,"scaled",0.565656565656566
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","Mitochondrial translation/ OxPhos (pink)",3.59772797917907,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",-1.12264660972662,0.132034632034632,6,6,"scaled",0.184848484848485
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","OxPhos/ Heme metabolism (white)",5.15541140177549,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","Protein folding/ Translation (plum1)",-2.62678115788966,0.00865800865800866,6,6,"scaled",0.0184899845916795
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","Protein processing in ER/ UPR (darkslateblue)",7.50740050912333,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","VEGF signaling (sienna3)",0.501449193207468,0.484848484848485,6,6,"scaled",0.565656565656566
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","mRNA splicing (darkred)",-2.48911310415809,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","Adaptive immunity/ T cell signaling (darkgreen)",-5.39884986377277,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","Cell cycle/ DNA replication (green)",5.65468232619175,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","Chromatin modification (orange)",-3.70765782220198,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","ECM organization/ EMT (brown4)",4.96089318703206,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","Fatty acid metabolism/ Peroxisome (ivory)",15.3273520960516,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","Innate immunity/ Inflammation (turquoise)",4.25232801986617,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","Interferon signaling (darkmagenta)",-4.99913604319688,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","Mitochondrial translation/ OxPhos (pink)",0.713790427308653,0.588744588744589,6,6,"yugene",0.662337662337662
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",-0.371261444762418,0.818181818181818,6,6,"yugene",0.859090909090909
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","OxPhos/ Heme metabolism (white)",-3.82161653536301,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","Protein folding/ Translation (plum1)",0.37231667675883,0.699134199134199,6,6,"yugene",0.76600790513834
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","Protein processing in ER/ UPR (darkslateblue)",4.54043056199205,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","VEGF signaling (sienna3)",3.89050314836094,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_4_days","Fibroblast","4_days","mRNA splicing (darkred)",-2.64434794212603,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","Adaptive immunity/ T cell signaling (darkgreen)",-0.602002600607217,0.588744588744589,6,6,"scaled",0.662337662337662
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","Cell cycle/ DNA replication (green)",10.3913968822629,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","Chromatin modification (orange)",-0.630218986756914,0.30952380952381,6,6,"scaled",0.386138613861386
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","ECM organization/ EMT (brown4)",-2.06796089628383,0.0151515151515152,6,6,"scaled",0.0289256198347107
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","Fatty acid metabolism/ Peroxisome (ivory)",-7.87464915347058,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","Innate immunity/ Inflammation (turquoise)",-2.00774743990692,0.0151515151515152,6,6,"scaled",0.0289256198347107
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","Interferon signaling (darkmagenta)",0.00686780780624196,1,6,6,"scaled",1
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","Mitochondrial translation/ OxPhos (pink)",1.95302156695491,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",2.3000520385909,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","OxPhos/ Heme metabolism (white)",3.63234030152553,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","Protein folding/ Translation (plum1)",0.0383312005479125,1,6,6,"scaled",1
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","Protein processing in ER/ UPR (darkslateblue)",14.3643899737167,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","VEGF signaling (sienna3)",1.23525133167206,0.0930735930735931,6,6,"scaled",0.13961038961039
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","mRNA splicing (darkred)",-0.767347673409427,0.17965367965368,6,6,"scaled",0.238277511961722
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","Adaptive immunity/ T cell signaling (darkgreen)",-2.47363119028399,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","Cell cycle/ DNA replication (green)",2.25185658451647,0.00432900432900433,6,6,"yugene",0.00924499229583975
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","Chromatin modification (orange)",-1.53921232177321,0.0411255411255411,6,6,"yugene",0.0729833546734955
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","ECM organization/ EMT (brown4)",6.18304714645419,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","Fatty acid metabolism/ Peroxisome (ivory)",8.64272379209968,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","Innate immunity/ Inflammation (turquoise)",4.72975102747783,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","Interferon signaling (darkmagenta)",-1.8610826713598,0.00865800865800866,6,6,"yugene",0.0173160173160173
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","Mitochondrial translation/ OxPhos (pink)",1.86726091473343,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",2.11020517986377,0.00432900432900433,6,6,"yugene",0.00924499229583975
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","OxPhos/ Heme metabolism (white)",0.325908807961411,0.484848484848485,6,6,"yugene",0.581818181818182
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","Protein folding/ Translation (plum1)",-0.711413297322952,0.393939393939394,6,6,"yugene",0.486631016042781
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","Protein processing in ER/ UPR (darkslateblue)",1.23906971144467,0.132034632034632,6,6,"yugene",0.200438116100767
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","VEGF signaling (sienna3)",12.5346820476911,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_10_days","Fibroblast","10_days","mRNA splicing (darkred)",-0.360772779525151,0.937229437229437,6,6,"yugene",0.960088691796009
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","Adaptive immunity/ T cell signaling (darkgreen)",-1.30929730644904,0.0930735930735931,6,6,"scaled",0.13961038961039
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","Cell cycle/ DNA replication (green)",14.5321377160188,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","Chromatin modification (orange)",-1.35698528645654,0.0649350649350649,6,6,"scaled",0.101010101010101
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","ECM organization/ EMT (brown4)",-3.156017574375,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","Fatty acid metabolism/ Peroxisome (ivory)",-10.7232197939161,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","Innate immunity/ Inflammation (turquoise)",-1.96890959347325,0.0151515151515152,6,6,"scaled",0.0289256198347107
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","Interferon signaling (darkmagenta)",0.493002992092607,0.588744588744589,6,6,"scaled",0.662337662337662
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","Mitochondrial translation/ OxPhos (pink)",8.54583291056132,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",5.32607203448476,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","OxPhos/ Heme metabolism (white)",3.50270051387074,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","Protein folding/ Translation (plum1)",-0.875761952270529,0.30952380952381,6,6,"scaled",0.386138613861386
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","Protein processing in ER/ UPR (darkslateblue)",17.5951347446091,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","VEGF signaling (sienna3)",4.88862422790497,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","mRNA splicing (darkred)",-0.46653517576775,1,6,6,"scaled",1
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","Adaptive immunity/ T cell signaling (darkgreen)",-5.00462940768952,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","Cell cycle/ DNA replication (green)",5.59228755567969,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","Chromatin modification (orange)",-2.4849350018365,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","ECM organization/ EMT (brown4)",3.84271490117548,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","Fatty acid metabolism/ Peroxisome (ivory)",10.5132358992177,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","Innate immunity/ Inflammation (turquoise)",4.37919339936876,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","Interferon signaling (darkmagenta)",-1.60761680957178,0.0930735930735931,6,6,"yugene",0.144781144781145
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","Mitochondrial translation/ OxPhos (pink)",6.75955509630973,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",3.82423377548135,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","OxPhos/ Heme metabolism (white)",0.593850944161503,0.24025974025974,6,6,"yugene",0.32905138339921
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","Protein folding/ Translation (plum1)",-0.430322701222994,0.588744588744589,6,6,"yugene",0.662337662337662
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","Protein processing in ER/ UPR (darkslateblue)",1.02283146242033,0.0930735930735931,6,6,"yugene",0.144781144781145
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","VEGF signaling (sienna3)",10.7924739514934,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Fibroblast_20_days","Fibroblast","20_days","mRNA splicing (darkred)",-1.96213495681557,0.00865800865800866,6,6,"yugene",0.0173160173160173
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","Adaptive immunity/ T cell signaling (darkgreen)",0.826956523443542,0.132034632034632,6,6,"scaled",0.184848484848485
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","Cell cycle/ DNA replication (green)",0.704765036922711,0.17965367965368,6,6,"scaled",0.238277511961722
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","Chromatin modification (orange)",0.220052383253655,0.699134199134199,6,6,"scaled",0.772727272727273
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","ECM organization/ EMT (brown4)",-2.69492571960049,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","Fatty acid metabolism/ Peroxisome (ivory)",-1.79596805072678,0.025974025974026,6,6,"scaled",0.0460947503201024
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","Innate immunity/ Inflammation (turquoise)",0.389623154417018,0.588744588744589,6,6,"scaled",0.662337662337662
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","Interferon signaling (darkmagenta)",-0.0358435632356628,0.818181818181818,6,6,"scaled",0.881118881118881
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","Mitochondrial translation/ OxPhos (pink)",2.0895487560112,0.0411255411255411,6,6,"scaled",0.0672963400236128
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",0.57453826297576,0.484848484848485,6,6,"scaled",0.565656565656566
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","OxPhos/ Heme metabolism (white)",0.835944839350859,0.17965367965368,6,6,"scaled",0.238277511961722
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","Protein folding/ Translation (plum1)",-0.987865124588013,0.132034632034632,6,6,"scaled",0.184848484848485
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","Protein processing in ER/ UPR (darkslateblue)",0.0192280352287149,0.937229437229437,6,6,"scaled",0.984090909090909
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","VEGF signaling (sienna3)",-0.359162761582614,0.937229437229437,6,6,"scaled",0.984090909090909
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","mRNA splicing (darkred)",0.577460606309363,0.24025974025974,6,6,"scaled",0.312089971883786
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","Adaptive immunity/ T cell signaling (darkgreen)",-3.44469855068243,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","Cell cycle/ DNA replication (green)",2.90064328387086,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","Chromatin modification (orange)",-0.937422657083359,0.818181818181818,6,6,"yugene",0.859090909090909
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","ECM organization/ EMT (brown4)",-1.01490238281562,0.132034632034632,6,6,"yugene",0.200438116100767
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","Fatty acid metabolism/ Peroxisome (ivory)",2.30240514699857,0.00432900432900433,6,6,"yugene",0.00924499229583975
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","Innate immunity/ Inflammation (turquoise)",2.747150207868,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","Interferon signaling (darkmagenta)",-1.01983198703912,0.0649350649350649,6,6,"yugene",0.109090909090909
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","Mitochondrial translation/ OxPhos (pink)",0.960809115997174,0.30952380952381,6,6,"yugene",0.410526315789474
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",0.106474207860785,0.818181818181818,6,6,"yugene",0.859090909090909
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","OxPhos/ Heme metabolism (white)",-3.12722423573841,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","Protein folding/ Translation (plum1)",0.112266295923107,0.818181818181818,6,6,"yugene",0.859090909090909
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","Protein processing in ER/ UPR (darkslateblue)",0.0841070257874989,0.393939393939394,6,6,"yugene",0.486631016042781
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","VEGF signaling (sienna3)",0.863579881426371,0.393939393939394,6,6,"yugene",0.486631016042781
+"temporal_bytimepoint","Keratinocyte_4_days","Keratinocyte","4_days","mRNA splicing (darkred)",1.34713331913886,0.0649350649350649,6,6,"yugene",0.109090909090909
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","Adaptive immunity/ T cell signaling (darkgreen)",1.80561254099445,0.025974025974026,6,6,"scaled",0.0460947503201024
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","Cell cycle/ DNA replication (green)",3.44325671960941,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","Chromatin modification (orange)",2.09965170801371,0.00432900432900433,6,6,"scaled",0.0101010101010101
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","ECM organization/ EMT (brown4)",-1.28817548180815,0.132034632034632,6,6,"scaled",0.184848484848485
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","Fatty acid metabolism/ Peroxisome (ivory)",-3.62422584790755,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","Innate immunity/ Inflammation (turquoise)",-0.352583725662597,0.699134199134199,6,6,"scaled",0.772727272727273
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","Interferon signaling (darkmagenta)",0.51051913977427,0.588744588744589,6,6,"scaled",0.662337662337662
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","Mitochondrial translation/ OxPhos (pink)",3.89353882955136,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",0.0871793883980367,1,6,6,"scaled",1
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","OxPhos/ Heme metabolism (white)",1.48119288844754,0.0649350649350649,6,6,"scaled",0.101010101010101
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","Protein folding/ Translation (plum1)",-2.09112216441823,0.00865800865800866,6,6,"scaled",0.0184899845916795
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","Protein processing in ER/ UPR (darkslateblue)",0.9740516527905,0.818181818181818,6,6,"scaled",0.881118881118881
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","VEGF signaling (sienna3)",-0.311959830501365,1,6,6,"scaled",1
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","mRNA splicing (darkred)",1.05788988225601,0.0930735930735931,6,6,"scaled",0.13961038961039
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","Adaptive immunity/ T cell signaling (darkgreen)",-2.9372447019364,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","Cell cycle/ DNA replication (green)",7.22036392750519,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","Chromatin modification (orange)",0.0549901004443284,1,6,6,"yugene",1
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","ECM organization/ EMT (brown4)",-0.107781870490949,1,6,6,"yugene",1
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","Fatty acid metabolism/ Peroxisome (ivory)",1.85832394671895,0.00865800865800866,6,6,"yugene",0.0173160173160173
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","Innate immunity/ Inflammation (turquoise)",0.553324251671128,0.588744588744589,6,6,"yugene",0.662337662337662
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","Interferon signaling (darkmagenta)",-0.456139681313739,0.484848484848485,6,6,"yugene",0.581818181818182
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","Mitochondrial translation/ OxPhos (pink)",0.912243783517903,0.484848484848485,6,6,"yugene",0.581818181818182
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",-0.414028333226234,0.30952380952381,6,6,"yugene",0.410526315789474
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","OxPhos/ Heme metabolism (white)",-4.0286583775507,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","Protein folding/ Translation (plum1)",-1.32097087788954,0.0649350649350649,6,6,"yugene",0.109090909090909
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","Protein processing in ER/ UPR (darkslateblue)",0.473943301622644,0.17965367965368,6,6,"yugene",0.263213530655391
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","VEGF signaling (sienna3)",1.48758765421626,0.0930735930735931,6,6,"yugene",0.144781144781145
+"temporal_bytimepoint","Keratinocyte_10_days","Keratinocyte","10_days","mRNA splicing (darkred)",1.05285343934085,0.24025974025974,6,6,"yugene",0.32905138339921
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","Adaptive immunity/ T cell signaling (darkgreen)",3.43272827473014,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","Cell cycle/ DNA replication (green)",-1.68407766388579,0.00865800865800866,6,6,"scaled",0.0184899845916795
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","Chromatin modification (orange)",3.18684255933493,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","ECM organization/ EMT (brown4)",-1.94788989977895,0.00865800865800866,6,6,"scaled",0.0184899845916795
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","Fatty acid metabolism/ Peroxisome (ivory)",-4.16408749312451,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","Innate immunity/ Inflammation (turquoise)",-1.82884078399352,0.025974025974026,6,6,"scaled",0.0460947503201024
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","Interferon signaling (darkmagenta)",0.838045884950299,0.17965367965368,6,6,"scaled",0.238277511961722
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","Mitochondrial translation/ OxPhos (pink)",1.49020519075993,0.0649350649350649,6,6,"scaled",0.101010101010101
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",0.369934330162569,1,6,6,"scaled",1
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","OxPhos/ Heme metabolism (white)",2.26170293459778,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","Protein folding/ Translation (plum1)",-1.67190269250707,0.0411255411255411,6,6,"scaled",0.0672963400236128
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","Protein processing in ER/ UPR (darkslateblue)",1.47477254095868,0.025974025974026,6,6,"scaled",0.0460947503201024
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","VEGF signaling (sienna3)",0.890879897581876,0.393939393939394,6,6,"scaled",0.481906443071492
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","mRNA splicing (darkred)",2.562027979607,0.00432900432900433,6,6,"scaled",0.0101010101010101
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","Adaptive immunity/ T cell signaling (darkgreen)",-1.44392030958874,0.0930735930735931,6,6,"yugene",0.144781144781145
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","Cell cycle/ DNA replication (green)",6.72329718568871,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","Chromatin modification (orange)",0.770152726934857,0.393939393939394,6,6,"yugene",0.486631016042781
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","ECM organization/ EMT (brown4)",-0.445411153943597,0.699134199134199,6,6,"yugene",0.76600790513834
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","Fatty acid metabolism/ Peroxisome (ivory)",1.73583212348359,0.025974025974026,6,6,"yugene",0.0503496503496504
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","Innate immunity/ Inflammation (turquoise)",-0.462056892296552,0.699134199134199,6,6,"yugene",0.76600790513834
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","Interferon signaling (darkmagenta)",0.080696060434703,1,6,6,"yugene",1
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","Mitochondrial translation/ OxPhos (pink)",-2.10099952599922,0.025974025974026,6,6,"yugene",0.0503496503496504
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",-0.752561429691676,0.393939393939394,6,6,"yugene",0.486631016042781
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","OxPhos/ Heme metabolism (white)",-3.32685464083569,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","Protein folding/ Translation (plum1)",-0.604326242952235,0.24025974025974,6,6,"yugene",0.32905138339921
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","Protein processing in ER/ UPR (darkslateblue)",0.987812307448993,0.17965367965368,6,6,"yugene",0.263213530655391
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","VEGF signaling (sienna3)",8.46777796621396,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Keratinocyte_20_days","Keratinocyte","20_days","mRNA splicing (darkred)",7.60297366788427,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","Adaptive immunity/ T cell signaling (darkgreen)",-7.61381842109006,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","Cell cycle/ DNA replication (green)",-1.19274931975586,0.0649350649350649,6,6,"scaled",0.101010101010101
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","Chromatin modification (orange)",-6.80834184649315,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","ECM organization/ EMT (brown4)",1.72257389924841,0.0151515151515152,6,6,"scaled",0.0289256198347107
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","Fatty acid metabolism/ Peroxisome (ivory)",-0.281248352445921,0.484848484848485,6,6,"scaled",0.565656565656566
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","Innate immunity/ Inflammation (turquoise)",1.60920192099229,0.025974025974026,6,6,"scaled",0.0460947503201024
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","Interferon signaling (darkmagenta)",-1.1560418910799,0.132034632034632,6,6,"scaled",0.184848484848485
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","Mitochondrial translation/ OxPhos (pink)",-1.91194787330634,0.00865800865800866,6,6,"scaled",0.0184899845916795
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",3.34467368893064,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","OxPhos/ Heme metabolism (white)",-1.23550676000709,0.0411255411255411,6,6,"scaled",0.0672963400236128
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","Protein folding/ Translation (plum1)",-8.36548077453148,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","Protein processing in ER/ UPR (darkslateblue)",2.77032179976671,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","VEGF signaling (sienna3)",4.17335240121466,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","mRNA splicing (darkred)",-2.36181792118224,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","Adaptive immunity/ T cell signaling (darkgreen)",1.62275922264024,0.0411255411255411,6,6,"yugene",0.0729833546734955
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","Cell cycle/ DNA replication (green)",-0.236200417794793,0.588744588744589,6,6,"yugene",0.662337662337662
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","Chromatin modification (orange)",-3.51395392436832,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","ECM organization/ EMT (brown4)",-0.506775317836202,0.393939393939394,6,6,"yugene",0.486631016042781
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","Fatty acid metabolism/ Peroxisome (ivory)",5.69038200659523,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","Innate immunity/ Inflammation (turquoise)",-2.20080039641258,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","Interferon signaling (darkmagenta)",0.908610659388953,0.24025974025974,6,6,"yugene",0.32905138339921
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","Mitochondrial translation/ OxPhos (pink)",2.91320698586954,0.00432900432900433,6,6,"yugene",0.00924499229583975
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",4.01615735614737,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","OxPhos/ Heme metabolism (white)",0.963428325942914,0.24025974025974,6,6,"yugene",0.32905138339921
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","Protein folding/ Translation (plum1)",0.226267944323865,0.937229437229437,6,6,"yugene",0.960088691796009
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","Protein processing in ER/ UPR (darkslateblue)",6.73644238313712,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","VEGF signaling (sienna3)",-6.01340123967358,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Melanocyte_4_days","Melanocyte","4_days","mRNA splicing (darkred)",-3.80806968234186,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","Adaptive immunity/ T cell signaling (darkgreen)",-5.05830200732443,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","Cell cycle/ DNA replication (green)",-1.46398761653261,0.0411255411255411,6,6,"scaled",0.0672963400236128
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","Chromatin modification (orange)",-4.95269400410925,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","ECM organization/ EMT (brown4)",1.21044630018768,0.0151515151515152,6,6,"scaled",0.0289256198347107
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","Fatty acid metabolism/ Peroxisome (ivory)",-1.34833948172365,0.0411255411255411,6,6,"scaled",0.0672963400236128
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","Innate immunity/ Inflammation (turquoise)",-0.702825725407032,0.393939393939394,6,6,"scaled",0.481906443071492
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","Interferon signaling (darkmagenta)",-3.98147700985204,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","Mitochondrial translation/ OxPhos (pink)",-0.525985982350769,0.30952380952381,6,6,"scaled",0.386138613861386
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",-1.31372760882052,0.132034632034632,6,6,"scaled",0.184848484848485
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","OxPhos/ Heme metabolism (white)",-0.204299643648462,0.818181818181818,6,6,"scaled",0.881118881118881
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","Protein folding/ Translation (plum1)",-4.38592727304911,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","Protein processing in ER/ UPR (darkslateblue)",1.62195212256536,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","VEGF signaling (sienna3)",3.113483728704,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","mRNA splicing (darkred)",-3.2279162261515,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","Adaptive immunity/ T cell signaling (darkgreen)",2.80041275598958,0.00432900432900433,6,6,"yugene",0.00924499229583975
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","Cell cycle/ DNA replication (green)",-1.79689316274454,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","Chromatin modification (orange)",-2.94479985310818,0.00432900432900433,6,6,"yugene",0.00924499229583975
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","ECM organization/ EMT (brown4)",0.356079851658162,0.588744588744589,6,6,"yugene",0.662337662337662
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","Fatty acid metabolism/ Peroxisome (ivory)",-0.98309037014993,0.0930735930735931,6,6,"yugene",0.144781144781145
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","Innate immunity/ Inflammation (turquoise)",-1.78136978214935,0.0411255411255411,6,6,"yugene",0.0729833546734955
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","Interferon signaling (darkmagenta)",-2.5986764408688,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","Mitochondrial translation/ OxPhos (pink)",1.0873499412129,0.17965367965368,6,6,"yugene",0.263213530655391
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",1.4008541037233,0.0411255411255411,6,6,"yugene",0.0729833546734955
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","OxPhos/ Heme metabolism (white)",0.0706799145175697,0.818181818181818,6,6,"yugene",0.859090909090909
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","Protein folding/ Translation (plum1)",0.196627571120677,0.588744588744589,6,6,"yugene",0.662337662337662
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","Protein processing in ER/ UPR (darkslateblue)",4.56409251945972,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","VEGF signaling (sienna3)",-4.0006065424496,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Melanocyte_10_days","Melanocyte","10_days","mRNA splicing (darkred)",-3.48238098737638,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","Adaptive immunity/ T cell signaling (darkgreen)",-4.95597651127715,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","Cell cycle/ DNA replication (green)",-0.177374648423846,0.937229437229437,6,6,"scaled",0.984090909090909
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","Chromatin modification (orange)",-3.98731074842241,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","ECM organization/ EMT (brown4)",-0.121741885451743,0.484848484848485,6,6,"scaled",0.565656565656566
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","Fatty acid metabolism/ Peroxisome (ivory)",-1.93212698172647,0.0151515151515152,6,6,"scaled",0.0289256198347107
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","Innate immunity/ Inflammation (turquoise)",3.28144382040096,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","Interferon signaling (darkmagenta)",-0.483447043650775,0.30952380952381,6,6,"scaled",0.386138613861386
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","Mitochondrial translation/ OxPhos (pink)",-0.997178468774224,0.17965367965368,6,6,"scaled",0.238277511961722
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",-1.29899377557741,0.0151515151515152,6,6,"scaled",0.0289256198347107
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","OxPhos/ Heme metabolism (white)",1.42587421830425,0.0411255411255411,6,6,"scaled",0.0672963400236128
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","Protein folding/ Translation (plum1)",-4.36584371487084,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","Protein processing in ER/ UPR (darkslateblue)",2.65717897864067,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","VEGF signaling (sienna3)",3.4368353648445,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","mRNA splicing (darkred)",-1.86548812991903,0.00216450216450216,6,6,"scaled",0.00524475524475524
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","Adaptive immunity/ T cell signaling (darkgreen)",1.35646844396816,0.0411255411255411,6,6,"yugene",0.0729833546734955
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","Cell cycle/ DNA replication (green)",0.506395092419514,0.0930735930735931,6,6,"yugene",0.144781144781145
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","Chromatin modification (orange)",-4.16502266229122,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","ECM organization/ EMT (brown4)",-0.483177642757689,0.30952380952381,6,6,"yugene",0.410526315789474
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","Fatty acid metabolism/ Peroxisome (ivory)",-0.452257751029654,0.588744588744589,6,6,"yugene",0.662337662337662
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","Innate immunity/ Inflammation (turquoise)",-0.923454528165619,0.0649350649350649,6,6,"yugene",0.109090909090909
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","Interferon signaling (darkmagenta)",-0.694779664179261,0.393939393939394,6,6,"yugene",0.486631016042781
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","Mitochondrial translation/ OxPhos (pink)",1.75386131253036,0.0411255411255411,6,6,"yugene",0.0729833546734955
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","Muscle contraction/ Cytoskeleton/ Glycolysis (blue)",0.864758630570547,0.24025974025974,6,6,"yugene",0.32905138339921
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","OxPhos/ Heme metabolism (white)",-3.33052772113833,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","Protein folding/ Translation (plum1)",0.165692244482501,0.937229437229437,6,6,"yugene",0.960088691796009
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","Protein processing in ER/ UPR (darkslateblue)",3.75654591084824,0.00216450216450216,6,6,"yugene",0.00514579759862779
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","VEGF signaling (sienna3)",-2.15747305485865,0.00865800865800866,6,6,"yugene",0.0173160173160173
+"temporal_bytimepoint","Melanocyte_20_days","Melanocyte","20_days","mRNA splicing (darkred)",-2.61898176239844,0.00216450216450216,6,6,"yugene",0.00514579759862779

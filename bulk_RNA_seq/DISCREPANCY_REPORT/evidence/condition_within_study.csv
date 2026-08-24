@@ -1,0 +1,85 @@
+"test","condition","model","n_studies","n_test","n_control","diff_within_study","diff_pooled","studies_positive","p_sign","p_perm","p_perm_adj","study","cell_line","immortalised","diff"
+"condition_within_study_stratified","CICQ","scaled_diff",6,16,16,5.88320206320106,47.6381527493836,5,0.21875,0.138843057847108,0.138843057847108,NA,NA,NA,NA
+"condition_within_study_stratified","SSCQ","scaled_diff",6,22,29,-3.43346398903611,21.7377857872901,2,0.6875,0.109044547772611,0.136305684715764,NA,NA,NA,NA
+"condition_within_study_stratified","RS","scaled_diff",6,11,9,42.3294942513317,31.2086999159848,6,0.03125,0.000299985000749962,0.000499975001249937,NA,NA,NA,NA
+"condition_within_study_stratified","SIPS","scaled_diff",4,36,20,23.2873431277108,54.3137881151093,3,0.625,4.99975001249937e-05,0.000124993750312484,NA,NA,NA,NA
+"condition_within_study_stratified","OIS","scaled_diff",15,47,49,33.2979984251735,27.8408500021464,15,6.10351562500001e-05,4.99975001249937e-05,0.000124993750312484,NA,NA,NA,NA
+"condition_within_study_stratified","CICQ","yugene_diff",6,16,16,19.0878784630291,22.0526646842752,6,0.03125,4.99975001249937e-05,8.33291668749896e-05,NA,NA,NA,NA
+"condition_within_study_stratified","SSCQ","yugene_diff",6,22,29,7.75598253872412,8.24552067886423,6,0.03125,0.00274986250687466,0.00274986250687466,NA,NA,NA,NA
+"condition_within_study_stratified","RS","yugene_diff",6,11,9,32.4582767982774,23.4026632992927,6,0.03125,0.000149992500374981,0.000187490625468727,NA,NA,NA,NA
+"condition_within_study_stratified","SIPS","yugene_diff",4,36,20,27.7600557074481,29.9153101413466,4,0.125,4.99975001249937e-05,8.33291668749896e-05,NA,NA,NA,NA
+"condition_within_study_stratified","OIS","yugene_diff",15,47,49,26.9177104731896,23.4457417180042,15,6.10351562500001e-05,4.99975001249937e-05,8.33291668749896e-05,NA,NA,NA,NA
+"per_study_contrast","CICQ","scaled_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP045867","MRC-5","no",22.4383758598756
+"per_study_contrast","CICQ","scaled_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP089801","HCA2-hTERT","yes",3.74620982813607
+"per_study_contrast","CICQ","scaled_diff",NA,2,2,NA,NA,NA,NA,NA,NA,"SRP153205","HDF 12-1","no",14.7607267729275
+"per_study_contrast","CICQ","scaled_diff",NA,2,2,NA,NA,NA,NA,NA,NA,"SRP153724","HDF 12-3","no",9.92779007002549
+"per_study_contrast","CICQ","scaled_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP154382","HDF 10-2","no",-13.8580724914532
+"per_study_contrast","CICQ","scaled_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP154577","HDF 10-5","no",2.59155324521187
+"per_study_contrast","SSCQ","scaled_diff",NA,6,6,NA,NA,NA,NA,NA,NA,"ERP021140","HCA2/BJ (primary)","no",-7.13494039637468
+"per_study_contrast","SSCQ","scaled_diff",NA,2,3,NA,NA,NA,NA,NA,NA,"SRP017378","BJ-hTERT","yes",3.45294563405189
+"per_study_contrast","SSCQ","scaled_diff",NA,2,2,NA,NA,NA,NA,NA,NA,"SRP052706","foreskin 2DD","no",17.8195001027181
+"per_study_contrast","SSCQ","scaled_diff",NA,6,6,NA,NA,NA,NA,NA,NA,"SRP065206","IMR90","no",-5.36514820679173
+"per_study_contrast","SSCQ","scaled_diff",NA,3,9,NA,NA,NA,NA,NA,NA,"SRP066947","Tig3ET","yes",-6.80348603162156
+"per_study_contrast","SSCQ","scaled_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP154382","HDF 10-2","no",-6.78988010127613
+"per_study_contrast","RS","scaled_diff",NA,1,1,NA,NA,NA,NA,NA,NA,"SRP034163","IMR90","no",42.4250936053278
+"per_study_contrast","RS","scaled_diff",NA,2,2,NA,NA,NA,NA,NA,NA,"SRP034541","IMR90","no",53.5440515012949
+"per_study_contrast","RS","scaled_diff",NA,2,2,NA,NA,NA,NA,NA,NA,"SRP040745","BJ","no",19.9429906531609
+"per_study_contrast","RS","scaled_diff",NA,1,1,NA,NA,NA,NA,NA,NA,"SRP064207","WI-38","no",51.5040770294253
+"per_study_contrast","RS","scaled_diff",NA,1,1,NA,NA,NA,NA,NA,NA,"SRP069768","WI-38","no",51.0946137117571
+"per_study_contrast","RS","scaled_diff",NA,4,2,NA,NA,NA,NA,NA,NA,"SRP121031","IMR90","no",43.9452159152944
+"per_study_contrast","SIPS","scaled_diff",NA,18,6,NA,NA,NA,NA,NA,NA,"ERP021140","HCA2/BJ (primary)","no",17.3399387414621
+"per_study_contrast","SIPS","scaled_diff",NA,8,8,NA,NA,NA,NA,NA,NA,"SRP062872","IMR90","no",44.2905459368222
+"per_study_contrast","SIPS","scaled_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP098713","IMR90","no",-1.0975411293711
+"per_study_contrast","SIPS","scaled_diff",NA,7,3,NA,NA,NA,NA,NA,NA,"SRP136071","IMR90","no",13.4434549788043
+"per_study_contrast","OIS","scaled_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP017142","WI-38","no",48.2134032513601
+"per_study_contrast","OIS","scaled_diff",NA,1,1,NA,NA,NA,NA,NA,NA,"SRP040243","IMR90","no",25.8294370936103
+"per_study_contrast","OIS","scaled_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP046254","IMR90 ER:RAS","no",27.6285014107414
+"per_study_contrast","OIS","scaled_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP060598","IMR90","no",9.34984544533514
+"per_study_contrast","OIS","scaled_diff",NA,8,8,NA,NA,NA,NA,NA,NA,"SRP062872","IMR90","no",42.8189062326462
+"per_study_contrast","OIS","scaled_diff",NA,3,6,NA,NA,NA,NA,NA,NA,"SRP065206","IMR90","no",68.2259267197661
+"per_study_contrast","OIS","scaled_diff",NA,2,1,NA,NA,NA,NA,NA,NA,"SRP066917","BJ-hTERT","yes",15.4693978829112
+"per_study_contrast","OIS","scaled_diff",NA,6,9,NA,NA,NA,NA,NA,NA,"SRP066947","Tig3ET","yes",26.4720878207168
+"per_study_contrast","OIS","scaled_diff",NA,1,1,NA,NA,NA,NA,NA,NA,"SRP070636","IMR90","no",32.7894685332026
+"per_study_contrast","OIS","scaled_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP113324","IMR90 ER:RAS","no",28.8380965053882
+"per_study_contrast","OIS","scaled_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP113329","IMR90 ER:RAS","no",21.7748218101129
+"per_study_contrast","OIS","scaled_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP117883","IMR90","no",46.4515168184826
+"per_study_contrast","OIS","scaled_diff",NA,2,1,NA,NA,NA,NA,NA,NA,"SRP123346","BJ-hTERT","yes",10.5639751826388
+"per_study_contrast","OIS","scaled_diff",NA,4,2,NA,NA,NA,NA,NA,NA,"SRP127037","IMR90-hTERT","yes",28.9342153825106
+"per_study_contrast","OIS","scaled_diff",NA,2,2,NA,NA,NA,NA,NA,NA,"SRP172671","BJ-hTERT","yes",13.0781689384224
+"per_study_contrast","CICQ","yugene_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP045867","MRC-5","no",39.3180507702745
+"per_study_contrast","CICQ","yugene_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP089801","HCA2-hTERT","yes",14.2238211508691
+"per_study_contrast","CICQ","yugene_diff",NA,2,2,NA,NA,NA,NA,NA,NA,"SRP153205","HDF 12-1","no",22.2644813755648
+"per_study_contrast","CICQ","yugene_diff",NA,2,2,NA,NA,NA,NA,NA,NA,"SRP153724","HDF 12-3","no",21.9330621243136
+"per_study_contrast","CICQ","yugene_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP154382","HDF 10-2","no",10.0402003993345
+"per_study_contrast","CICQ","yugene_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP154577","HDF 10-5","no",8.75491714909154
+"per_study_contrast","SSCQ","yugene_diff",NA,6,6,NA,NA,NA,NA,NA,NA,"ERP021140","HCA2/BJ (primary)","no",0.677443680598667
+"per_study_contrast","SSCQ","yugene_diff",NA,2,3,NA,NA,NA,NA,NA,NA,"SRP017378","BJ-hTERT","yes",4.76635667725062
+"per_study_contrast","SSCQ","yugene_diff",NA,2,2,NA,NA,NA,NA,NA,NA,"SRP052706","foreskin 2DD","no",20.4363995577043
+"per_study_contrast","SSCQ","yugene_diff",NA,6,6,NA,NA,NA,NA,NA,NA,"SRP065206","IMR90","no",3.72297211169522
+"per_study_contrast","SSCQ","yugene_diff",NA,3,9,NA,NA,NA,NA,NA,NA,"SRP066947","Tig3ET","yes",7.30448986266118
+"per_study_contrast","SSCQ","yugene_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP154382","HDF 10-2","no",24.5944094663192
+"per_study_contrast","RS","yugene_diff",NA,1,1,NA,NA,NA,NA,NA,NA,"SRP034163","IMR90","no",26.6708726465876
+"per_study_contrast","RS","yugene_diff",NA,2,2,NA,NA,NA,NA,NA,NA,"SRP034541","IMR90","no",43.3722825629823
+"per_study_contrast","RS","yugene_diff",NA,2,2,NA,NA,NA,NA,NA,NA,"SRP040745","BJ","no",32.8765643337157
+"per_study_contrast","RS","yugene_diff",NA,1,1,NA,NA,NA,NA,NA,NA,"SRP064207","WI-38","no",38.1414643502751
+"per_study_contrast","RS","yugene_diff",NA,1,1,NA,NA,NA,NA,NA,NA,"SRP069768","WI-38","no",32.7860619816833
+"per_study_contrast","RS","yugene_diff",NA,4,2,NA,NA,NA,NA,NA,NA,"SRP121031","IMR90","no",23.8752186042774
+"per_study_contrast","SIPS","yugene_diff",NA,18,6,NA,NA,NA,NA,NA,NA,"ERP021140","HCA2/BJ (primary)","no",23.4252218617834
+"per_study_contrast","SIPS","yugene_diff",NA,8,8,NA,NA,NA,NA,NA,NA,"SRP062872","IMR90","no",46.4212168231338
+"per_study_contrast","SIPS","yugene_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP098713","IMR90","no",15.5406028735744
+"per_study_contrast","SIPS","yugene_diff",NA,7,3,NA,NA,NA,NA,NA,NA,"SRP136071","IMR90","no",10.2320971805716
+"per_study_contrast","OIS","yugene_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP017142","WI-38","no",28.107597207308
+"per_study_contrast","OIS","yugene_diff",NA,1,1,NA,NA,NA,NA,NA,NA,"SRP040243","IMR90","no",31.2847315170069
+"per_study_contrast","OIS","yugene_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP046254","IMR90 ER:RAS","no",3.85862571659943
+"per_study_contrast","OIS","yugene_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP060598","IMR90","no",11.7090409152231
+"per_study_contrast","OIS","yugene_diff",NA,8,8,NA,NA,NA,NA,NA,NA,"SRP062872","IMR90","no",41.102951037901
+"per_study_contrast","OIS","yugene_diff",NA,3,6,NA,NA,NA,NA,NA,NA,"SRP065206","IMR90","no",58.3725208965622
+"per_study_contrast","OIS","yugene_diff",NA,2,1,NA,NA,NA,NA,NA,NA,"SRP066917","BJ-hTERT","yes",19.098323703892
+"per_study_contrast","OIS","yugene_diff",NA,6,9,NA,NA,NA,NA,NA,NA,"SRP066947","Tig3ET","yes",20.1429464368191
+"per_study_contrast","OIS","yugene_diff",NA,1,1,NA,NA,NA,NA,NA,NA,"SRP070636","IMR90","no",20.1611879878169
+"per_study_contrast","OIS","yugene_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP113324","IMR90 ER:RAS","no",14.965534525957
+"per_study_contrast","OIS","yugene_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP113329","IMR90 ER:RAS","no",5.7999757087833
+"per_study_contrast","OIS","yugene_diff",NA,3,3,NA,NA,NA,NA,NA,NA,"SRP117883","IMR90","no",48.5469051738851
+"per_study_contrast","OIS","yugene_diff",NA,2,1,NA,NA,NA,NA,NA,NA,"SRP123346","BJ-hTERT","yes",10.1239426461896
+"per_study_contrast","OIS","yugene_diff",NA,4,2,NA,NA,NA,NA,NA,NA,"SRP127037","IMR90-hTERT","yes",29.0288404418084
+"per_study_contrast","OIS","yugene_diff",NA,2,2,NA,NA,NA,NA,NA,NA,"SRP172671","BJ-hTERT","yes",19.2228337790887

@@ -1,0 +1,9 @@
+# Rerun outputs (RDS objects, downloaded recount3 caches, generated CSVs/figures) --
+# regenerate via the numbered scripts in bulk_RNA_seq/{meta_analysis,temporal_analysis}/,
+# don't commit them (large, and derived from public recount3 data anyway).
+bulk_RNA_seq/*/rerun_outputs/
+rerun_outputs/
+*.rds
+.Rhistory
+.RData
+Rplots.pdf
