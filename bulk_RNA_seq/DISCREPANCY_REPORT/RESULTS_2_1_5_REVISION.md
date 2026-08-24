@@ -785,15 +785,20 @@ THE INCONSISTENCY. exploratory/23 corrected within each GROUP over 50 tests, and
 2.2.4 had been quoting its 12-42 range while 2.1.5.2 quoted 19-38 from the
 analysis-wide family. Same kind of statement, two different families.
 
-RESOLVED. Script 23 now writes both columns and its header explains why it needs
-both: the subsampling test cannot use the analysis-wide family, because under
-subsampling the other groups' p-values are not recomputed and so no such family
-exists; it therefore corrects within group, applied identically to full and
-subsampled data so the comparison stays internally consistent. The Results sections
-quote the analysis-wide figures throughout: 19 to 38 of 50 in the arrest conditions,
-17 to 41 across the temporal groups.
+RESOLVED, with ONE family and no dual reporting. Script 23 uses the analysis-wide
+family throughout, including inside the subsampling loop: for each draw the resampled
+condition's 50 p-values are combined with the other four conditions' unchanged
+p-values to form the full 250, BH is applied to that, and the count is taken among the
+resampled condition's sets. The other conditions supply the rest of the family exactly
+as they do in the real analysis, so observed and subsampled counts sit on the same
+footing and match the figures quoted in the Results. Verified equal to the established
+convention in all 14 groups.
 
-Nothing rests on the choice - the two families differ by at most 5 sets and give
-rho = 0.94 versus 0.92 against effect size in the temporal arm - but the text now
-uses one consistently. 2.2.4 updated from 12-42 and rho 0.92/0.44 to 17-41 and rho
-0.94/0.49.
+Under the single family the subsampling conclusion is unchanged but the numbers move:
+observed 19/21/25/36/38 (RS, SSCQ, CICQ, OIS, SIPS) fall to 15/8/10/18/17, compressing
+the spread from 19 to 10. RS still rises from last to mid-rank and SSCQ still falls to
+last. MCSE 0.027-0.053 sets at B = 10,000, so the draw count is ample.
+
+2.2.4 updated to 17-41 and rho 0.94/0.49. The meta count range is no longer quoted in
+2.1.5.2, the rewritten paragraph having dropped it - that avoids the earlier "most
+sets" error and loses nothing, since the subsampling result is what carries the point.

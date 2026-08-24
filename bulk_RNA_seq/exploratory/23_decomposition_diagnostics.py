@@ -36,18 +36,15 @@ FOUR QUESTIONS, each previously asserted without evidence:
 All computation is on the MORTALITY clock, matching the set-level sections, and on
 the within-study contrasts for the meta-analysis.
 
-TWO BH FAMILIES, deliberately, and they must not be confused. The project convention
-elsewhere (exploratory/05, 18, 22) corrects WITHIN AN ANALYSIS - 250 tests for the
-five arrest conditions, 450 for the nine temporal groups - and that is the family the
-Results sections quote. The subsampling test here cannot use it, because under
-subsampling the other groups' p-values are not recomputed, so there is no
-analysis-wide family to correct within; it therefore corrects within each group over
-50 tests, applied identically to the full and subsampled data so the comparison is
-internally consistent. Both counts are written out: n_sig_sets_analysiswide is the
-figure to quote, n_sig_sets_pergroup the one the subsampling uses. They differ by at
-most 5 sets and give the same correlations (rho = 0.94 versus 0.92 against effect
-size in the temporal arm), so nothing rests on the choice, but the Results text must
-use one consistently.
+ONE BH FAMILY, matching the rest of the arm. The convention in exploratory/05, 18 and
+22 is to correct WITHIN AN ANALYSIS: 250 tests for the five arrest conditions (50 sets
+x 5) and 450 for the nine temporal groups. This script uses the same family, including
+inside the subsampling loop - for each draw, the resampled condition's 50 p-values are
+combined with the other four conditions' unchanged p-values to form the full 250, BH is
+applied to that, and the count is taken among the resampled condition's sets. The other
+conditions supply the rest of the family exactly as they do in the real analysis, so the
+subsampled and observed counts are on the same footing and comparable with the figures
+quoted in the Results.
 
 Output: rerun_outputs/decomposition_diagnostics.csv
         rerun_outputs/decomposition_subsampling.csv
@@ -135,9 +132,15 @@ def main(rerun_dir, model_dir, n_draws=10000):
     study = np.array([md.loc[s, "study"] for s in sid])
     ctrl = np.where(g == "Proliferating")[0]
 
-    def count_sig(ia, ib, M=None):
+    def pvals(ia, ib, M=None):
         M = S if M is None else M
-        return int((bh(mannwhitneyu(M[ia], M[ib], axis=0).pvalue) < 0.05).sum())
+        return mannwhitneyu(M[ia], M[ib], axis=0).pvalue
+
+    def count_sig_family(target_p, other_p):
+        """BH over the whole analysis family, count significant among the target."""
+        allp = np.concatenate([target_p] + other_p)
+        adj = bh(allp)
+        return int((adj[:len(target_p)] < 0.05).sum())
 
     def auc_dev(ia, ib, M=None):
         M = S if M is None else M
@@ -157,18 +160,24 @@ def main(rerun_dir, model_dir, n_draws=10000):
                 acc += ww * (C[ti].mean(0) - C[ci].mean(0)); w += ww
         r = cancellation((acc / w)[obs])
         ia = np.where(g == cv)[0]
+        # observed p-values for every condition, so the analysis-wide family can be built
+        obs_p = {l2: pvals(np.where(g == c2)[0], ctrl) for c2, l2 in CONDS.items()}
+        others = [v for k2, v in obs_p.items() if k2 != lab]
         r.update(arm="cross_sectional", group=lab, n_test=len(ia), n_control=len(ctrl),
-                 n_sig_sets_full=count_sig(ia, ctrl), median_abs_auc_dev=auc_dev(ia, ctrl))
+                 n_sig_sets=count_sig_family(obs_p[lab], others),
+                 median_abs_auc_dev=auc_dev(ia, ctrl))
         rows.append(r)
         # C: subsample to the smallest condition
-        cs = np.array([count_sig(rng.choice(ia, nmin, replace=False),
-                                 rng.choice(ctrl, nmin, replace=False))
+        cs = np.array([count_sig_family(
+                           pvals(rng.choice(ia, nmin, replace=False),
+                                 rng.choice(ctrl, nmin, replace=False)), others)
                        for _ in range(n_draws)])
         sub.append(dict(arm="cross_sectional", group=lab, n_matched=nmin, n_draws=n_draws,
-                        n_sig_full=r["n_sig_sets_full"], n_sig_matched_median=float(np.median(cs)),
+                        n_sig_observed=r["n_sig_sets"], n_sig_matched_median=float(np.median(cs)),
                         p10=float(np.percentile(cs, 10)), p90=float(np.percentile(cs, 90)),
                         sd=float(cs.std()), mcse_median=float(1.253 * cs.std() / np.sqrt(n_draws))))
-        print(f"  {lab:<5} full {r['n_sig_sets_full']:>2} -> matched {np.median(cs):>4.0f}"
+        print(f"  {lab:<5} observed {r['n_sig_sets']:>2} -> matched {np.median(cs):>4.0f}"
+              f"   (MCSE {1.253*cs.std()/np.sqrt(n_draws):.2f})"
               f"   cancellation {r['cancellation_ratio']:>5.0f}x")
 
     # ---------------- temporal ----------------
@@ -197,24 +206,23 @@ def main(rerun_dir, model_dir, n_draws=10000):
                 u = mannwhitneyu(S2[ia], S2[ib], axis=0).statistic / (len(ia) * len(ib))
                 return float(np.median(np.abs(u - 0.5)))
             r.update(arm="temporal", group=stem, n_test=len(a), n_control=len(b),
-                     n_sig_sets_full=cs_t(a, b), median_abs_auc_dev=auc_t(a, b))
+                     median_abs_auc_dev=auc_t(a, b), _p=mannwhitneyu(S2[a], S2[b], axis=0).pvalue)
             rows.append(r)
-            print(f"  {stem:<22} sets {r['n_sig_sets_full']:>2}"
+            print(f"  {stem:<22} effect-size row done;"
                   f"   effect |AUC-0.5| {r['median_abs_auc_dev']:.3f}"
                   f"   cancellation {r['cancellation_ratio']:>5.0f}x"
                   f"   net {r['net']:+.3f}")
 
-    out = pd.DataFrame(rows).rename(columns={"n_sig_sets_full": "n_sig_sets_pergroup"})
-    # add the analysis-wide count, which is the project convention and the figure to quote
-    try:
-        allsets = pd.read_csv(f"{rerun_dir}/mortality_partial_tage_ALL.csv")
-        conv = {}
-        for a, gg in allsets.groupby("analysis"):
-            for lb, g2 in gg.groupby("label"):
-                conv[lb] = int((g2.p_adj < 0.05).sum())
-        out["n_sig_sets_analysiswide"] = out.group.map(conv)
-    except Exception as e:
-        print(f"analysis-wide counts not added: {e}")
+    out = pd.DataFrame(rows)
+    # temporal counts on the 450-test family: all nine groups corrected together
+    tmask = out.arm == "temporal"
+    if tmask.any():
+        tp = np.concatenate(list(out.loc[tmask, "_p"]))
+        tadj = bh(tp); k = len(out.loc[tmask, "_p"].iloc[0])
+        out.loc[tmask, "n_sig_sets"] = [
+            int((tadj[i * k:(i + 1) * k] < 0.05).sum()) for i in range(int(tmask.sum()))]
+    out = out.drop(columns=["_p"], errors="ignore")
+    out["n_sig_sets"] = out.n_sig_sets.astype(int)
     # B: differential expression, the claim that IS supported
     try:
         deg = pd.read_csv(f"{rerun_dir}/deg_count_RERUN.csv").groupby("group_1").n.sum()
@@ -232,12 +240,12 @@ def main(rerun_dir, model_dir, n_draws=10000):
     c = out[out.arm == "cross_sectional"]
     print("\n== what the counts track ==")
     print(f"  temporal (n constant at 6v6): count vs effect size rho = "
-          f"{spearmanr(t.n_sig_sets_analysiswide, t.median_abs_auc_dev).statistic:+.2f}, "
-          f"count vs net shift rho = {spearmanr(t.n_sig_sets_analysiswide, t.net).statistic:+.2f}")
+          f"{spearmanr(t.n_sig_sets, t.median_abs_auc_dev).statistic:+.2f}, "
+          f"count vs net shift rho = {spearmanr(t.n_sig_sets, t.net).statistic:+.2f}")
     print(f"  cross-sectional (n varies)  : count vs n rho = "
-          f"{spearmanr(c.n_sig_sets_analysiswide, c.n_test).statistic:+.2f}, "
+          f"{spearmanr(c.n_sig_sets, c.n_test).statistic:+.2f}, "
           f"count vs effect size rho = "
-          f"{spearmanr(c.n_sig_sets_analysiswide, c.median_abs_auc_dev).statistic:+.2f}"
+          f"{spearmanr(c.n_sig_sets, c.median_abs_auc_dev).statistic:+.2f}"
           f"  (n and effect size themselves correlate rho = "
           f"{spearmanr(c.n_test, c.median_abs_auc_dev).statistic:+.2f}, which is why"
           f" the subsampling above is needed)")
