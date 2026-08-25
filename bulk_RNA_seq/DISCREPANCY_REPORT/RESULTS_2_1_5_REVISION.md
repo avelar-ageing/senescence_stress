@@ -980,3 +980,30 @@ This project's answer is not to adjust but to require recurrence, which is stron
 here than BH would be: BH over 450 admitted 12 comparisons, whereas recurrence
 identifies HYPOXIA and P53 at expected-false-positive rates four orders of magnitude
 below that.
+
+### Recurrence written into both sections (2026-08-24)
+
+The convention is now one rule covering every simulation in the paper: raw empirical p,
+the p-floor, effect size, and recurrence across independent groups as the discriminator.
+No adjustment anywhere.
+
+2.1.5.2 now reports the calibration check (3.6-6.0% shuffled against 10-22% real), the
+40 of 250 with 12 expected, and then identifies results two ways - by deviation size
+(the p53 pair plus E2F in SIPS) and by recurrence. The recurrence view adds two sets
+that deviation size misses: E2F TARGETS and COAGULATION, each beating their null in four
+of five conditions.
+
+E2F recurring is unsurprising and is stated as such - every condition here is an arrest,
+so cell-cycle genes fall throughout and the set marks arrest in general rather than
+distinguishing kinds. COAGULATION is the genuinely new observation: elevated in both
+quiescence conditions and in SIPS and OIS, missing only in RS, with no ready
+explanation. Worth flagging as a candidate for follow-up rather than interpreted here.
+
+CORRECTION MADE WHILE WRITING: a draft called both recurring sets "cell-cycle related".
+COAGULATION is not - it is the complement and coagulation cascade set. Its direction is
+positive in all four conditions where it recurs.
+
+2.2.4 leans on recurrence directly, since nine groups make it decisive: P53 PATHWAY in
+six groups and HYPOXIA in seven, against 1.2e-6 and 2.6e-8 by chance. The hypoxia
+paragraph is reframed accordingly - it is the most reproducible result and the least
+dramatic, with no single comparison standing out (largest z = 2.6 against p53's 5.4).
