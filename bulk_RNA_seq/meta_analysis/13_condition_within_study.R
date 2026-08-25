@@ -140,7 +140,10 @@ for (mn in names(MODELS)) {
   }
 }
 res <- bind_rows(res)
-res$p_perm_adj <- ave(res$p_perm, res$model, FUN = function(x) p.adjust(x, "BH"))
+# Simulation nulls are reported RAW, matching exploratory/12 and 15. The adjusted
+# column is kept for provenance but p_perm is the reported statistic; with only five
+# conditions per model the two barely differ (largest shift 0.0003 to 0.0005).
+res$p_perm_adj_DEPRECATED <- ave(res$p_perm, res$model, FUN = function(x) p.adjust(x, "BH"))
 per_study <- bind_rows(per_study)
 
 for (mn in names(MODELS)) {
@@ -148,7 +151,7 @@ for (mn in names(MODELS)) {
   print(res[res$model == mn, c("condition", "n_studies", "n_test", "n_control",
                                "diff_within_study", "diff_pooled",
                                "studies_positive", "p_sign", "p_perm",
-                               "p_perm_adj")],
+                               "p_perm_adj_DEPRECATED")],
         row.names = FALSE, digits = 3)
 }
 

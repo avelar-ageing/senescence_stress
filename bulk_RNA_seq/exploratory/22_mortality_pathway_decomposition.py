@@ -159,7 +159,7 @@ def main(rerun_dir, model_dir, n_null=20000):
     interp = set(rep.loc[rep.tier == "INTERPRETABLE", "pathway"])
     y["interpretable"] = y.pathway.isin(interp)
     # BH over every comparison: 50 sets x 9 groups = 450, matching the Results
-    y["p_emp_adj"] = bh(y.p_emp.values)
+    y["p_emp_adj_DEPRECATED"] = bh(y.p_emp.values)
     y["p_floor"] = 1.0 / n_null
     print(f"\n  temporal yardstick: {len(y)} comparisons, floor {1/n_null:.1e}")
     rule = 1.0 / len(y)
@@ -175,7 +175,7 @@ def main(rerun_dir, model_dir, n_null=20000):
     y.to_csv(f"{rerun_dir}/pathway_specificity_yardstick_mortality_temporal.csv", index=False)
     print(f"\nSaved -> mortality_partial_tage_ALL.csv ({len(out)} rows)")
     print(f"Saved -> pathway_specificity_yardstick_mortality_temporal.csv "
-          f"(BH family {int(sel.sum())} interpretable tests)")
+          f"({len(y)} comparisons, raw empirical p reported)")
 
 
 if __name__ == "__main__":

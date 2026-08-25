@@ -119,7 +119,8 @@ def main(rerun_dir, model_dir):
                                      - d.loc[d.condition=="Proliferating","mortality_tAge"].median(),
                          studies_positive=npos, p_perm=p))
     res = pd.DataFrame(rows)
-    res["p_perm_adj"] = _bh(res.p_perm.values)
+    # raw p_perm is the reported statistic; see meta_analysis/13
+    res["p_perm_adj_DEPRECATED"] = _bh(res.p_perm.values)
     print("\n=== within-study condition effects, MORTALITY clock ===")
     print(res.round(4).to_string(index=False))
 

@@ -1,4 +1,4 @@
-"test","condition","model","n_studies","n_test","n_control","diff_within_study","diff_pooled","studies_positive","p_sign","p_perm","p_perm_adj","study","cell_line","immortalised","diff"
+"test","condition","model","n_studies","n_test","n_control","diff_within_study","diff_pooled","studies_positive","p_sign","p_perm","p_perm_adj_DEPRECATED","study","cell_line","immortalised","diff"
 "condition_within_study_stratified","CICQ","scaled_diff",6,16,16,5.88320206320106,47.6381527493836,5,0.21875,0.138843057847108,0.138843057847108,NA,NA,NA,NA
 "condition_within_study_stratified","SSCQ","scaled_diff",6,22,29,-3.43346398903611,21.7377857872901,2,0.6875,0.109044547772611,0.136305684715764,NA,NA,NA,NA
 "condition_within_study_stratified","RS","scaled_diff",6,11,9,42.3294942513317,31.2086999159848,6,0.03125,0.000299985000749962,0.000499975001249937,NA,NA,NA,NA

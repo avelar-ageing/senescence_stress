@@ -223,10 +223,10 @@ def main(rerun_dir, model_dir, n_null=20000, which="chronoage"):
     # BH over EVERY comparison in the family. The interpretability gate was dropped
     # for the mortality clock (it excluded one set of 50 and changed nothing), so the
     # family is all 50 sets x 5 conditions = 250, matching what the Results report.
-    out["p_emp_adj"] = np.nan
+    out["p_emp_adj_DEPRECATED"] = np.nan
     for mdl in out.model.unique():
         sel = out.model == mdl
-        out.loc[sel, "p_emp_adj"] = _bh(out.loc[sel, "p_emp"].values)
+        out.loc[sel, "p_emp_adj_DEPRECATED"] = _bh(out.loc[sel, "p_emp"].values)
     out["p_floor"] = 1.0 / (n_null + 1)
     out["interpreted"] = out.p_emp < (1.0 / out.groupby("model").p_emp.transform("size"))
     # what replaces correction: excess over chance at each threshold

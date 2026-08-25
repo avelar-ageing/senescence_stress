@@ -904,3 +904,39 @@ by about 0.001 and changes no result.
 Raw p, the floor and z stay in the output, and the scripts still print what an
 uncorrected p < 0.05 would pass (40 and 74 against 12 and 22 expected) as the reason
 not to use it.
+
+### FINAL on correction: simulations are reported RAW, matching the rest of the paper
+
+Settled by checking the codebase rather than by argument. The two pre-existing
+simulation scripts both report uncorrected empirical p:
+
+  exploratory/12 (size-matched null) outputs p_empirical, p_floor and n_draws, and
+  thresholds at p_empirical < 0.05.
+  exploratory/15 (label permutation) outputs p_permutation = (count+1)/(n_perm+1) and
+  explicitly compares its calls against the separately BH-adjusted Wilcoxon, treating
+  its own permutation p as the uncorrected one.
+
+exploratory/16 does use BH, but on a Wilcoxon over real data, not a simulation. So the
+project convention is established and implemented: no correction on simulation nulls.
+
+FOUR simulation-derived p-values in this arm were BH-adjusted and are now reported raw.
+Adjusted columns are kept as p_perm_adj_DEPRECATED / p_emp_adj_DEPRECATED:
+
+  meta_analysis/13   within-study condition effects, chronological  (5 per model)
+  meta_analysis/18   within-study condition effects, mortality      (5)
+  exploratory/20     matched-null yardstick, cross-sectional        (250)
+  exploratory/22     matched-null yardstick, temporal               (450)
+
+For 13 and 18 this changes almost nothing, the families being five: RS moves from
+FDR 5.0x10-4 to p 3.0x10-4, SSCQ on yugene from 2.8x10-3 to the same value. The
+conclusions are identical. For the yardstick it means reporting that 40 of 250 exceed
+the null at p < 0.05 against 12 expected, and discussing the three at p < 0.001 where
+fewer than one is expected - the same three results as before.
+
+Everything still BH-adjusted is a conventional test: the Wilcoxon families in
+meta_analysis/05, 11, 12, 16, temporal_analysis/07 and 08, and the set-score Wilcoxon in
+exploratory/22.
+
+I reversed on this twice, having twice argued for correction on general grounds without
+checking what the project already does. The codebase was the authority available the
+whole time.
