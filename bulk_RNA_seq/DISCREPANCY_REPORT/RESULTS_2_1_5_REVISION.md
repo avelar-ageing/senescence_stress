@@ -940,3 +940,43 @@ exploratory/22.
 I reversed on this twice, having twice argued for correction on general grounds without
 checking what the project already does. The codebase was the authority available the
 whole time.
+
+### Calibration and recurrence: how to identify real results without correction
+
+`exploratory/25_yardstick_calibration.py`, answering the question multiplicity
+correction was being invoked for.
+
+CALIBRATION. Shuffling the gene-to-set assignment destroys real set structure while
+leaving the contribution vector, coefficient strata and matching untouched. Under
+that null 3.6-6.0% of sets fall below p = 0.05 across the five conditions, ten
+replicates each, against the nominal 5%. On real data the same machinery gives
+10-22%. So the p-values are valid and the enrichment is real. Note the draw count is
+irrelevant to this: draws control how precisely each p is estimated, not the rate at
+which a valid 5% test fires under the null.
+
+RECURRENCE is the discriminator, and it needs no adjustment because the multiplicity
+is inside the statistic. Each group is an independent test of the same set, so under
+the null the number of groups a set clears is Binomial(n_groups, 0.05):
+
+  temporal, 9 groups     HYPOXIA 7/9    P = 2.6e-08   expected 0.0000 times of 50
+                         P53 PATHWAY 6/9  P = 1.2e-06   expected 0.0001
+                         MYC TARGETS 5/9  P = 3.3e-05   expected 0.0017
+                         E2F TARGETS, MTORC1, PI3K AKT MTOR each 4/9, expected 0.032
+
+  cross-sectional, 5     COAGULATION and E2F TARGETS each 4/5, expected 0.0015
+
+A set clearing 6 of 9 groups is expected 0.0001 times among 50 sets - a far stronger
+statement than any single comparison at p < 0.001, and reached without correcting
+anything.
+
+ON WHETHER BH APPLIES TO SIMULATIONS GENERALLY. It is not a property of simulations.
+Multiplicity depends on how many hypotheses share a family, however the p was
+obtained. A single pre-specified test (exploratory/21, modularity) has nothing to
+correct. A small pre-specified family (the five condition effects in
+meta_analysis/13 and 18) is barely affected either way. A discovery scan over
+hundreds of hypotheses has real multiplicity - which applies as much to
+exploratory/12 (1,700 comparisons) and 15 as to the yardstick, and neither corrects.
+This project's answer is not to adjust but to require recurrence, which is stronger
+here than BH would be: BH over 450 admitted 12 comparisons, whereas recurrence
+identifies HYPOXIA and P53 at expected-false-positive rates four orders of magnitude
+below that.
