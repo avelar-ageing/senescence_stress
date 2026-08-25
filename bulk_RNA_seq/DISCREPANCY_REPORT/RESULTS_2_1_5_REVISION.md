@@ -1007,3 +1007,36 @@ positive in all four conditions where it recurs.
 six groups and HYPOXIA in seven, against 1.2e-6 and 2.6e-8 by chance. The hypoxia
 paragraph is reframed accordingly - it is the most reproducible result and the least
 dramatic, with no single comparison standing out (largest z = 2.6 against p53's 5.4).
+
+### RETRACTED: "freshly transduced" was fabricated (2026-08-24)
+
+Two false claims about the source paper's hTERT result, both removed. Recorded here so
+they are not reintroduced.
+
+CLAIM 1: "Tyshkovskiy et al. transduced WI-38 fibroblasts with hTERT and cultured them
+alongside untransduced controls." FALSE. They reanalysed a published dataset; their
+methods list "Culturing of control and hTERT-transduced WI-38 cells (GSE175533)" among
+the external datasets, and their own contribution is applying the clocks to it with a
+genotype x time interaction model.
+
+CLAIM 2: "Their cells were freshly transduced and followed through culture, whereas every
+immortalised sample here belongs to a long-established line." FALSE, and it was invented
+rather than misread - nothing in their paper says anything about how recently the cells
+were transduced. Checking GSE175533 directly: the 18 hTERT samples span population
+doublings 46 to 109, and the growth protocol states the WI-38 cells were obtained from
+Coriell at PDL 15. So at the first hTERT timepoint the cells had already completed about
+46 doublings, roughly the parental replicative limit, and were then followed for a further
+63. Their immortalised cells are long-established too.
+
+CONSEQUENCE. The Discussion had proposed that the difference between their null result and
+our positive one might be fresh versus long-term immortalisation. That hypothesis has no
+basis and is deleted.
+
+WHAT REPLACES IT, and is checkable. Their comparison tests whether tAge RISES WITH TIME
+within one immortalised line; ours compares the LEVEL of immortalised against primary
+cells at a single point. A flat trajectory within a line is compatible with a raised
+baseline between lines, so the two were never in tension and no reconciliation was needed.
+
+RULE, since this is the second time: no characterisation of another group's experimental
+design goes in the text unless it is read from their methods or from the deposited data,
+and the source is named in this file when it is.
