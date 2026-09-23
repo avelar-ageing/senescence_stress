@@ -162,6 +162,49 @@ for (mdl in MODELS_USED) {
     pc1 = ve[1], pc1_3 = sum(ve[1:3]), n_pc_for_80 = which(cumsum(ve) >= 0.8)[1])
   cat(sprintf("\n-- meta condition profile correlations (%s) --\n", mdl))
   print(round(R, 2))
+
+  # PERSIST THE PAIRWISE MATRIX (added 2026-08-26). Only the mean was being
+  # saved, so every individual rho quoted in 2.1.5.2 lived in console output
+  # and could not be checked against a file. rho is a Spearman rank correlation
+  # between two conditions' vectors of per-set contributions; it is descriptive
+  # and carries no p-value, since the 50 sets are not independent of each other.
+  pw <- data.frame(test = "meta_condition_pair_rho", model = mdl,
+                   condition_a = rownames(R)[row(R)[upper.tri(R)]],
+                   condition_b = colnames(R)[col(R)[upper.tri(R)]],
+                   rho = R[upper.tri(R)])
+  pw <- pw[order(pw$rho), ]
+  write.csv(pw, file.path(RERUN_DIR, sprintf("tage_condition_profile_rho_%s.csv", mdl)),
+            row.names = FALSE)
+  cat(sprintf("   saved %d pairwise rho -> tage_condition_profile_rho_%s.csv\n",
+              nrow(pw), mdl))
+
+  # ---- is the quiescence/senescence split the best available? --------------
+  # The text says grouping the two quiescence conditions against the three
+  # senescence subtypes separates within- from between-group similarity better
+  # than any other split. With five conditions there are only choose(5,2) = 10
+  # two-way splits, so the best attainable p from this ranking is 1/10 = 0.10:
+  # it is a description of the profiles, not a test, and the text says so.
+  cn <- colnames(R); sp <- list()
+  for (two in combn(cn, 2, simplify = FALSE)) {
+    three <- setdiff(cn, two)
+    wi <- c(R[two[1], two[2]], R[three[1], three[2]], R[three[1], three[3]],
+            R[three[2], three[3]])
+    bw <- as.vector(R[two, three])
+    sp[[length(sp) + 1]] <- data.frame(
+      test = "meta_split_separation", model = mdl,
+      group_of_two = paste(two, collapse = "+"),
+      mean_within = mean(wi), mean_between = mean(bw),
+      separation = mean(wi) - mean(bw))
+  }
+  sp <- do.call(rbind, sp)
+  sp <- sp[order(-sp$separation), ]
+  sp$rank <- seq_len(nrow(sp))
+  sp$p_from_ranking <- sp$rank / nrow(sp)
+  write.csv(sp, file.path(RERUN_DIR, sprintf("tage_condition_splits_%s.csv", mdl)),
+            row.names = FALSE)
+  cat(sprintf("   split separation, best first (%s):\n", mdl))
+  print(sp[, c("group_of_two", "mean_within", "mean_between", "separation")],
+        row.names = FALSE, digits = 2)
 }
 
 # ---- 3b. breadth under the reporting rule actually used in the text --------

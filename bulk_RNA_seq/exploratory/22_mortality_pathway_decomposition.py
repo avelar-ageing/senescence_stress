@@ -37,6 +37,23 @@ Output: rerun_outputs/mortality_partial_tage_ALL.csv
         rerun_outputs/pathway_specificity_yardstick_mortality_temporal.csv
 
 Usage: 22_mortality_pathway_decomposition.py <rerun_dir> <model_dir> [n_null]
+
+ON THE DRAW COUNT, B = 20,000. An empirical p cannot fall below 1/(B+1), so B must be
+large enough for BH to reach 0.05 in the family the p-values enter. The smallest
+BH threshold at 5% FDR is 0.05/m, so the floor must sit below that:
+
+    family                  m     0.05/m     floor at B=10,000    floor at B=20,000
+    arrest conditions      250    2.0e-4     1.0e-4  (margin 2.0x)  5.0e-5  (margin 4.0x)
+    irradiation time course 450   1.1e-4     1.0e-4  (margin 1.1x)  5.0e-5  (margin 2.2x)
+
+At B = 10,000 the 450-test family would be only just reachable: a comparison that never
+once exceeded its null would clear BH by 10%. B = 20,000 gives a margin of two in the
+tighter family. That, not habit, is why 20,000 is used here - and it is why the
+non-BH nulls elsewhere (37, 39, 42) use 20,000 too, for consistency of floors across
+the section rather than out of any requirement of their own.
+
+The equivalent note in 20_pathway_specificity_yardstick.py is written for its own
+85-test family and does not describe these families; do not cite it for this script.
 """
 import sys, warnings
 import joblib, numpy as np, pandas as pd
@@ -159,8 +176,16 @@ def main(rerun_dir, model_dir, n_null=20000):
     interp = set(rep.loc[rep.tier == "INTERPRETABLE", "pathway"])
     y["interpretable"] = y.pathway.isin(interp)
     # BH over every comparison: 50 sets x 9 groups = 450, matching the Results
-    y["p_emp_adj_DEPRECATED"] = bh(y.p_emp.values)
-    y["p_floor"] = 1.0 / n_null
+    # THE ONE FAMILY WE CORRECT (2026-08-27). Simulation nulls are reported raw
+    # everywhere else in this project, because a pre-registered robustness grid is
+    # not a discovery family and the question there is only whether one observed
+    # statistic beats its own null. This analysis IS a discovery family: 50 sets x
+    # 5 conditions asking which sets are specific, so which ones we name has to
+    # carry a stated error rate. It is BH-adjusted within its own arm and reported
+    # as hypothesis-generating at FDR 10%, with FDR 5% marked separately. Do not
+    # propagate this to the other simulation nulls.
+    y["p_emp_bh"] = bh(y.p_emp.values)
+    y["p_floor"] = 1.0 / (n_null + 1)   # matches p = (1 + k) / (B + 1) above
     print(f"\n  temporal yardstick: {len(y)} comparisons, floor {1/n_null:.1e}")
     rule = 1.0 / len(y)
     y["interpreted"] = y.p_emp < rule

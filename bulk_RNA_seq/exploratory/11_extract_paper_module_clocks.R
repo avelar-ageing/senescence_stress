@@ -41,7 +41,8 @@ SUPPL_DIR <- Sys.getenv('SUPPL_DIR', unset = NA)
 if (is.na(SUPPL_DIR)) stop('set SUPPL_DIR to the unzipped supplementary directory')
 XL  <- file.path(SUPPL_DIR, '41586_2026_10542_MOESM7_ESM.xlsx')
 DICT<- file.path(SUPPL_DIR, '41586_2026_10542_MOESM8_ESM.xlsx')
-OUT <- '/home/ro/APFS_copy/root/Backup/Documents/modules/systems_analysis_arrest/bulk_RNA_seq/rerun_outputs/partial_tage'
+source('R/config.R')
+OUT <- file.path(RERUN_DIR, 'partial_tage')
 stopifnot(file.exists(XL))
 
 # Sheet layout (verified): row1 = clock outcome, row2 = module ID, row3 = module annotation,

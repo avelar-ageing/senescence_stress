@@ -19,12 +19,37 @@ subsumes the vs-baseline comparisons (none-vs-4/10/20 are 3 of the 6 pairs). A
 Kruskal-Wallis omnibus per cell type is reported alongside. Only one mortality
 normalisation exists, so there is no second model to corroborate against.
 
-Output: rerun_outputs/mortality_temporal_pairwise.csv
+Output: rerun_outputs/mortality_temporal_by_celltype.csv (per-sample predictions only;
+testing moved to 07_tage_temporal_tests.R so all three clocks share one BH family)
 Usage: 08_mortality_temporal.py <rerun_dir> <model_dir>
 """
 import sys, warnings, itertools
 import joblib, numpy as np, pandas as pd
 from scipy.stats import mannwhitneyu, kruskal
+
+# Keratinocyte batch -- mirrors temporal_analysis/R_keratinocyte_batch.R and the
+# fix_batch = TRUE list in 02_run_time_analysis.R (that cell type was processed
+# by two researchers). Balanced 3/3 across timepoints, so the timepoint
+# estimates are unchanged; centring only removes the batch offset from the
+# within-timepoint spread. Fibroblasts and melanocytes untouched.
+KERATINOCYTE_BATCH_1 = {
+    "ERR1805235", "ERR1805236", "ERR1805238", "ERR1805230", "ERR1805231", "ERR1805224",
+    "ERR1805223", "ERR1805222", "ERR1805239", "ERR1805240", "ERR1805241", "ERR1805229",
+}
+
+
+def batch_centre(pred, sample_ids, cell_type):
+    """Subtract each batch's mean, keeping the grand mean. Keratinocytes only."""
+    if cell_type != "Keratinocyte":
+        return pred
+    b = np.array([s in KERATINOCYTE_BATCH_1 for s in sample_ids])
+    if b.all() or not b.any():
+        raise ValueError("keratinocyte batch labels did not split the samples")
+    out = pred.astype(float).copy()
+    grand = out.mean()
+    out[b] = out[b] - out[b].mean() + grand
+    out[~b] = out[~b] - out[~b].mean() + grand
+    return out
 warnings.filterwarnings("ignore")
 
 MORT = "EN_Mortality_Multispecies_Multitissue_scaleddiff.pkl"
@@ -56,50 +81,20 @@ def main(rerun_dir, model_dir):
         for g in [g for g in feats if g not in e.columns]:
             e[g] = np.nan
         Z = m.named_steps["scaler"].transform(imp.transform(e.loc[:, feats]))
-        pred = m.named_steps["estimator"].intercept_ + Z @ coef
+        pred_raw = m.named_steps["estimator"].intercept_ + Z @ coef
+        # mortality_tAge is the batch-centred value used by every test and
+        # figure; mortality_tAge_raw keeps the uncorrected prediction so the
+        # correction stays reversible and auditable.
+        pred = batch_centre(pred_raw, sid, ct)
         tp = md.loc[sid, "time_after_treatment"].values
         per_sample.append(pd.DataFrame(dict(external_id=sid, cell_type=ct,
-                                            timepoint=tp, mortality_tAge=pred)))
-        groups = [pred[tp == t] for t in ORDER]
-        omni.append(dict(test="kruskal", cell_type=ct,
-                         statistic=kruskal(*groups).statistic,
-                         p=kruskal(*groups).pvalue))
-        for a, b in itertools.combinations(ORDER, 2):
-            x, y = pred[tp == b], pred[tp == a]
-            rows.append(dict(test="pairwise_timepoints", cell_type=ct,
-                             group_1=a, group_2=b, n_1=len(y), n_2=len(x),
-                             median_1=np.median(y), median_2=np.median(x),
-                             diff=np.median(x) - np.median(y),
-                             p=mannwhitneyu(x, y).pvalue))
+                                            timepoint=tp, mortality_tAge=pred,
+                                            mortality_tAge_raw=pred_raw)))
     ps = pd.concat(per_sample, ignore_index=True)
     ps.to_csv(f"{rerun_dir}/mortality_temporal_by_celltype.csv", index=False)
 
-    r = pd.DataFrame(rows); r["p_adj"] = bh(r.p.values)
-    o = pd.DataFrame(omni); o["p_adj"] = bh(o.p.values)
-
-    print("=== median mortality tAge per cell type x timepoint (per-cell-type runs) ===")
-    print(ps.pivot_table(index="cell_type", columns="timepoint",
-                         values="mortality_tAge", aggfunc="median")[ORDER].round(3).to_string())
-    print("\n=== Kruskal-Wallis across all four timepoints ===")
-    print(o.round(5).to_string(index=False))
-    print("\n=== all 6 timepoint pairs x 3 cell types (18-test BH family) ===")
-    for ct in CELLS:
-        print(f"\n-- {ct} --")
-        print(r[r.cell_type == ct][["group_1", "group_2", "diff", "p", "p_adj"]]
-              .round(4).to_string(index=False))
-    print("\n=== trajectory summary (vs baseline, and the late contrasts) ===")
-    for ct in CELLS:
-        s = r[r.cell_type == ct].set_index(["group_1", "group_2"])
-        vb = [s.loc[("none", t), "diff"] for t in ORDER[1:]]
-        sig = ["*" if s.loc[("none", t), "p_adj"] < 0.05 else "" for t in ORDER[1:]]
-        late = s.loc[("4_days", "20_days")]
-        mid = s.loc[("4_days", "10_days")]
-        print(f"  {ct:<13} vs baseline {vb[0]:+.3f}{sig[0]:<1} {vb[1]:+.3f}{sig[1]:<1} "
-              f"{vb[2]:+.3f}{sig[2]:<1} | 4->10 {mid['diff']:+.3f} "
-              f"(BH {mid['p_adj']:.3f}) | 4->20 {late['diff']:+.3f} (BH {late['p_adj']:.3f})")
-    pd.concat([r, o]).to_csv(f"{rerun_dir}/mortality_temporal_pairwise.csv", index=False)
-    print(f"\nSaved -> {rerun_dir}/mortality_temporal_pairwise.csv and "
-          f"mortality_temporal_by_celltype.csv")
+    print("\nTesting is done by temporal_analysis/07_tage_temporal_tests.R,\n"
+          "which pools all three clocks into one BH family.")
 
 
 if __name__ == "__main__":

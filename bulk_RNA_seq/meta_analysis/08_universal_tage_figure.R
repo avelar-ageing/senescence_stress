@@ -1,3 +1,15 @@
+# ============================================================================
+# SUPERSEDED 2026-08-25 -- DO NOT RUN AS PART OF THE FIGURE SET
+#
+# Output: figure_universal_tage_differences.png
+#
+# The file this produced has been deleted. pooled contrast, superseded by the within-study per-sample figure in meta_analysis/19. Its replacement is named below.
+# The script is kept because it documents how the earlier figure was made, not
+# because rerunning it would produce anything the manuscript uses -- rerunning it
+# will recreate a figure that contradicts the text.
+#
+# Replaced by: meta_analysis/19_within_study_sample_figure.R
+# ============================================================================
 # 08_universal_tage_figure.R
 #
 # Figure for section 2.1.5.1 (Differences in Universal Transcriptomic Age):

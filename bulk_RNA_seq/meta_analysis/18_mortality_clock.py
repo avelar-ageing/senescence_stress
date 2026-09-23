@@ -86,7 +86,7 @@ def main(rerun_dir, model_dir):
     d["immortalised"] = ann.loc[d.external_id, "immortalised"].values
     d["cell_line"] = ann.loc[d.external_id, "cell_line_resolved"].values
     d.to_csv(f"{rerun_dir}/mortality_tage.csv", index=False)
-    print(f"mortality tAge computed for {len(d)} samples "
+    print(f"mortality score computed for {len(d)} samples "
           f"(median {d.mortality_tAge.median():.3f}, range "
           f"{d.mortality_tAge.min():.3f} to {d.mortality_tAge.max():.3f})")
     print(f"  Proliferating median {d.loc[d.condition=='Proliferating','mortality_tAge'].median():.3f}"

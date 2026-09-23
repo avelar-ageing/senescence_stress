@@ -1,3 +1,15 @@
+# ============================================================================
+# SUPERSEDED 2026-08-25 -- DO NOT RUN AS PART OF THE FIGURE SET
+#
+# Output: figure_pathway_heatmap_within_study.png
+#
+# The file this produced has been deleted. chronological-clock decomposition. Its replacement is named below.
+# The script is kept because it documents how the earlier figure was made, not
+# because rerunning it would produce anything the manuscript uses -- rerunning it
+# will recreate a figure that contradicts the text.
+#
+# Replaced by: exploratory/26_mortality_pathway_heatmaps.R (meta panel)
+# ============================================================================
 # 19_pathway_heatmap_within_study.R
 #
 # Replaces 08_pathway_full_heatmap_both_models.R as the figure for 2.1.5.2.

@@ -44,8 +44,16 @@ bars <- d %>%
   mutate(side = ifelse(side == "sum_positive", "Genes raising the score",
                        "Genes lowering the score"))
 
-lab <- d %>% mutate(txt = sprintf("net %+.2f  (%.0fx cancellation)",
-                                  net, cancellation_ratio))
+# SHARE, NOT FOLD-RATIO. "34x cancellation" is total movement over the net, so it
+# is 1/share and explodes as the net approaches zero: keratinocytes at 20 days read
+# 87x because their net is 0.19, not because they cancel harder. Total movement is
+# in fact near-constant across groups (8-17 units), so the ratio mostly restates
+# the net printed beside it. The share surviving is bounded, is what the text
+# quotes ("about 5% of all the movement"), and matches 28_figure_withinset_*.R,
+# whose header rejected the ratio for the same reasons.
+lab <- d %>% mutate(surviving_pct = 100 * abs(net) / (abs(sum_positive) + abs(sum_negative)),
+                    txt = sprintf("net %+.2f  (%.0f%% of the movement)",
+                                  net, surviving_pct))
 xr <- max(abs(c(d$sum_positive, d$sum_negative)))
 
 p <- ggplot(bars, aes(x = value, y = pretty, fill = side)) +
@@ -67,7 +75,7 @@ p <- ggplot(bars, aes(x = value, y = pretty, fill = side)) +
         panel.grid.major.y = element_blank(),
         axis.text = element_text(size = 14),
         axis.title = element_text(size = 16)) +
-  labs(x = "Summed contribution of all measured clock genes to the mortality tAge difference (diamond = net)",
+  labs(x = "Summed contribution of all measured clock genes to the mortality-score difference (diamond = net)",
        y = NULL)
 
 out <- file.path(RERUN_DIR, "figure_contribution_cancellation.png")
@@ -79,5 +87,5 @@ print(d %>% transmute(arm, group, sum_positive = round(sum_positive, 2),
                       sum_negative = round(sum_negative, 2), net = round(net, 3),
                       cancellation = round(cancellation_ratio),
                       pct_genes_with_net = round(100 * frac_genes_in_net_direction, 1),
-                      genes_for_half = n_genes_for_half_the_net),
+                      genes_for_whole_net = n_genes_for_the_whole_net),
       row.names = FALSE)

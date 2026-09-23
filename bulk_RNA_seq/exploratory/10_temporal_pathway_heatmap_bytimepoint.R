@@ -1,3 +1,15 @@
+# ============================================================================
+# SUPERSEDED 2026-08-25 -- DO NOT RUN AS PART OF THE FIGURE SET
+#
+# Output: figure_temporal_pathway_heatmap_bytimepoint.png
+#
+# The file this produced has been deleted. chronological-clock decomposition. Its replacement is named below.
+# The script is kept because it documents how the earlier figure was made, not
+# because rerunning it would produce anything the manuscript uses -- rerunning it
+# will recreate a figure that contradicts the text.
+#
+# Replaced by: exploratory/26_mortality_pathway_heatmaps.R (temporal panel)
+# ============================================================================
 # 10_temporal_pathway_heatmap_bytimepoint.R
 #
 # Per-timepoint version of 09_temporal_pathway_heatmap_both_models.R: instead

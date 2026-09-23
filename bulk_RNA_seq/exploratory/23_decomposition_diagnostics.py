@@ -114,7 +114,7 @@ def cancellation(d):
     return dict(sum_positive=pos, sum_negative=neg, net=net,
                 cancellation_ratio=(pos - neg) / abs(net),
                 frac_genes_in_net_direction=float((np.sign(d) == sgn).mean()),
-                n_genes_for_half_the_net=n50, n_genes=len(d))
+                n_genes_for_the_whole_net=n50, n_genes=len(d))
 
 
 def main(rerun_dir, model_dir, n_draws=10000):
@@ -192,6 +192,7 @@ def main(rerun_dir, model_dir, n_draws=10000):
     print(f"\ntemporal: n is 6v6 throughout. Subsampling to 3v3 is NOT attempted, since"
           f" its p-floor is {floor_3v3:.3f} and no result could reach significance."
           f" Counts are compared against effect size instead, n being constant.")
+    temporal_delta = {}
     for ct in CELLS:
         for tp in TPS:
             stem = f"{ct}_{tp}"
@@ -213,6 +214,12 @@ def main(rerun_dir, model_dir, n_draws=10000):
             r.update(arm="temporal", group=stem, n_test=len(a), n_control=len(b),
                      median_abs_auc_dev=auc_t(a, b), _p=mannwhitneyu(S2[a], S2[b], axis=0).pvalue)
             rows.append(r)
+            # keep the gene-level delta so the WITHIN-SET cancellation can be
+            # computed for the temporal arm too (added 2026-08-27). It was
+            # previously computed for the cross-sectional arm only, which left the
+            # 2.2.4 claim that "individual gene sets show the same
+            # near-cancellation" resting on the transcriptome-wide figure alone.
+            temporal_delta[stem] = (C2[a].mean(0) - C2[b].mean(0), sets2, obs2)
             print(f"  {stem:<22} effect-size row done;"
                   f"   effect |AUC-0.5| {r['median_abs_auc_dev']:.3f}"
                   f"   cancellation {r['cancellation_ratio']:>5.0f}x"
@@ -238,7 +245,19 @@ def main(rerun_dir, model_dir, n_draws=10000):
                               set_net=net, set_sum_positive=pos, set_sum_negative=neg,
                               cancellation_ratio=(pos - neg) / abs(net) if net else np.nan,
                               frac_genes_with_set_net=float((np.sign(v) == np.sign(net)).mean())))
+    for stem, (dd_t, sets_t, obs_t) in temporal_delta.items():
+        for name, ix in sets_t.items():
+            ixm = ix[obs_t[ix]]
+            if not len(ixm):
+                continue
+            v = dd_t[ixm]; pos = v[v > 0].sum(); neg = v[v < 0].sum(); net = v.sum()
+            wrows.append(dict(arm="temporal", condition=stem, pathway=name,
+                              n_measured_genes=len(ixm),
+                              set_net=net, set_sum_positive=pos, set_sum_negative=neg,
+                              cancellation_ratio=(pos - neg) / abs(net) if net else np.nan,
+                              frac_genes_with_set_net=float((np.sign(v) == np.sign(net)).mean())))
     W = pd.DataFrame(wrows)
+    W["arm"] = W.arm.fillna("cross_sectional")
     W.to_csv(f"{rerun_dir}/withinset_cancellation.csv", index=False)
     print(f"\n== within-set cancellation, {len(W)} set x condition combinations ==")
     print(f"  median set net {W.set_net.abs().median():.4f} against +{W.set_sum_positive.median():.4f}"

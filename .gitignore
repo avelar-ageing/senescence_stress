@@ -7,3 +7,18 @@ rerun_outputs/
 .Rhistory
 .RData
 Rplots.pdf
+
+# Added 2026-09-23 (migration prep). Inputs that are not produced by the pipeline and
+# are not redistributed here - see bulk_RNA_seq/REPRODUCE.md and env/external_inputs.tsv.
+bulk_RNA_seq/external_inputs/
+*.pkl
+Final/
+# Local environments and caches
+bulk_RNA_seq/.venv/
+.venv/
+bulk_RNA_seq/.geo_cache/
+__pycache__/
+*.pyc
+# Working-tree backups
+*.PRE_*
+*.bak

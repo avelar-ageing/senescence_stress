@@ -36,7 +36,8 @@ recount_pheno$time_after_treatment[is.na(recount_pheno$time_after_treatment)] <-
 recount_pheno$time_after_treatment <- gsub(recount_pheno$time_after_treatment, pattern = " ", replacement = "_")
 
 human_pc <- get_ensembl_release_pc()
-erp_download <- download_studies(studies = "ERP021140", sra_organism = "human")
+erp_download <- download_studies_cached(studies = "ERP021140",
+                                        cache_rds = file.path(RERUN_DIR, "erp021140_download_raw.rds"))
 
 timepoints <- c("4_days", "10_days", "20_days")
 for (ct in c("Fibroblast", "Keratinocyte", "Melanocyte")) {

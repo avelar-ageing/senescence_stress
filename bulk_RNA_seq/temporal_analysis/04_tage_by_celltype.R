@@ -22,6 +22,10 @@
 # would subtract a cross-cell-type average baseline against each sample,
 # which is wrong when baseline expression differs hugely by cell type.
 
+# NOTE 2026-08-25: this script's CSV outputs are canonical, but its exploratory
+# PNG output was deleted as stale (pooled contrasts / chronological clock only).
+# The figures the manuscript uses are built by meta_analysis/19, 25 and
+# exploratory/26 from these CSVs. The ggsave call below is vestigial.
 source("R/config.R")
 source("R/functions.R")
 
@@ -33,9 +37,10 @@ suppressPackageStartupMessages({
   library(ggplot2)
 })
 
-SCRNA_DIR <- "/home/ro/APFS_copy/root/Backup/Documents/modules/scrna_seq/GSE226225/final_analysis"
-MODEL_DIR <- file.path(SCRNA_DIR, "tAge_models")
-Sys.setenv(RETICULATE_PYTHON = file.path(SCRNA_DIR, ".venv/bin/python"))
+# models and the Python interpreter come from R/config.R (MODELS_DIR, PYTHON_BIN);
+# this script used to read both out of the single-cell project directory
+MODEL_DIR <- MODELS_DIR
+Sys.setenv(RETICULATE_PYTHON = PYTHON_BIN)
 model_paths <- list(
   scaled_diff = file.path(MODEL_DIR, "EN_Chronoage_Multispecies_Multitissue_scaleddiff.pkl"),
   yugene_diff = file.path(MODEL_DIR, "EN_Chronoage_Multispecies_Multitissue_yugenediff.pkl")
@@ -51,7 +56,8 @@ recount_pheno$time_after_treatment <- gsub(recount_pheno$time_after_treatment, p
 human_pc <- get_ensembl_release_pc()
 
 cat("== Downloading ERP021140 (single study, all 3 cell types) ==\n")
-erp_download <- download_studies(studies = "ERP021140", sra_organism = "human")
+erp_download <- download_studies_cached(studies = "ERP021140",
+                                        cache_rds = file.path(RERUN_DIR, "erp021140_download_raw.rds"))
 cat(sprintf("  Downloaded RSE: %d genes x %d samples\n", nrow(erp_download), ncol(erp_download)))
 
 cell_types <- c("Fibroblast", "Keratinocyte", "Melanocyte")

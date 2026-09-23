@@ -11,6 +11,10 @@
 # = Proliferating), just applied to the full 6-condition object instead of
 # the Proliferating+CQ-only cq_samples.rds used before CS data was available.
 
+# NOTE 2026-08-25: this script's CSV outputs are canonical, but its exploratory
+# PNG output was deleted as stale (pooled contrasts / chronological clock only).
+# The figures the manuscript uses are built by meta_analysis/19, 25 and
+# exploratory/26 from these CSVs. The ggsave call below is vestigial.
 source("R/config.R")
 
 suppressPackageStartupMessages({
@@ -21,9 +25,10 @@ suppressPackageStartupMessages({
   library(ggplot2)
 })
 
-SCRNA_DIR <- "/home/ro/APFS_copy/root/Backup/Documents/modules/scrna_seq/GSE226225/final_analysis"
-MODEL_DIR <- file.path(SCRNA_DIR, "tAge_models")
-Sys.setenv(RETICULATE_PYTHON = file.path(SCRNA_DIR, ".venv/bin/python"))
+# models and the Python interpreter come from R/config.R (MODELS_DIR, PYTHON_BIN);
+# this script used to read both out of the single-cell project directory
+MODEL_DIR <- MODELS_DIR
+Sys.setenv(RETICULATE_PYTHON = PYTHON_BIN)
 model_paths <- list(
   scaled_diff = file.path(MODEL_DIR, "EN_Chronoage_Multispecies_Multitissue_scaleddiff.pkl"),
   yugene_diff = file.path(MODEL_DIR, "EN_Chronoage_Multispecies_Multitissue_yugenediff.pkl")

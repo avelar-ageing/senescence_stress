@@ -22,6 +22,8 @@ convention used for the pathway-level tests.
 
 Output: rerun_outputs/isg_gene_level_specificity.csv
 """
+import os
+import subprocess
 import sys
 import warnings
 
@@ -54,11 +56,23 @@ def cohens_d(x, y):
     return (np.mean(x) - np.mean(y)) / p if p > 0 else np.nan
 
 
+def tage_gene_table():
+    """Gene_table_mouse.csv ships inside the installed tAge R package; ask R where it is
+    (override with TAGE_GENE_TABLE)."""
+    p = os.environ.get("TAGE_GENE_TABLE")
+    if not p:
+        p = subprocess.run(["Rscript", "-e", "cat(system.file('extdata/metadata/Gene_table_mouse.csv', package='tAge'))"],
+                           capture_output=True, text=True, check=True).stdout.strip()
+    if not p or not os.path.exists(p):
+        sys.exit("Gene_table_mouse.csv not found: install the tAge R package or set TAGE_GENE_TABLE")
+    return p
+
+
 def main(rerun_dir, model_dir):
     PT = f"{rerun_dir}/partial_tage"
     pw = pd.read_csv(f"{PT}/hallmark_pathway_mouse_ids.csv")
     ifn_ids = set(pw.loc[pw.pathway == PATHWAY, "mouse_gene_id"].astype(str))
-    gt = pd.read_csv("/home/ro/R/x86_64-pc-linux-gnu-library/4.6/tAge/extdata/metadata/Gene_table_mouse.csv")
+    gt = pd.read_csv(tage_gene_table())
     sym = dict(zip(gt.Entrez.astype(str), gt["Gene.Symbol"]))
 
     jobs = [("meta", "meta", c, "Proliferating", s, "meta_analysis")

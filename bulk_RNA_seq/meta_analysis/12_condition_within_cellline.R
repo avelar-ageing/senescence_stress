@@ -43,7 +43,12 @@ d$condition <- factor(d$condition, levels = c("Proliferating", "CICQ", "SSCQ", "
 # contains IMR90-hTERT, so stratifying on it does not hold cell line constant.
 ann <- read.csv(file.path(RERUN_DIR, "immortalisation_annotation_corrected.csv"))
 d$cell_line <- ann$cell_line_resolved[match(d$external_id, ann$external_id)]
-MODELS <- c(scaled_diff = "scaled_diff_EN_tAge", yugene_diff = "yugene_diff_EN_tAge")
+# Tissue must come from the verified map, not from tage_all_conditions.csv: that
+# file carries the submitted label, which called 10 foreskin samples "Skin" and
+# so produced a spurious third stratum below.
+d$tissue <- ann$tissue_verified[match(d$external_id, ann$external_id)]
+stopifnot(!any(is.na(d$tissue)))
+MODELS <- c(yugene_diff = "yugene_diff_EN_tAge", scaled_diff = "scaled_diff_EN_tAge")
 CONDS <- setdiff(levels(d$condition), "Proliferating")
 MIN_N <- 3
 

@@ -1,3 +1,15 @@
+# ============================================================================
+# SUPERSEDED 2026-08-25 -- DO NOT RUN AS PART OF THE FIGURE SET
+#
+# Output: figure_pathway_heatmap_all_both_models.png
+#
+# The file this produced has been deleted. set-level decomposition on the SPARSE chronological clock, which sections 2.1.5.2/2.2.4 no longer use. Its replacement is named below.
+# The script is kept because it documents how the earlier figure was made, not
+# because rerunning it would produce anything the manuscript uses -- rerunning it
+# will recreate a figure that contradicts the text.
+#
+# Replaced by: exploratory/26_mortality_pathway_heatmaps.R (meta panel)
+# ============================================================================
 # 08_pathway_full_heatmap_both_models.R
 #
 # Figure for section 2.1.5.2 (Pathway-level Transcriptomic Age Differences):

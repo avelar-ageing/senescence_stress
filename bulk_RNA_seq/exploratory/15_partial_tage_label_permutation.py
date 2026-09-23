@@ -40,7 +40,12 @@ import pandas as pd
 
 warnings.filterwarnings("ignore")
 
-N_PERM = 2000
+# 20,000 to match the other tAge Monte-Carlo nulls (13_condition_within_study.R
+# and 20_pathway_specificity_yardstick.py). At 2,000 the floor was 1/2001 =
+# 5e-4 and 290 of the 800 sampled rows sat on it; 20,000 drops that to 5e-5.
+# The min(N_PERM, max(200, n_distinct)) cap below keeps the 6v6 comparisons at
+# their exhaustive 924 splits, where more draws are mathematically impossible.
+N_PERM = 20000
 SEED = 20260817
 META_CONDITIONS = {"Contact_inhibited CQ": "CICQ", "Serum_starved CQ": "SSCQ",
                    "Replicative CS": "RS", "Stress-induced CS": "SIPS",
@@ -93,11 +98,23 @@ def run(scores_csv, groups_csv, test_label, control_label, label, analysis,
         count += np.abs(d_p) >= np.abs(d_obs)
 
     p_emp = (count + 1) / (n_perm + 1)
-    p_floor = 2.0 / n_distinct
+    # The attainable minimum is whichever constraint binds: the combinatorial
+    # floor 2/n_distinct when the splits are enumerated exhaustively, or the
+    # Monte-Carlo floor 1/(n_perm+1) when they are sampled. p_emp is computed as
+    # (count+1)/(n_perm+1), so it can never fall below the latter -- reporting
+    # 2/n_distinct alone understated the floor by many orders of magnitude on the
+    # meta-analysis rows, where n_distinct is astronomical but only 2,000 draws
+    # are taken. Both components are written out so the binding one is visible.
+    p_floor_combinatorial = 2.0 / n_distinct
+    p_floor_montecarlo = 1.0 / (n_perm + 1)
+    p_floor = max(p_floor_montecarlo, p_floor_combinatorial)
     for k, pw in enumerate(pathways):
         rows.append(dict(analysis=analysis, label=label, model=model, pathway=pw,
                          cohens_d=d_obs[k], p_permutation=p_emp[k],
-                         p_floor=p_floor, n_perm=n_perm,
+                         p_floor=p_floor,
+                         p_floor_combinatorial=p_floor_combinatorial,
+                         p_floor_montecarlo=p_floor_montecarlo,
+                         n_perm=n_perm,
                          n_distinct_splits=n_distinct,
                          n_test=int(a.sum()), n_control=int(b.sum())))
 

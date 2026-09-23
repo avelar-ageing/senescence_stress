@@ -189,6 +189,28 @@ download_studies=function(
   return(rse)
 }
 
+# download_studies() skips a study that fails to download, printing only a message,
+# so a network error gives a smaller object without stopping the script. The pipeline
+# scripts call this wrapper instead: it stops unless EVERY requested study arrived, and
+# keeps the raw download in cache_rds so a re-run does not fetch it again
+# (FORCE_DOWNLOAD=1 re-fetches). recount3 also keeps its own file cache
+# (BiocFileCache, ~/Library/Caches/org.R-project.R/R/recount3 on macOS).
+download_studies_cached <- function(studies, cache_rds, sra_organism = "human") {
+  if (file.exists(cache_rds) && Sys.getenv("FORCE_DOWNLOAD") != "1") {
+    message("[download] using cached ", cache_rds)
+    rse <- readRDS(cache_rds)
+  } else {
+    rse <- download_studies(studies = studies, sra_organism = sra_organism)
+    if (is.null(rse)) stop("recount3 download returned nothing for: ", paste(studies, collapse = ", "))
+  }
+  missing <- setdiff(studies, unique(as.character(rse$study)))
+  if (length(missing))
+    stop("recount3 download is missing ", length(missing), " of ", length(studies),
+         " studies: ", paste(missing, collapse = ", "), " -- re-run, or FORCE_DOWNLOAD=1")
+  if (!file.exists(cache_rds) || Sys.getenv("FORCE_DOWNLOAD") == "1") saveRDS(rse, cache_rds)
+  rse
+}
+
 #function to calculate pi score to rank genes
 rank_genelist <- function(genes,
                           gene_col='gene',
@@ -3785,4 +3807,39 @@ summarise_overlaps_facet=function(db,
       geom_hline(yintercept = yint,size=1)
   }
   return(temp_p)
+}
+
+# ---------------------------------------------------------------------------
+# filter_dataframe()
+#
+# Carried over verbatim from Final/Scripts/for_github/study_degs.R (origin/main),
+# which was never merged into restructure-bulk-rna-seq. It is needed to
+# reproduce SI Figure 16 (the SIPS/OIS/CQ PCA): it keeps only those studies
+# that contain at least one sample matching each of two label patterns, so the
+# CQ-versus-senescence comparison is never made across studies that contribute
+# only one side of it. Replicative senescence drops out of that figure as a
+# consequence, not by an explicit exclusion -- no study in the pool contributes
+# both CQ and RS samples.
+# ---------------------------------------------------------------------------
+filter_dataframe <- function(dataframe,
+                             iterate_col,
+                             filter_col,
+                             col_label_1,
+                             col_label_2,
+                             col_1_n_filter = 0,
+                             col_2_n_filter = 0) {
+  dataframe = dataframe[grepl(dataframe[[filter_col]], pattern = col_label_1) |
+                          grepl(dataframe[[filter_col]], pattern = col_label_2), ]
+  filter_val = do.call(c, lapply(unique(dataframe[[iterate_col]]), function(value) {
+    subset_df <- dataframe[dataframe[[iterate_col]] == value, ]
+    counts_col_label_1 <- sum(grepl(subset_df[[filter_col]], pattern = col_label_1)) > col_1_n_filter
+    counts_col_label_2 <- sum(grepl(subset_df[[filter_col]], pattern = col_label_2)) > col_2_n_filter
+    if (counts_col_label_1 & counts_col_label_2) {
+      return(value)
+    } else {
+      return(NULL)
+    }
+  }))
+  filtered_df <- dataframe[dataframe[[iterate_col]] %in% filter_val, ]
+  return(filtered_df)
 }

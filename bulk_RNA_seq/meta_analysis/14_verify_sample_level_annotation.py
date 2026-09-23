@@ -53,15 +53,48 @@ IMM = re.compile(r"hTERT|h-TERT|immortal\w*|SV40|large T antigen|T-antigen"
                  r"|telomerase|E6/E7", re.I)
 LINE_KEYS = ["cell line", "cell_line", "cell type", "cell_type",
              "cell strain", "fibroblast strain", "strain"]
+# TISSUE, added 2026-08-31. This script verified cell line and hTERT status only,
+# so the tissue column was never checked against the submitters' own records - and
+# it is wrong for at least one line: sample_metadata_RERUN.csv calls HDF 12-3
+# "Skin", while the paper the samples come from (Mitra et al. 2018, Genome Biol)
+# says the whole HDF series is foreskin. Since tissue is one of the four
+# predictors of baseline tAge in meta_analysis/11, an unchecked Skin/Foreskin
+# split makes that result a partly arbitrary division.
+TISSUE_KEYS = ["tissue", "source tissue", "organ", "anatomic site", "body site",
+               "cell origin", "origin"]
+TISSUE_WORDS = re.compile(r"foreskin|prepuce|lung|dermal|dermis|skin|embryo|fetal|"
+                          r"foetal|neonat|newborn", re.I)
+
+
+def is_soft(text):
+    """GEO answers some clients with an HTML reCAPTCHA page (HTTP 200). Such a page
+    parses to zero samples, so every sample would be scored as 'no term found'.
+    Only text that carries SOFT sample records counts."""
+    return "!Sample_" in text and not text.lstrip().lower().startswith(("<!doctype", "<html"))
+
+
+def cached_get(url, path, pause):
+    """Return the SOFT text at url, reading path if it holds a valid record. A cached
+    file that is not SOFT (e.g. a stored CAPTCHA page) is ignored and re-fetched; a
+    fetch that returns something other than SOFT stops the script and is NOT cached."""
+    if os.path.exists(path):
+        t = open(path, errors="replace").read()
+        if is_soft(t):
+            return t
+    with urllib.request.urlopen(url, timeout=60) as r:
+        raw = r.read()
+    t = raw.decode("utf-8", errors="replace")
+    if not is_soft(t):
+        sys.exit(f"GEO returned a non-SOFT response for {url} (first bytes: {t[:80]!r}). "
+                 "This is usually a reCAPTCHA page. Retry later or from another network; "
+                 "nothing was written to the cache.")
+    open(path, "wb").write(raw)
+    time.sleep(pause)
+    return t
 
 
 def fetch(gse, cache):
-    path = os.path.join(cache, f"{gse}.txt")
-    if not os.path.exists(path) or os.path.getsize(path) == 0:
-        with urllib.request.urlopen(GEO.format(gse), timeout=60) as r:
-            open(path, "wb").write(r.read())
-        time.sleep(0.35)
-    return open(path, errors="replace").read()
+    return cached_get(GEO.format(gse), os.path.join(cache, f"{gse}.txt"), 0.35)
 
 
 def parse(text):
@@ -77,6 +110,21 @@ def parse(text):
             k, _, v = ln.partition(" = ")
             out[cur][k[len("!Sample_"):]].append(v)
     return out
+
+
+def tissue_token(f):
+    """Tissue as the submitter recorded it, plus any provenance words in free text."""
+    ch = " | ".join(f.get("characteristics_ch1", []))
+    explicit = ""
+    for k in TISSUE_KEYS:
+        m = re.search(rf"{k}\s*:\s*([^|]+)", ch, re.I)
+        if m:
+            explicit = m.group(1).strip(); break
+    blob = " ".join(sum((f.get(k, []) for k in
+                        ["title", "source_name_ch1", "characteristics_ch1",
+                         "growth_protocol_ch1", "extract_protocol_ch1"]), []))
+    words = sorted({w.lower() for w in TISSUE_WORDS.findall(blob)})
+    return explicit, ",".join(words)
 
 
 def line_token(f):
@@ -101,14 +149,9 @@ def main(rerun_dir, cache):
     # each series once to get every sibling sample's characteristics.
     series, recs, gsm_series = {}, {}, {}
     for gsm in ours.geo:
-        p = os.path.join(cache, f"{gsm}.self.txt")
-        if not os.path.exists(p) or os.path.getsize(p) == 0:
-            url = ("https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi"
-                   f"?acc={gsm}&targ=self&form=text&view=quick")
-            with urllib.request.urlopen(url, timeout=60) as rr:
-                open(p, "wb").write(rr.read())
-            time.sleep(0.3)
-        t = open(p, errors="replace").read().replace("\r", "")
+        url = ("https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi"
+               f"?acc={gsm}&targ=self&form=text&view=quick")
+        t = cached_get(url, os.path.join(cache, f"{gsm}.self.txt"), 0.3).replace("\r", "")
         gsm_series[gsm] = re.findall(r"!Sample_series_id = (GSE\d+)", t)
 
     for gse in sorted({g for v in gsm_series.values() for g in v}):
@@ -131,6 +174,9 @@ def main(rerun_dir, cache):
             title=" | ".join(f.get("title", [])),
             line_token_sample=line_token(f),
             characteristics=" | ".join(f.get("characteristics_ch1", [])),
+            tissue_stated=tissue_token(f)[0],
+            tissue_words_in_record=tissue_token(f)[1],
+            tissue_metadata=r.get("tissue", ""),
             immortalisation_term_in_sample_record=bool(hit),
             matched_term=hit.group(0) if hit else "",
             cell_line_resolved_studylevel=a.cell_line_resolved,
@@ -156,6 +202,20 @@ def main(rerun_dir, cache):
         print(dis[["external_id", "study", "geo", "line_token_sample",
                    "immortalised_studylevel"]].to_string(index=False))
 
+    print("\n== TISSUE: what the metadata says vs what the sample record says ==")
+    tt = S[["study", "cell_line_resolved_studylevel", "tissue_metadata",
+            "tissue_stated", "tissue_words_in_record"]].drop_duplicates()
+    tt = tt.sort_values("cell_line_resolved_studylevel")
+    print(tt.to_string(index=False))
+    blank = int((tt.tissue_stated.fillna("") == "").sum())
+    print(f"\n  sample records stating a tissue explicitly: {len(tt) - blank} of {len(tt)}")
+    mism = tt[(tt.tissue_words_in_record != "") &
+              tt.apply(lambda r: isinstance(r.tissue_metadata, str) and r.tissue_metadata != ""
+                       and r.tissue_metadata.lower() not in r.tissue_words_in_record, axis=1)]
+    print(f"  metadata tissue not among the words in the record: {len(mism)}")
+    if len(mism):
+        print(mism.to_string(index=False))
+
     print("\n== lines in the WHOLE series vs lines of the samples we use ==")
     for gse, members in sorted(series.items()):
         mine = [g for g in members if g in set(S.geo)]
@@ -168,6 +228,22 @@ def main(rerun_dir, cache):
             print(f"          ours ={dict(myt)}")
 
     out = os.path.join(rerun_dir, "sample_level_line_verification.csv")
+    # NULL-RESULT GUARD (2026-09-01). This script depends on a populated .geo_cache;
+    # GEO now serves captchas to curl, so a run with an empty cache finds no
+    # characteristics and every immortalisation_term_in_sample_record comes back False.
+    # On 2026-08-31 exactly that happened and the null result overwrote a good output
+    # file, turning 46 genuine hits into zero and silently breaking the assertion in
+    # meta_analysis/13. Refuse to overwrite in that case: a run that finds no evidence
+    # at all has failed, and must not be mistaken for evidence of absence.
+    _found = int((S["immortalisation_term_in_sample_record"] == True).sum()) \
+        if "immortalisation_term_in_sample_record" in S.columns else 0
+    if _found == 0 and os.path.exists(out):
+        raise SystemExit(
+            f"REFUSING TO WRITE {out}: found 0 immortalisation terms across {len(S)} samples, "
+            "which means the GEO cache is empty rather than that the terms are absent. "
+            "Populate .geo_cache (the 34 SOFT records are on origin/restructure-bulk-rna-seq "
+            "under DISCREPANCY_REPORT/evidence/geo_soft/) and re-run. The existing file has "
+            "been left untouched.")
     S.to_csv(out, index=False)
     print(f"\nSaved -> {out}")
 

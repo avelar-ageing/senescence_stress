@@ -19,7 +19,8 @@
 #
 # STRATIFIERS AVAILABLE. All 230 samples are fibroblasts (cell_type is constant),
 # so "cell type" cannot be tested. The available structure is cell_line (7
-# levels), tissue of origin (Lung / Foreskin / Skin), immortalisation status
+# levels), tissue of origin (Lung / Foreskin among controls; verified per strain,
+# see meta_analysis/10), immortalisation status
 # (audited, see script 10), and study.
 #
 # Tests: Kruskal-Wallis per attribute, then pairwise Wilcoxon with BH within
@@ -38,8 +39,16 @@ d$immortalised <- ann$immortalised[match(d$external_id, ann$external_id)]
 # `cell_line` in the metadata lumps 8 strains under "Primary" and puts
 # IMR90-hTERT inside "IMR-90"; use the strain-level column from script 10.
 d$cell_line <- ann$cell_line_resolved[match(d$external_id, ann$external_id)]
+# TISSUE FROM THE VERIFIED MAP, not from the metadata column (2026-08-31). The
+# metadata called "Skin" the 6 samples now recorded as HCA2 and 4 of the HDF series;
+# HDF series' own paper (Mitra 2018) both say foreskin. See the TISSUE_VERIFIED
+# table in meta_analysis/10. After the correction, no Skin sample remains among the
+# proliferating controls - HDF161, the only genuinely adult dermal strain, is in a
+# study with no internal controls - so the tissue contrast here is Foreskin against
+# Lung, and any three-way Lung/Foreskin/Skin split is an artefact of the old column.
+d$tissue <- ann$tissue_verified[match(d$external_id, ann$external_id)]
 
-MODELS <- c(scaled_diff = "scaled_diff_EN_tAge", yugene_diff = "yugene_diff_EN_tAge")
+MODELS <- c(yugene_diff = "yugene_diff_EN_tAge", scaled_diff = "scaled_diff_EN_tAge")
 p <- d[d$condition == "Proliferating", ]
 cat(sprintf("Proliferating controls: n = %d\n\n", nrow(p)))
 
@@ -126,3 +135,64 @@ write.csv(out, file.path(RERUN_DIR, "proliferating_baseline_heterogeneity.csv"),
           row.names = FALSE)
 cat(sprintf("\nSaved -> %s\n",
             file.path(RERUN_DIR, "proliferating_baseline_heterogeneity.csv")))
+
+# ---------------------------------------------------------------------------
+# 4. CELL LINE WITHIN TISSUE, PRIMARY CELLS ONLY (added 2026-08-31)
+#
+# Sections above show that tissue of origin separates the controls and that
+# strains differ, but strain and tissue are nested, so neither result isolates
+# line identity. This asks the question the nesting leaves open: among primary
+# cells of the SAME tissue, do different strains still differ? Immortalised
+# samples are excluded so that hTERT status cannot contribute.
+#
+# It matters because "background" has been used loosely for two things -- tissue
+# of origin and the particular strain -- and only this comparison separates them.
+# ---------------------------------------------------------------------------
+cat("\n== 4. between-strain variation WITHIN tissue, primary controls only ==\n")
+# all three clocks here, so mortality is merged in (script 11 otherwise runs the
+# two chronological models only)
+mt <- read.csv(file.path(RERUN_DIR, "mortality_tage.csv"))
+p$mortality_tAge <- mt$mortality_tAge[match(p$external_id, mt$external_id)]
+MODELS3 <- c(MODELS, mortality = "mortality_tAge")
+pri <- p[p$immortalised == "no", ]
+wt <- list()
+for (ti in sort(unique(pri$tissue))) {
+  q <- pri[pri$tissue == ti, ]
+  keep <- names(which(table(q$cell_line) >= 3))
+  if (length(keep) < 2) {
+    cat(sprintf("  %-9s only %d strain(s) with n>=3 - not testable\n", ti, length(keep)))
+    next
+  }
+  q <- q[q$cell_line %in% keep, ]
+  for (mn in names(MODELS3)) {
+    v <- MODELS3[[mn]]
+    med <- tapply(q[[v]], q$cell_line, median)
+    kw <- kruskal.test(q[[v]], factor(q$cell_line))
+    wt[[length(wt) + 1]] <- data.frame(
+      test = "within_tissue_between_strain_primary", tissue = ti, model = mn,
+      n = nrow(q), n_strains = length(keep),
+      strain_median_range = diff(range(med)),
+      lowest = names(med)[which.min(med)],  lowest_median = min(med),
+      highest = names(med)[which.max(med)], highest_median = max(med),
+      statistic = unname(kw$statistic), p = kw$p.value)
+  }
+}
+if (length(wt)) {
+  wt <- bind_rows(wt); wt$p_adj <- p.adjust(wt$p, "BH")
+  print(wt[, c("tissue", "model", "n", "n_strains", "strain_median_range",
+               "lowest", "lowest_median", "highest", "highest_median", "p", "p_adj")],
+        row.names = FALSE, digits = 3)
+  cat("\n  For comparison, the BETWEEN-tissue difference in the same primary cells:\n")
+  for (mn in names(MODELS3)) {
+    v <- MODELS3[[mn]]
+    f <- pri[[v]][pri$tissue == "Foreskin"]; l <- pri[[v]][pri$tissue == "Lung"]
+    cat(sprintf("    %-12s foreskin %+.1f vs lung %+.1f -> %+.1f\n",
+                mn, median(f), median(l), median(f) - median(l)))
+  }
+  cat("\n  => line identity is not absorbed by tissue: it is significant within lung on\n")
+  cat("     all three clocks and within foreskin on the mortality clock. Tissue is the\n")
+  cat("     larger effect on the scaled-difference and mortality clocks, but on YuGene\n")
+  cat("     the within-lung spread exceeds the between-tissue difference.\n")
+  write.csv(wt, file.path(RERUN_DIR, "within_tissue_between_strain.csv"), row.names = FALSE)
+  cat(sprintf("\nSaved -> %s\n", file.path(RERUN_DIR, "within_tissue_between_strain.csv")))
+}

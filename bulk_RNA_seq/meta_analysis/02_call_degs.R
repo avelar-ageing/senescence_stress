@@ -18,6 +18,12 @@ source("R/functions.R")
 
 cs_cq_all_study_processed <- readRDS(file.path(RERUN_DIR, "cs_cq_all_study_processed.rds"))
 
+# NOTE: `tissue` here is the SUBMITTED label, deliberately. meta_analysis/10
+# reads sample_metadata_RERUN.csv as the baseline it audits against, so this file
+# must keep the pre-correction values -- otherwise `tissue_metadata` and the
+# `changed` flag in immortalisation_annotation_corrected.csv become vacuous.
+# For verified tissue counts (Foreskin 83 / Lung 141 / Skin 6) see script 10's
+# output, not this table.
 cell_counts_table <- data.frame(table(data.frame(colData(cs_cq_all_study_processed)) %>%
                                          dplyr::select(tissue, cell_substate)))
 save_csv(cell_counts_table, file_name = "sample_subtype_counts_RERUN.csv", path = RERUN_DIR)

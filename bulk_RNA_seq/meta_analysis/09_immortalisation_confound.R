@@ -50,7 +50,7 @@ stopifnot(setequal(d$external_id, ann$external_id))
 d$immortalised <- ann$immortalised[match(d$external_id, ann$external_id)]
 cat(sprintf("Using AUDITED annotation: %d immortalised (curated column said %d)\n",
             sum(d$immortalised == "yes"), sum(ann$immortalised_curated == "yes")))
-MODELS <- c(scaled_diff = "scaled_diff_EN_tAge", yugene_diff = "yugene_diff_EN_tAge")
+MODELS <- c(yugene_diff = "yugene_diff_EN_tAge", scaled_diff = "scaled_diff_EN_tAge")
 
 cat("== composition ==\n")
 print(table(d$condition, d$immortalised))

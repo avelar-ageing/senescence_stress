@@ -54,9 +54,9 @@ print(table(meta_both$cell_substate))
 stopifnot(all(meta_both$cell_type == "Fibroblast"))
 
 cat("\n== Step 3: download gene-level counts from recount3 (34 studies) ==\n")
-cs_cq_download <- download_studies(studies = unique(meta_both$study), sra_organism = "human")
+cs_cq_download <- download_studies_cached(studies = unique(meta_both$study),
+                                          cache_rds = file.path(RERUN_DIR, "cs_cq_download_raw.rds"))
 cat(sprintf("  Downloaded RSE: %d genes x %d samples\n", nrow(cs_cq_download), ncol(cs_cq_download)))
-saveRDS(cs_cq_download, file.path(RERUN_DIR, "cs_cq_download_raw.rds"))
 
 cat("\n== Step 4: process_rse (protein-coding filter, ortholog/symbol rename,\n")
 cat("   per-condition low-expression filter, recount3 AUC scale_counts=TRUE) ==\n")

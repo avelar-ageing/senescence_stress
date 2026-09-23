@@ -1,3 +1,15 @@
+# ============================================================================
+# SUPERSEDED 2026-08-25 -- DO NOT RUN AS PART OF THE FIGURE SET
+#
+# Output: pathway_effect_heatmap.png
+#
+# The file this produced has been deleted. pre-restructure, built on the POOLED condition contrast that meta_analysis/13 replaced with the within-study estimate. Its replacement is named below.
+# The script is kept because it documents how the earlier figure was made, not
+# because rerunning it would produce anything the manuscript uses -- rerunning it
+# will recreate a figure that contradicts the text.
+#
+# Replaced by: exploratory/26_mortality_pathway_heatmaps.R
+# ============================================================================
 # 06_pathway_effect_heatmap.R
 #
 # Cross-analysis pathway-effect heatmap (meta-analysis conditions + temporal

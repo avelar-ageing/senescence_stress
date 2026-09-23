@@ -46,7 +46,7 @@ suppressPackageStartupMessages(library(dplyr))
 
 set.seed(1)
 NPERM <- 20000
-MODELS <- c(scaled_diff = "scaled_diff_EN_tAge", yugene_diff = "yugene_diff_EN_tAge")
+MODELS <- c(yugene_diff = "yugene_diff_EN_tAge", scaled_diff = "scaled_diff_EN_tAge")
 
 d <- read.csv(file.path(RERUN_DIR, "tage_all_conditions.csv"))
 ann <- read.csv(file.path(RERUN_DIR, "immortalisation_annotation_corrected.csv"))
@@ -77,9 +77,22 @@ if (file.exists(ver_path)) {
     print(as.data.frame(chk[chk$n_lines > 1 | chk$n_imm > 1, ]), row.names = FALSE)
     cat("  inspect sample_level_line_verification.csv before trusting their strata\n")
   }
-  stopifnot(!any(ver$has_term != (ver$immortalised_studylevel == "yes")))
-  cat(sprintf("per-sample GEO evidence agrees with the study-level call for all %d GEO samples\n",
-              nrow(ver)))
+  # ONE DOCUMENTED EXCEPTION (2026-08-31). SRP089801's GEO characteristics carry
+  # "cell type: HCA2-hTert" while the same record says "source_name: Human primary
+  # fibroblasts" and "tissue: primary fibroblasts", and the paper it comes from
+  # (Mitra 2017 PNAS, doi:10.1073/pnas.1710238114) describes only primary fibroblasts
+  # and never mentions hTERT or telomerase. It is classified primary in
+  # meta_analysis/10, so its per-sample token disagrees with the study-level call by
+  # design. Anything OTHER than that still fails here.
+  TOKEN_DISAGREEMENT_EXPECTED <- "SRP089801"
+  mism <- ver[ver$has_term != (ver$immortalised_studylevel == "yes"), ]
+  if (nrow(mism)) {
+    cat(sprintf("per-sample hTERT token disagrees with the study-level call for %d sample(s): %s\n",
+                nrow(mism), paste(sort(unique(mism$study)), collapse = ", ")))
+  }
+  stopifnot(all(mism$study %in% TOKEN_DISAGREEMENT_EXPECTED))
+  cat(sprintf("per-sample GEO evidence agrees with the study-level call for %d of %d GEO samples\n",
+              nrow(ver) - nrow(mism), nrow(ver)))
 } else {
   warning("sample_level_line_verification.csv missing; run meta_analysis/14 first")
 }

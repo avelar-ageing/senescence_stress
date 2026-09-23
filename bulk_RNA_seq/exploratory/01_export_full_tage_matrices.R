@@ -56,7 +56,8 @@ recount_pheno$time_after_treatment <- gsub(recount_pheno$time_after_treatment, p
 recount_pheno$irradiated <- ifelse(recount_pheno$time_after_treatment == "none", "none", "irradiated")
 
 human_pc <- get_ensembl_release_pc()
-erp_download <- download_studies(studies = "ERP021140", sra_organism = "human")
+erp_download <- download_studies_cached(studies = "ERP021140",
+                                        cache_rds = file.path(RERUN_DIR, "erp021140_download_raw.rds"))
 
 for (ct in c("Fibroblast", "Keratinocyte", "Melanocyte")) {
   samples_ct <- recount_pheno$sample_ID[recount_pheno$cell_type == ct]

@@ -37,6 +37,11 @@ ROWS <- c("Proliferating", COND)
 # Okabe-Ito, colourblind-safe
 PAL <- c(CICQ = "#0072B2", SSCQ = "#56B4E9", RS = "#D55E00",
          SIPS = "#E69F00", OIS = "#CC79A7", Proliferating = "grey55")
+# Raw permutation p, NOT BH-adjusted. Scripts 13 and 18 renamed their adjusted
+# column p_perm_adj_DEPRECATED when the project settled on reporting simulation
+# nulls uncorrected (exploratory/12 and 15 do the same); this figure was still
+# reading the old name, which no longer exists, so it errored. The stars here are
+# raw empirical p from 20,000 within-study label permutations.
 sig_symbol <- function(p) ifelse(p < 0.001, "***",
                           ifelse(p < 0.01, "**", ifelse(p < 0.05, "*", "ns")))
 
@@ -68,10 +73,10 @@ cw <- read.csv(file.path(RERUN_DIR, "condition_within_study.csv")) %>%
   filter(test == "condition_within_study_stratified") %>%
   transmute(condition, clock = ifelse(model == "scaled_diff",
               "Chronological, Scaled Difference", "Chronological, YuGene"),
-            est = diff_within_study, p = p_perm_adj)
+            est = diff_within_study, p = p_perm)
 mw <- read.csv(file.path(RERUN_DIR, "mortality_within_study.csv")) %>%
   filter(test == "condition_within_study") %>%
-  transmute(condition, clock = "Mortality", est = diff_within_study, p = p_perm_adj)
+  transmute(condition, clock = "Mortality", est = diff_within_study, p = p_perm)
 est <- bind_rows(cw, mw) %>%
   mutate(condition = factor(condition, levels = rev(ROWS)),
          clock = factor(clock, levels = levels(d$clock)),
