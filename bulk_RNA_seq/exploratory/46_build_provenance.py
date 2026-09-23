@@ -73,7 +73,7 @@ ROWS = [
   "exploratory/34_ceiling_comparison.py", "exploratory/01_export_full_tage_matrices.R; 03_build_pathway_mouse_id_mapping.R; meta_analysis/10_immortalisation_annotation_audit.R"),
  ("2.1.5.3.1", "matched-null yardstick, 250 arrest comparisons",
   ["rerun_outputs/pathway_specificity_yardstick_mortality.csv"],
-  "exploratory/22_mortality_pathway_decomposition.py", "exploratory/01_...R"),
+  "exploratory/20_pathway_specificity_yardstick.py", "run with --mortality; exploratory/01_export_full_tage_matrices.R; 14_pathway_representation.py --mortality"),
  ("2.1.5.3.1", "condition effect within a shared cell line (IMR90)",
   ["rerun_outputs/condition_within_cellline.csv"],
   "meta_analysis/12_condition_within_cellline.R", "meta_analysis/05_tage_all_conditions.R"),
@@ -129,10 +129,16 @@ def main(manuscript, root):
             # direct call, a call within three lines, a constructed name (sprintf/paste),
             # or the filename passed as a quoted argument to a plotting helper - all of
             # which are real writes, and all of which occur in this codebase
-            direct = any(stem in l and WRITE_PAT.search(l) for l in lines)
-            near = any(stem in l and any(WRITE_PAT.search(x) for x in lines[max(0, i - 3):i + 4])
+            # whole names only: "x_mortality" must not match inside "x_mortality_temporal"
+            # (that substring match once credited exploratory/22 with a file that
+            # exploratory/20 --mortality writes)
+            name = re.compile(re.escape(stem) + r"(?![A-Za-z0-9_])")
+            direct = any(name.search(l) and WRITE_PAT.search(l) for l in lines)
+            near = any(name.search(l) and any(WRITE_PAT.search(x) for x in lines[max(0, i - 3):i + 4])
                        for i, l in enumerate(lines))
-            built = any(stem.rsplit("_", 1)[0] in l and WRITE_PAT.search(l) for l in lines)
+            # constructed: the prefix followed by a format slot, e.g. "x_%s.csv", "x{suffix}.csv"
+            prefix = re.compile(re.escape(stem.rsplit("_", 1)[0]) + r"(_?%s|_?\{)")
+            built = any(prefix.search(l) and WRITE_PAT.search(l) for l in lines)
             passed = (any(f'"{os.path.basename(o)}"' in l for l in lines)
                       and any(WRITE_PAT.search(l) for l in lines))
             hit = direct or near or built or passed

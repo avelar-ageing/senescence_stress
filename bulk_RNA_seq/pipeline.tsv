@@ -1,5 +1,6 @@
 # pipeline.tsv - the bulk tAge pipeline behind the manuscript, in execution order.
-# Read by run_pipeline.sh. One row per script. Columns (TAB-separated):
+# Read by run_pipeline.sh. One row per invocation (exploratory/14 runs twice: chronological
+# clocks, then --mortality). Columns (TAB-separated):
 #   stage     A build / B core objects / C manuscript analyses
 #   script    path relative to bulk_RNA_seq/
 #   args      {RERUN} {MODELS} {GEO_CACHE} {GSE175533_XLSX} are substituted by the driver
@@ -23,11 +24,13 @@ B	exploratory/01_export_full_tage_matrices.R	-	partial_tage/meta_scaled_diff.csv
 B	exploratory/02_export_temporal_bytimepoint_matrices.R	-	partial_tage/Fibroblast_4_days_scaled_diff.csv partial_tage/Melanocyte_20_days_groups.csv	recount3: ERP021140 (shared cache)
 B	exploratory/03_build_pathway_mouse_id_mapping.R	-	partial_tage/hallmark_pathway_mouse_ids.csv	-
 B	meta_analysis/18_mortality_clock.py	{RERUN} {MODELS}	mortality_tage.csv mortality_within_study.csv	-
-B	meta_analysis/21_gse175533_tage.R	-	gse175533/gse175533_tage.csv	-
+B	meta_analysis/21_gse175533_tage.R	-	gse175533/gse175533_scaled_diff.csv gse175533/gse175533_yugene_diff.csv gse175533/gse175533_groups.csv	-
 B	temporal_analysis/04_tage_by_celltype.R	-	tage_temporal_by_celltype.csv	recount3: ERP021140 (shared cache)
 B	temporal_analysis/08_mortality_temporal.py	{RERUN} {MODELS}	mortality_temporal_by_celltype.csv	-
-C	exploratory/14_pathway_representation.py	{RERUN} {MODELS}	pathway_representation.csv pathway_representation_mortality.csv	-
-C	exploratory/22_mortality_pathway_decomposition.py	{RERUN} {MODELS}	pathway_specificity_yardstick_mortality.csv pathway_specificity_yardstick_mortality_temporal.csv mortality_partial_tage_ALL.csv	-
+C	exploratory/14_pathway_representation.py	{RERUN} {MODELS}	pathway_representation.csv	-
+C	exploratory/14_pathway_representation.py	{RERUN} {MODELS} --mortality	pathway_representation_mortality.csv	-
+C	exploratory/20_pathway_specificity_yardstick.py	{RERUN} {MODELS} 20000 --mortality	pathway_specificity_yardstick_mortality.csv	-
+C	exploratory/22_mortality_pathway_decomposition.py	{RERUN} {MODELS}	pathway_specificity_yardstick_mortality_temporal.csv mortality_partial_tage_ALL.csv	-
 C	exploratory/21_tage_modularity.R	mortality	tage_modularity_mortality.csv	-
 C	exploratory/23_decomposition_diagnostics.py	{RERUN} {MODELS}	decomposition_diagnostics.csv decomposition_subsampling.csv withinset_cancellation.csv	-
 C	exploratory/25_yardstick_calibration.py	{RERUN} {MODELS}	yardstick_recurrence.csv	-
@@ -46,7 +49,7 @@ C	meta_analysis/12_condition_within_cellline.R	-	condition_within_cellline.csv	-
 C	meta_analysis/16_immortalisation_contrasts.R	-	immortalisation_contrasts.csv	-
 C	meta_analysis/17_universal_tage_figures.R	-	figure_proliferating_baseline_heterogeneity.png	-
 C	meta_analysis/29_clock_comparison.R	-	clock_comparison.csv	-
-C	meta_analysis/22_gse175533_htert_contrasts.py	{RERUN} {MODELS}	gse175533/gse175533_contrasts.csv	-
+C	meta_analysis/22_gse175533_htert_contrasts.py	{RERUN} {MODELS}	gse175533/gse175533_tage.csv gse175533/gse175533_contrasts.csv	-
 C	meta_analysis/25_gse175533_figures.R	-	figure_immortalisation_htert.png	-
 C	meta_analysis/26_section_summary_table.py	{RERUN}	section_2_1_5_summary_table.csv	-
 C	temporal_analysis/07_tage_temporal_tests.R	-	tage_temporal_tests.csv	-

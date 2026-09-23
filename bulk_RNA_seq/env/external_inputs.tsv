@@ -3,7 +3,7 @@ external_inputs/models/EN_Chronoage_Multispecies_Multitissue_scaleddiff.pkl	7dc8
 external_inputs/models/EN_Chronoage_Multispecies_Multitissue_yugenediff.pkl	ad893ce7c008094b9f36450257d1934a	tAge clock (Tyshkovskiy et al.); third-party, not redistributed - obtain from the authors / Gladyshev lab
 external_inputs/models/EN_Mortality_Multispecies_Multitissue_scaleddiff.pkl	87307d7f5572d9932382912d3fd9571c	tAge clock (Tyshkovskiy et al.); third-party, not redistributed - obtain from the authors / Gladyshev lab
 external_inputs/geo/GSE175533_TPM.xlsx	278362d7db5b96c1c565e1c5d7026f78	GEO GSE175533 supplementary TPM table; input to meta_analysis/20
-../Final/SI_tables/study_info_all.csv	e5e51bc86bbad25ee546e27f669d3e1b	SI table / sample sheet of the original analysis (Final/)
+../Final/SI_tables/study_info_all.pre_annotation_fix.csv	7999c22a71072de653ac9ef04228388f	sample sheet of the 34 studies as submitted (SI table); read by meta_analysis/01 via R/config.R STUDY_INFO_CSV
 ../Final/SI_tables/lyso_genes.csv	d1c7d7346ed00c7d61e1bfa488cfab2f	SI table / sample sheet of the original analysis (Final/)
 ../Final/SI_tables/enrichment_background.csv	1dad805c0db215770b1ddd46397508bb	SI table / sample sheet of the original analysis (Final/)
 ../Final/ERP021140/Fibroblast/sample_pheno.csv	61362aa145aa0ad6f700332e0a37ea56	SI table / sample sheet of the original analysis (Final/)

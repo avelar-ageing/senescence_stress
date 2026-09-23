@@ -22,3 +22,5 @@ __pycache__/
 # Working-tree backups
 *.PRE_*
 *.bak
+# Project R library (env/setup_macos.sh)
+bulk_RNA_seq/.Rlib/

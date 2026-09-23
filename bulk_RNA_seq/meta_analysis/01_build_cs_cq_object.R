@@ -44,7 +44,10 @@ if (file.exists(old_cq_path)) {
 }
 
 cat("\n== Step 2: sample/study metadata (34 studies, all Fibroblast) ==\n")
-meta_both <- read.csv(file.path(SAVE_DIR_CSV, "study_info_all.csv"))
+meta_both <- read.csv(STUDY_INFO_CSV)   # the submitted SI table; see R/config.R
+if ("cell_line_assubmitted" %in% names(meta_both))
+  stop(STUDY_INFO_CSV, " is the corrected SI table (written by meta_analysis/15). ",
+       "Build from the submitted one: Final/SI_tables/study_info_all.pre_annotation_fix.csv")
 meta_both$cq_test <- meta_both$cell_substate
 temp_label <- unique(meta_both$cq_test)[grepl(unique(meta_both$cq_test), pattern = "CQ")]
 meta_both$cq_test <- ifelse(meta_both$cell_substate %in% temp_label, "CQ", meta_both$cell_substate)

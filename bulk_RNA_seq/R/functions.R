@@ -61,7 +61,12 @@ get_ensembl_release_pc <- function(release = ENSEMBL_PINNED_RELEASE, cache_dir =
     url <- sprintf("https://ftp.ensembl.org/pub/release-%d/gtf/homo_sapiens/Homo_sapiens.GRCh38.%d.gtf.gz",
                     release, release)
     message(sprintf("Downloading Ensembl release %d GTF (protein-coding dictionary source)...", release))
-    utils::download.file(url, gtf_path, quiet = TRUE, mode = "wb")
+    # 47 MB: R's default 60 s timeout truncates it. Download to .part and rename only on
+    # success, so a failed download is never read back as a complete GTF.
+    old <- options(timeout = max(3600, getOption("timeout"))); on.exit(options(old), add = TRUE)
+    part <- paste0(gtf_path, ".part")
+    utils::download.file(url, part, quiet = TRUE, mode = "wb")
+    file.rename(part, gtf_path)
   }
   gtf <- readLines(gzfile(gtf_path))
   gtf <- gtf[!grepl("^#", gtf)]

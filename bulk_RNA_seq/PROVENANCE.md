@@ -34,7 +34,7 @@ and each script's header.
 | 2.1.5.1 | arrest signal with cell-cycle features removed, plus size control | `rerun_outputs/arrest_minus_cellcycle.csv` | `exploratory/37_arrest_minus_cellcycle.py` | Py | exploratory/01_export_full_tage_matrices.R |
 | 2.1.5.3.2 (iii) | split-half reproducibility ceiling, within-study vs pooled controls | `rerun_outputs/set_ceiling_comparison.csv` | `exploratory/34_ceiling_comparison.py` | Py | exploratory/01_export_full_tage_matrices.R; 03_build_pathway_mouse_id_mapping.R; meta_analysis/10_immortalisation_annotation_audit.R |
 |  |  | `rerun_outputs/set_ceiling_paired_tests.csv` | `exploratory/34_ceiling_comparison.py` | Py |  |
-| 2.1.5.3.1 | matched-null yardstick, 250 arrest comparisons | `rerun_outputs/pathway_specificity_yardstick_mortality.csv` | `exploratory/22_mortality_pathway_decomposition.py` | Py | exploratory/01_...R |
+| 2.1.5.3.1 | matched-null yardstick, 250 arrest comparisons | `rerun_outputs/pathway_specificity_yardstick_mortality.csv` | `exploratory/20_pathway_specificity_yardstick.py` | Py | run with --mortality; exploratory/01_export_full_tage_matrices.R; 14_pathway_representation.py --mortality |
 | 2.1.5.3.1 | condition effect within a shared cell line (IMR90) | `rerun_outputs/condition_within_cellline.csv` | `meta_analysis/12_condition_within_cellline.R` | R | meta_analysis/05_tage_all_conditions.R |
 | 2.2.3 | every tAge value and FDR in the time course, all three clocks | `rerun_outputs/tage_temporal_tests.csv` | `temporal_analysis/07_tage_temporal_tests.R` | R | temporal_analysis/04_tage_by_celltype.R; 08_mortality_temporal.py; R_keratinocyte_batch.R |
 | 2.2.4 | per-set cancellation, arrest and time course | `rerun_outputs/withinset_cancellation.csv` | `exploratory/23_decomposition_diagnostics.py` | Py | exploratory/01_...R; 02_...R |
@@ -46,4 +46,4 @@ and each script's header.
 | 2.2.4 | within- vs between-cell-type profile similarity, PCA separation | `rerun_outputs/tage_modularity_mortality.csv` | `exploratory/21_tage_modularity.R` | R | exploratory/22_mortality_pathway_decomposition.py |
 | 2.2.4 | gene-shuffle nulls: within/between gap, PC variance, sign changes, melanocyte dissent | `rerun_outputs/composition_vs_magnitude.csv` | `exploratory/27_composition_vs_magnitude.py` | Py | exploratory/02_...R |
 
-27 results, 35 output files, 23 scripts (12 R, 11 Python).
+27 results, 35 output files, 24 scripts (12 R, 12 Python).

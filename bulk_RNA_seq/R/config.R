@@ -27,6 +27,15 @@ EXTERNAL_DIR     <- Sys.getenv("BULK_EXTERNAL_DIR",
                                unset = file.path(PROJECT_DIR, "bulk_RNA_seq", "external_inputs"))
 MODELS_DIR       <- Sys.getenv("TAGE_MODELS_DIR", unset = file.path(EXTERNAL_DIR, "models"))
 
+# The sample sheet meta_analysis/01 builds the object from: the SI table AS SUBMITTED
+# (md5 7999c22a..., = archive_original/Final_original/SI_tables/study_info_all.csv).
+# meta_analysis/15 later corrected Final/SI_tables/study_info_all.csv in place (tissue,
+# cell line, immortalised) and kept the submitted version under this name. Building from
+# the corrected table gives the same counts, tAge and DEGs, but meta_analysis/10 then
+# records the corrected labels as the "curated" ones, so its audit columns change.
+STUDY_INFO_CSV   <- Sys.getenv("BULK_STUDY_INFO",
+                               unset = file.path(SAVE_DIR_CSV, "study_info_all.pre_annotation_fix.csv"))
+
 # The Python that reticulate uses for tAge prediction (needs joblib, scikit-learn,
 # pandas - see requirements.txt). Must be the SAME interpreter the Python scripts run
 # under, so R-side and Python-side predictions come from one environment. Earlier
