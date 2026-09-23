@@ -12,6 +12,9 @@ Rplots.pdf
 # are not redistributed here - see bulk_RNA_seq/REPRODUCE.md and env/external_inputs.tsv.
 bulk_RNA_seq/external_inputs/
 *.pkl
+# Final/ is ignored except the six pipeline inputs, which are tracked with `git add -f`:
+#   Final/SI_tables/{study_info_all.pre_annotation_fix,lyso_genes,enrichment_background}.csv
+#   Final/ERP021140/{Fibroblast,Keratinocyte,Melanocyte}/sample_pheno.csv
 Final/
 # Local environments and caches
 bulk_RNA_seq/.venv/

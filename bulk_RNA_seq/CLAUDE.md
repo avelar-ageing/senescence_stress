@@ -13,7 +13,7 @@ and is not in this repository.
 | Copy working tree → clone | `../sync_to_repo.sh` (dry run), `../sync_to_repo.sh --apply` (local tool). Additive; runs the checks below |
 | Manuscript (Results 2.1.5–2.2.4) | outside the repository; never commit it |
 | Outputs | `rerun_outputs/` — gitignored, about 1 GB |
-| Inputs not in git | `external_inputs/` (clocks, GSE175533 table), `../Final/` (six tables); md5s in `env/external_inputs.tsv` |
+| Inputs | not in git: `external_inputs/` (clocks, GSE175533 table). In git: six tables under `Final/` at the repository root (`git add -f`; `Final/` is otherwise ignored). md5s in `env/external_inputs.tsv` |
 
 Commit only in the clone. The GitHub repository is **public**: push only after the owner
 says yes to that specific push. Never commit `rerun_outputs/`, `*.pkl` (third-party

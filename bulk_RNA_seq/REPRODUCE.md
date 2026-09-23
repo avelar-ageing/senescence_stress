@@ -33,28 +33,35 @@ if any installed R or Python package differs from the lockfiles.
 R reaches Python through reticulate. `R/config.R` points it at `.venv/bin/python`
 (override with `TAGE_PYTHON`), so the R and Python scripts use the same scikit-learn.
 
-## 2. Inputs that are not in this repository
+## 2. Inputs
 
 `bash env/check_inputs.sh` checks each against the md5 in `env/external_inputs.tsv`.
+
+Not in this repository (supply them yourself):
 
 | File | Where it comes from |
 |---|---|
 | `external_inputs/models/EN_Chronoage_Multispecies_Multitissue_scaleddiff.pkl` | tAge clock (Tyshkovskiy et al.), from the authors; not redistributed here |
 | `external_inputs/models/EN_Chronoage_Multispecies_Multitissue_yugenediff.pkl` | as above |
 | `external_inputs/models/EN_Mortality_Multispecies_Multitissue_scaleddiff.pkl` | as above |
-| `external_inputs/geo/GSE175533_TPM.xlsx` | GEO GSE175533 supplementary file (strict-OOXML workbook; read by `meta_analysis/xlsx_strict.py`) |
-| `../Final/SI_tables/study_info_all.pre_annotation_fix.csv` | sample sheet of the 34 studies, as submitted (SI table; = `archive_original/Final_original/SI_tables/study_info_all.csv`). Path set by `STUDY_INFO_CSV` in `R/config.R` |
-| `../Final/SI_tables/lyso_genes.csv` | lysosomal gene set (SI table) |
-| `../Final/SI_tables/enrichment_background.csv` | enrichment background (SI table) |
-| `../Final/ERP021140/{Fibroblast,Keratinocyte,Melanocyte}/sample_pheno.csv` | time-course sample sheets |
+| `external_inputs/geo/GSE175533_TPM.xlsx` | GEO GSE175533 supplementary file `GSE175533_hTERT.RS.RIS.CD.TPM_table.xlsx` (46,113,681 bytes), renamed; strict-OOXML workbook read by `meta_analysis/xlsx_strict.py` |
 
-`../Final/` is relative to `bulk_RNA_seq/`: in a clone of this repository it sits at the
-repository root. `meta_analysis/01` stops if it is given the corrected sample sheet
-(`Final/SI_tables/study_info_all.csv`, rewritten in place by `meta_analysis/15` on
-2026-08-31): built from it, `meta_analysis/10` records the corrected labels as the
-submitted ones, and the audit columns of `immortalisation_annotation_corrected.csv` change.
-`Final/SI_tables/cq_samples.rds` is optional; when present, `meta_analysis/01` checks the
-gene dictionary against it.
+In this repository, at the repository root (tracked although `Final/` is otherwise ignored):
+
+| File | Contents |
+|---|---|
+| `Final/SI_tables/study_info_all.pre_annotation_fix.csv` | sample sheet of the 34 studies, as submitted (SI table). Path set by `STUDY_INFO_CSV` in `R/config.R` |
+| `Final/SI_tables/lyso_genes.csv` | lysosomal gene set (SI table) |
+| `Final/SI_tables/enrichment_background.csv` | enrichment background (SI table) |
+| `Final/ERP021140/{Fibroblast,Keratinocyte,Melanocyte}/sample_pheno.csv` | time-course sample sheets |
+
+`R/config.R` reads `Final/` from the directory above `bulk_RNA_seq/`: the repository root in
+a clone, `systems_analysis_arrest/` in the original working directory. `meta_analysis/01`
+stops if it is given the corrected sample sheet (`Final/SI_tables/study_info_all.csv`,
+rewritten in place by `meta_analysis/15` on 2026-08-31): built from it, `meta_analysis/10`
+records the corrected labels as the submitted ones, and the audit columns of
+`immortalisation_annotation_corrected.csv` change. `Final/SI_tables/cq_samples.rds` is
+optional; when present, `meta_analysis/01` checks the gene dictionary against it.
 
 Downloaded by the scripts (network needed on the first run only):
 
@@ -96,7 +103,7 @@ only.
 ## 5. Clean-checkout test, 2026-09-23
 
 Fresh clone of `restructure-bulk-rna-seq`, fresh `.venv` from `env/requirements.txt`, only
-the inputs in section 2, R packages at the `env/renv.lock` versions (Linux x86_64, R 4.6.0,
+the inputs in section 2 (the six `Final/` tables then outside git), R packages at the `env/renv.lock` versions (Linux x86_64, R 4.6.0,
 8 cores). Seeded with two files, to avoid the network step and the GEO block:
 `cs_cq_download_raw.rds` (recount3, 34 studies) and
 `sample_level_line_verification.csv` (`meta_analysis/14`).
