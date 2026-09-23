@@ -1,0 +1,55 @@
+# pipeline.tsv - the bulk tAge pipeline behind the manuscript, in execution order.
+# Read by run_pipeline.sh. One row per invocation (exploratory/14 runs twice: chronological
+# clocks, then --mortality). Columns (TAB-separated):
+#   stage     A build / B core objects / C manuscript analyses
+#   script    path relative to bulk_RNA_seq/
+#   args      {RERUN} {MODELS} {GEO_CACHE} {GSE175533_XLSX} are substituted by the driver
+#   produces  outputs checked after the run, relative to rerun_outputs/ (space-separated)
+#   network   what it fetches, or "-"
+# Upstream closure of every output the manuscript cites (see PROVENANCE.md), derived
+# 2026-09-23 from each script's read/write calls. Scripts NOT listed here are either
+# legacy (README "ported, not reverified"), chronological-clock only (the manuscript
+# reports mortality-clock decompositions), or audits whose outputs are not cited.
+stage	script	args	produces	network
+A	meta_analysis/01_build_cs_cq_object.R	-	cs_cq_download_raw.rds cs_cq_all_study_processed.rds	recount3: 34 studies (reuses cs_cq_download_raw.rds if present)
+A	temporal_analysis/01_build_metadata.R	-	temporal_recount_pheno.rds	-
+A	meta_analysis/20_gse175533_export.py	{GSE175533_XLSX} {RERUN}/gse175533	gse175533/gse175533_expression.csv gse175533/gse175533_samples.csv	-
+B	meta_analysis/02_call_degs.R	-	arrest_degs_final_RERUN.csv sample_metadata_RERUN.csv deg_count_RERUN.csv	-
+B	meta_analysis/03_hallmark_enrichment.R	-	stress_response_pathways_RERUN.csv	-
+B	meta_analysis/05_tage_all_conditions.R	-	tage_all_conditions.csv	-
+B	meta_analysis/10_immortalisation_annotation_audit.R	-	immortalisation_annotation_corrected.csv	-
+B	meta_analysis/14_verify_sample_level_annotation.py	{RERUN} {GEO_CACHE}	sample_level_line_verification.csv	NCBI GEO sample + series records (reuses valid cached records)
+B	meta_analysis/13_condition_within_study.R	-	condition_within_study.csv	-
+B	exploratory/01_export_full_tage_matrices.R	-	partial_tage/meta_scaled_diff.csv partial_tage/meta_groups.csv partial_tage/Fibroblast_scaled_diff.csv	recount3: ERP021140 (reuses erp021140_download_raw.rds if present)
+B	exploratory/02_export_temporal_bytimepoint_matrices.R	-	partial_tage/Fibroblast_4_days_scaled_diff.csv partial_tage/Melanocyte_20_days_groups.csv	recount3: ERP021140 (shared cache)
+B	exploratory/03_build_pathway_mouse_id_mapping.R	-	partial_tage/hallmark_pathway_mouse_ids.csv	-
+B	meta_analysis/18_mortality_clock.py	{RERUN} {MODELS}	mortality_tage.csv mortality_within_study.csv	-
+B	meta_analysis/21_gse175533_tage.R	-	gse175533/gse175533_scaled_diff.csv gse175533/gse175533_yugene_diff.csv gse175533/gse175533_groups.csv	-
+B	temporal_analysis/04_tage_by_celltype.R	-	tage_temporal_by_celltype.csv	recount3: ERP021140 (shared cache)
+B	temporal_analysis/08_mortality_temporal.py	{RERUN} {MODELS}	mortality_temporal_by_celltype.csv	-
+C	exploratory/14_pathway_representation.py	{RERUN} {MODELS}	pathway_representation.csv	-
+C	exploratory/14_pathway_representation.py	{RERUN} {MODELS} --mortality	pathway_representation_mortality.csv	-
+C	exploratory/20_pathway_specificity_yardstick.py	{RERUN} {MODELS} 20000 --mortality	pathway_specificity_yardstick_mortality.csv	-
+C	exploratory/22_mortality_pathway_decomposition.py	{RERUN} {MODELS}	pathway_specificity_yardstick_mortality_temporal.csv mortality_partial_tage_ALL.csv	-
+C	exploratory/21_tage_modularity.R	mortality	tage_modularity_mortality.csv	-
+C	exploratory/23_decomposition_diagnostics.py	{RERUN} {MODELS}	decomposition_diagnostics.csv decomposition_subsampling.csv withinset_cancellation.csv	-
+C	exploratory/25_yardstick_calibration.py	{RERUN} {MODELS}	yardstick_recurrence.csv	-
+C	exploratory/27_composition_vs_magnitude.py	{RERUN} {MODELS}	composition_vs_magnitude.csv	-
+C	exploratory/28_figure_withinset_cancellation.R	-	withinset_cancellation_summary.csv figure_withinset_cancellation_temporal.png	-
+C	exploratory/29_set_cancellation_structure.py	{RERUN} {MODELS}	set_cancellation_sides.csv	-
+C	exploratory/30_set_concordance_null.py	{RERUN} {MODELS}	set_concordance_null.csv	-
+C	exploratory/31_figure_cancellation_sides.R	-	figure_cancellation_sides_temporal.png	-
+C	exploratory/34_ceiling_comparison.py	{RERUN} {MODELS}	set_ceiling_comparison.csv set_ceiling_paired_tests.csv	-
+C	exploratory/37_arrest_minus_cellcycle.py	{RERUN} {MODELS}	arrest_minus_cellcycle.csv	-
+C	exploratory/39_signal_concentration.py	{RERUN} {MODELS}	signal_concentration.csv signal_concentration_top_genes.csv signal_concentration_classes.csv signal_concentration_directions.csv	-
+C	exploratory/42_coverage_threshold_free.py	{RERUN} {MODELS}	coverage_threshold_free.csv clock_unaccounted_shares.csv gene_contribution_table.csv	-
+C	exploratory/40_figure_signal_concentration.R	-	figure_signal_concentration.png	-
+C	meta_analysis/11_proliferating_baseline_heterogeneity.R	-	proliferating_baseline_heterogeneity.csv	-
+C	meta_analysis/12_condition_within_cellline.R	-	condition_within_cellline.csv	-
+C	meta_analysis/16_immortalisation_contrasts.R	-	immortalisation_contrasts.csv	-
+C	meta_analysis/17_universal_tage_figures.R	-	figure_proliferating_baseline_heterogeneity.png	-
+C	meta_analysis/29_clock_comparison.R	-	clock_comparison.csv	-
+C	meta_analysis/22_gse175533_htert_contrasts.py	{RERUN} {MODELS}	gse175533/gse175533_tage.csv gse175533/gse175533_contrasts.csv	-
+C	meta_analysis/25_gse175533_figures.R	-	figure_immortalisation_htert.png	-
+C	meta_analysis/26_section_summary_table.py	{RERUN}	section_2_1_5_summary_table.csv	-
+C	temporal_analysis/07_tage_temporal_tests.R	-	tage_temporal_tests.csv	-

@@ -1,0 +1,16 @@
+# Python environment for the bulk tAge pipeline (bulk_RNA_seq/.venv).
+# Exact versions of the environment that produced rerun_outputs/ (Linux, Python 3.12.3,
+# 2026-09). The same interpreter is used by R through reticulate (R/config.R PYTHON_BIN).
+#
+# The three tAge .pkl models were pickled with scikit-learn 1.3.2. Loading them in 1.9.0
+# raises InconsistentVersionWarning; the tAge package patches SimpleImputer for this
+# (tAge/python/tage_predict.py, _patch_simple_imputer). Keep scikit-learn at the version
+# below when regenerating outputs, so that re-runs compare like with like.
+joblib==1.6.0
+numpy==2.5.3
+pandas==3.0.5
+python-dateutil==2.9.0.post0
+scikit-learn==1.9.0
+scipy==1.18.1
+six==1.17.0
+threadpoolctl==3.6.0
