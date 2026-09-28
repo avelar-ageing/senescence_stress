@@ -40,6 +40,10 @@ and each script's header.
 | 2.2.4 | per-set cancellation, arrest and time course | `rerun_outputs/withinset_cancellation.csv` | `exploratory/23_decomposition_diagnostics.py` | Py | exploratory/01_...R; 02_...R |
 | 2.2.4 | cancellation summary per dataset (retention, same-direction fraction) | `rerun_outputs/withinset_cancellation_summary.csv` | `exploratory/28_figure_withinset_cancellation.R` | R | exploratory/23_decomposition_diagnostics.py |
 | 2.2.4 | movement left after offsetting and genes pushing the same way, sets beating the matched null vs the rest | `rerun_outputs/withinset_cancellation_by_null.csv` | `exploratory/28_figure_withinset_cancellation.R` | R | exploratory/23_decomposition_diagnostics.py; 22_mortality_pathway_decomposition.py |
+| 2.1.5.3.1 / 2.2.4 | genes carrying each set that beats its matched null: share of the excess, leave-one-gene-out and largest-first removal against the replayed null | `rerun_outputs/set_driver_genes.csv` | `exploratory/47_set_driver_genes.py` | Py | exploratory/20_pathway_specificity_yardstick.py --mortality; 22_mortality_pathway_decomposition.py |
+|  |  | `rerun_outputs/set_driver_summary.csv` | `exploratory/47_set_driver_genes.py` | Py |  |
+| 2.1.5.3.1 | figure: genes carrying the sets that beat their null, arrest conditions | `rerun_outputs/figure_set_driver_genes.png` | `exploratory/48_figure_set_driver_genes.R` | R | exploratory/47_set_driver_genes.py |
+| 2.2.4 | figure: genes carrying the sets that beat their null, time course | `rerun_outputs/figure_set_driver_genes_temporal.png` | `exploratory/48_figure_set_driver_genes.R` | R | exploratory/47_set_driver_genes.py |
 | 2.2.4 | within-set cancellation figure, time course | `rerun_outputs/figure_withinset_cancellation_temporal.png` | `exploratory/28_figure_withinset_cancellation.R` | R | exploratory/23_decomposition_diagnostics.py |
 | 2.2.4 | up/down side test figure, time course | `rerun_outputs/figure_cancellation_sides_temporal.png` | `exploratory/31_figure_cancellation_sides.R` | R | exploratory/29_set_cancellation_structure.py |
 | 2.2.4 | matched-null yardstick, 450 time-course comparisons | `rerun_outputs/pathway_specificity_yardstick_mortality_temporal.csv` | `exploratory/22_mortality_pathway_decomposition.py` | Py | exploratory/02_export_temporal_bytimepoint_matrices.R |
@@ -47,4 +51,4 @@ and each script's header.
 | 2.2.4 | within- vs between-cell-type profile similarity, PCA separation | `rerun_outputs/tage_modularity_mortality.csv` | `exploratory/21_tage_modularity.R` | R | exploratory/22_mortality_pathway_decomposition.py |
 | 2.2.4 | gene-shuffle nulls: within/between gap, PC variance, sign changes, melanocyte dissent | `rerun_outputs/composition_vs_magnitude.csv` | `exploratory/27_composition_vs_magnitude.py` | Py | exploratory/02_...R |
 
-28 results, 36 output files, 24 scripts (12 R, 12 Python).
+31 results, 40 output files, 26 scripts (13 R, 13 Python).
