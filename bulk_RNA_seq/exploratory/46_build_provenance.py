@@ -90,7 +90,7 @@ ROWS = [
  ("2.2.4", "movement left after offsetting and genes pushing the same way, sets beating the matched null vs the rest",
   ["rerun_outputs/withinset_cancellation_by_null.csv"],
   "exploratory/28_figure_withinset_cancellation.R", "exploratory/23_decomposition_diagnostics.py; 22_mortality_pathway_decomposition.py"),
- ("2.1.5.3.1 / 2.2.4", "genes carrying each set that beats its matched null: share of the excess, leave-one-gene-out and largest-first removal against the replayed null",
+ ("2.1.5.3.1 / 2.2.4", "genes carrying each set that beats its matched null: share of the excess, and the trimmed test (most extreme 1 gene / 5% / 10% / 25% per end removed from the set and from every random set)",
   ["rerun_outputs/set_driver_genes.csv", "rerun_outputs/set_driver_summary.csv"],
   "exploratory/47_set_driver_genes.py", "exploratory/20_pathway_specificity_yardstick.py --mortality; 22_mortality_pathway_decomposition.py"),
  ("2.1.5.3.1", "figure: genes carrying the sets that beat their null, arrest conditions",

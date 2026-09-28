@@ -22,14 +22,17 @@ WHAT IT COMPUTES, per set x group that beats its null (published p_emp < 0.05):
                      far in the direction of the set's excess. 99.9 = this gene moves
                      further than 999 of 1,000 genes of equal clock weight.
 
-  p_without_gene:    the set re-tested against its matched null with this one gene
-                     removed. The null is the same 20,000 draws with one draw from the
-                     gene's weight stratum dropped, so it is the matched null of the
-                     reduced set. A set whose p rises to >= 0.05 depends on that gene.
-
-  n_removed_to_lose: remove the set's genes one at a time, largest excess first, until
-                     the set no longer beats its null (p >= 0.05). 1 = one gene carries
-                     the set; a large number = the excess is spread.
+  TRIMMED TEST (does the set stand out beyond its most extreme genes?). The set's
+                     genes are ordered by contribution and the k most extreme at EACH end are
+                     dropped; the same is done to every one of the 20,000 random sets, and the
+                     set's remaining sum is compared with theirs (two-sided, as in 20/22).
+                     k = 1 gene, then 5%, 10% and 25% of the set's genes per end (rounded up).
+                     Trimming the random sets too is what makes the test fair: a random set
+                     with its largest movers removed also sums to less.
+                     holds_up_to = the largest trim at which the set still beats its null,
+                     trimming in order (none / 1 gene / 5% / 10% / 25%).
+                     An earlier version removed genes from the real set only, which biased it
+                     towards finding dependence on single genes; it was withdrawn 2026-09-28.
 
   n_genes_half_excess: fewest genes, largest first, whose shares reach half the excess.
 
@@ -68,6 +71,7 @@ CONDS = {"Contact_inhibited CQ": "CICQ", "Serum_starved CQ": "SSCQ",
 CELLS = ["Fibroblast", "Keratinocyte", "Melanocyte"]
 TPS = ["4_days", "10_days", "20_days"]
 ALPHA = 0.05
+TRIMS = [("1 gene", None), ("5%", 0.05), ("10%", 0.10), ("25%", 0.25)]
 
 
 def _patch(imp):
@@ -113,26 +117,28 @@ def analyse(arm, group, pathway, cols, d, strat, by_strat, mats, p_pub, sym, fea
     # rank among same-weight clock genes, in the direction of the set's excess
     rank = np.array([100 * np.mean(sgn * d[by_strat[s]] < sgn * v) for s, v in zip(s_of, d[cols])])
 
-    # leave one gene out: drop one draw from the gene's stratum
-    p_wo = np.empty(len(cols))
-    for s in np.unique(s_of):
-        null_minus = draws - mats[s][:, 0]
-        for i in np.where(s_of == s)[0]:
-            p_wo[i] = p_two_sided(null_minus, obs - d[cols[i]])
-
-    # remove genes one at a time, largest excess (in the set's direction) first
     order = np.argsort(-sgn * exc)
-    removed = {s: 0 for s in mats}
-    null_k, obs_k, n_lose, p_after = draws.copy(), obs, np.nan, np.nan
-    for step, i in enumerate(order, start=1):
-        s = s_of[i]
-        null_k = null_k - mats[s][:, removed[s]]
-        removed[s] += 1
-        obs_k = obs_k - d[cols[i]]
-        pk = p_two_sided(null_k, obs_k)
-        if pk >= ALPHA:
-            n_lose, p_after = step, pk
+    # trimmed test: drop the k most extreme genes at each end, from the real set and
+    # from every random set alike
+    n = len(cols)
+    Nm = np.sort(np.hstack([mats[s] for s in mats]), axis=1)          # B x n, each row sorted
+    cs = np.concatenate([np.zeros((Nm.shape[0], 1)), np.cumsum(Nm, axis=1)], axis=1)
+    ov = np.sort(d[cols]); ocs = np.concatenate([[0.0], np.cumsum(ov)])
+    trim = {}
+    for lab, q in TRIMS:
+        k = 1 if q is None else max(1, int(np.ceil(q * n)))
+        if 2 * k >= n:
+            trim[lab] = (k, np.nan); continue
+        trim[lab] = (k, p_two_sided(cs[:, n - k] - cs[:, k], ocs[n - k] - ocs[k]))
+    holds = "none" if p_full >= ALPHA else "untrimmed"
+    for lab, _ in TRIMS:
+        if trim[lab][1] < ALPHA:
+            holds = lab
+        else:
             break
+    k5 = trim["5%"][0]
+    lo, hi = set(np.argsort(d[cols])[:k5]), set(np.argsort(d[cols])[n - k5:])
+    trimmed_5 = ["bottom" if i in lo else "top" if i in hi else "" for i in range(n)]
 
     cum = np.cumsum(share[order])
     n_half = int(np.searchsorted(cum, 0.5) + 1) if cum[-1] >= 0.5 else np.nan
@@ -144,7 +150,7 @@ def analyse(arm, group, pathway, cols, d, strat, by_strat, mats, p_pub, sym, fea
         gene=[sym.get(feats[c], feats[c]) for c in cols],
         contribution=d[cols], expected_for_weight=[mu[s] for s in s_of], excess=exc,
         share_of_set_excess=share, same_weight_rank_pct=rank,
-        p_without_gene=p_wo, set_depends_on_gene=p_wo >= ALPHA))
+        removed_by_5pct_trim=trimmed_5))
     genes["rank_in_set"] = (-sgn * genes.excess).rank(method="first").astype(int)
     top = genes.sort_values("rank_in_set").iloc[0]
     summary = dict(
@@ -153,10 +159,10 @@ def analyse(arm, group, pathway, cols, d, strat, by_strat, mats, p_pub, sym, fea
         direction="up" if sgn > 0 else "down",
         top_gene=top.gene, top_gene_share=top.share_of_set_excess,
         top_gene_same_weight_rank_pct=top.same_weight_rank_pct,
-        p_without_top_gene=top.p_without_gene,
-        n_genes_set_depends_on=int(genes.set_depends_on_gene.sum()),
-        n_removed_to_lose=n_lose, p_after_removal=p_after,
-        n_genes_half_excess=n_half, n_eff_positive=n_eff)
+        n_genes_half_excess=n_half, n_eff_positive=n_eff,
+        **{f"k_trim_{lab.replace('%', 'pct').replace(' ', '')}": trim[lab][0] for lab, _ in TRIMS},
+        **{f"p_trim_{lab.replace('%', 'pct').replace(' ', '')}": trim[lab][1] for lab, _ in TRIMS},
+        holds_up_to=holds)
     return genes, summary
 
 
@@ -258,13 +264,11 @@ def main(rerun_dir, model_dir, n_null=20000):
     print(f"\nsets that beat their null: {len(S)} ({(S.arm == 'arrest').sum()} arrest, "
           f"{(S.arm == 'time_course').sum()} time course); replayed p equal to published in all")
     for arm, s in S.groupby("arm"):
-        print(f"\n== {arm} ==")
-        print(f"  set no longer beats its null without its single largest gene: "
-              f"{int((s.p_without_top_gene >= ALPHA).sum())} of {len(s)}")
-        print("  genes removed (largest first) before the set stops beating its null:",
-              s.n_removed_to_lose.describe()[["min", "25%", "50%", "75%", "max"]].round(1).to_dict())
-        print("  share of the excess carried by the largest gene: median "
-              f"{100 * s.top_gene_share.median():.0f}% (range {100 * s.top_gene_share.min():.0f}-{100 * s.top_gene_share.max():.0f}%)")
+        print(f"\n== {arm} ({len(s)} sets beating their null) ==")
+        for lab, _ in TRIMS:
+            c = f"p_trim_{lab.replace('%', 'pct').replace(' ', '')}"
+            print(f"  still beats its null after trimming {lab:6s} per end: {int((s[c] < ALPHA).sum()):3d}")
+        print("  holds up to:", s.holds_up_to.value_counts().to_dict())
         print("  genes needed for half the excess: median", s.n_genes_half_excess.median())
     print(f"\nSaved -> set_driver_genes.csv ({len(G)} rows), set_driver_summary.csv ({len(S)} rows)")
 
