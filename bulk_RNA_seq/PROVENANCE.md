@@ -45,6 +45,8 @@ and each script's header.
 | 2.1.5.3.1 | figure: genes carrying the sets that beat their null, arrest conditions | `rerun_outputs/figure_set_driver_genes.png` | `exploratory/48_figure_set_driver_genes.R` | R | exploratory/47_set_driver_genes.py |
 | 2.2.4 | figure: genes carrying the sets that beat their null, time course | `rerun_outputs/figure_set_driver_genes_temporal.png` | `exploratory/48_figure_set_driver_genes.R` | R | exploratory/47_set_driver_genes.py |
 | 2.2.4 | sets significant in all three cell types with and without Cdkn1a (zero-shift test of exploratory/22, BH over 150) | `rerun_outputs/breadth_without_cdkn1a.csv` | `exploratory/49_breadth_without_cdkn1a.py` | Py | exploratory/22_mortality_pathway_decomposition.py |
+| 2.1.5.3.1 / 2.2.4 | sets beating their matched null vs the rest: rank-sum and within-set permutation tests of the two measures | `rerun_outputs/withinset_cancellation_by_null_tests.csv` | `exploratory/28_figure_withinset_cancellation.R` | R | exploratory/23_decomposition_diagnostics.py; 20_pathway_specificity_yardstick.py --mortality; 22_mortality_pathway_decomposition.py |
+| 2.1.5.3.1 | figure: genes pushing the set's way and movement left over, sets beating the null vs the rest | `rerun_outputs/figure_withinset_by_null.png` | `exploratory/28_figure_withinset_cancellation.R` | R | exploratory/23_decomposition_diagnostics.py |
 | 2.2.4 | within-set cancellation figure, time course | `rerun_outputs/figure_withinset_cancellation_temporal.png` | `exploratory/28_figure_withinset_cancellation.R` | R | exploratory/23_decomposition_diagnostics.py |
 | 2.2.4 | up/down side test figure, time course | `rerun_outputs/figure_cancellation_sides_temporal.png` | `exploratory/31_figure_cancellation_sides.R` | R | exploratory/29_set_cancellation_structure.py |
 | 2.2.4 | matched-null yardstick, 450 time-course comparisons | `rerun_outputs/pathway_specificity_yardstick_mortality_temporal.csv` | `exploratory/22_mortality_pathway_decomposition.py` | Py | exploratory/02_export_temporal_bytimepoint_matrices.R |
@@ -52,4 +54,4 @@ and each script's header.
 | 2.2.4 | within- vs between-cell-type profile similarity, PCA separation | `rerun_outputs/tage_modularity_mortality.csv` | `exploratory/21_tage_modularity.R` | R | exploratory/22_mortality_pathway_decomposition.py |
 | 2.2.4 | gene-shuffle nulls: within/between gap, PC variance, sign changes, melanocyte dissent | `rerun_outputs/composition_vs_magnitude.csv` | `exploratory/27_composition_vs_magnitude.py` | Py | exploratory/02_...R |
 
-32 results, 41 output files, 27 scripts (13 R, 14 Python).
+34 results, 43 output files, 27 scripts (13 R, 14 Python).

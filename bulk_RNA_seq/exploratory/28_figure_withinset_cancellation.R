@@ -31,7 +31,13 @@
 #         withinset_cancellation_summary.csv
 #         withinset_cancellation_by_null.csv     share of movement left after the up and
 #             down contributions offset, and share of genes pushing the same way as the
-#             set, for sets that beat their matched null vs the rest, at three thresholds
+#             set, for sets that beat their matched null vs the rest, at three thresholds;
+#             also the share that would be left if every gene moved by the same amount (2f - 1)
+#         withinset_cancellation_by_null_tests.csv   are the two groups different? rank-sum
+#             test, and a permutation that shuffles the "beats its null" label only among
+#             the conditions (or groups) of the same gene set, 20,000 times
+#         figure_withinset_by_null.png            the two measures, sets that beat their null
+#             vs the rest, both datasets
 
 source("R/config.R")
 suppressPackageStartupMessages({ library(dplyr); library(ggplot2) })
@@ -156,6 +162,9 @@ by_null <- bind_rows(lapply(list(
               left_after_offset_q25_pct = 100 * quantile(surviving, .25, na.rm = TRUE),
               left_after_offset_q75_pct = 100 * quantile(surviving, .75, na.rm = TRUE),
               genes_same_way_as_set_median_pct = 100 * median(frac_genes_with_set_net),
+              # if every gene moved by the same amount, a set with a share f of its genes
+              # pointing its way would keep 2f - 1 of its movement after the offset
+              left_if_all_genes_equal_median_pct = 100 * median(2 * frac_genes_with_set_net - 1),
               .groups = "drop")
   })) %>%
   mutate(group = ifelse(beats, "beats matched null", "rest")) %>%
@@ -164,3 +173,73 @@ by_null <- bind_rows(lapply(list(
 write.csv(by_null, file.path(RERUN_DIR, "withinset_cancellation_by_null.csv"), row.names = FALSE)
 cat("\nsets that beat their matched null vs the rest:\n")
 print(by_null %>% mutate(across(where(is.numeric) & !n, ~round(.x, 1))), n = Inf, width = Inf)
+
+# ---- are the two groups different? (threshold used in the text: p < 0.05) -----
+# The comparisons are not independent - the same gene set appears in every condition
+# or group - so besides the rank-sum test the "beats its null" label is shuffled only
+# among the conditions of the same set (20,000 times; p = (1 + k)/(B + 1)).
+# The left-over share is partly selected for: a set beats its null on its net
+# contribution, which is the left-over share times its movement.
+set.seed(1); B <- 20000
+# Wilcoxon rank-sum, normal approximation with tie and continuity corrections (as
+# scipy.stats.mannwhitneyu). Written out because wilcox.test(exact = FALSE) in R 4.6
+# returned 0 for the time-course left-over comparison, where p is about 2e-26.
+rank_sum_p <- function(a, r) {
+  n1 <- length(a); n2 <- length(r); N <- n1 + n2; rk <- rank(c(a, r))
+  W <- sum(rk[seq_len(n1)]) - n1 * (n1 + 1) / 2; mu <- n1 * n2 / 2
+  t <- table(rk); sig <- sqrt(n1 * n2 / 12 * ((N + 1) - sum(t^3 - t) / (N * (N - 1))))
+  z <- (abs(W - mu) - 0.5) / sig
+  2 * pnorm(-z)
+}
+perm_p <- function(x, col) {
+  v <- x[[col]]; lab <- x$beats_null; by_set <- split(seq_len(nrow(x)), x$pathway)
+  obs <- median(v[lab]) - median(v[!lab]); k <- 0L
+  for (b in seq_len(B)) {
+    L <- lab
+    for (ii in by_set) L[ii] <- L[ii][sample.int(length(ii))]
+    k <- k + (abs(median(v[L]) - median(v[!L])) >= abs(obs))
+  }
+  (1 + k) / (B + 1)
+}
+tests <- bind_rows(lapply(split(d, d$arm), function(x) {
+  bind_rows(lapply(c(genes_same_way_as_set = "frac_genes_with_set_net",
+                     left_after_offset = "surviving"), function(col) {
+    a <- x[[col]][x$beats_null]; r <- x[[col]][!x$beats_null]
+    data.frame(arm = x$arm[1], measure = col, n_beats = length(a), n_rest = length(r),
+               median_beats_pct = 100 * median(a), median_rest_pct = 100 * median(r),
+               p_rank_sum = rank_sum_p(a, r),
+               p_within_set_permutation = perm_p(x, col), n_permutations = B)
+  }), .id = "label")
+}))
+tests$measure <- tests$label; tests$label <- NULL
+write.csv(tests, file.path(RERUN_DIR, "withinset_cancellation_by_null_tests.csv"), row.names = FALSE)
+cat("\ngroup differences (p < 0.05 threshold):\n"); print(tests, digits = 3)
+
+# ---- figure: the two measures, side by side -----------------------------------
+fd <- bind_rows(
+  d %>% transmute(arm, beats_null, measure = "genes pushing the set's way", value = 100 * frac_genes_with_set_net),
+  d %>% transmute(arm, beats_null, measure = "movement left after up and down offset", value = 100 * surviving)) %>%
+  mutate(dataset = ifelse(arm == "cross_sectional", "arrest conditions", "irradiation time course"),
+         group = factor(ifelse(beats_null, "beats matched null", "rest"), levels = c("rest", "beats matched null")))
+eq <- d %>% group_by(arm, beats_null) %>%
+  summarise(value = 100 * median(2 * frac_genes_with_set_net - 1), .groups = "drop") %>%
+  mutate(dataset = ifelse(arm == "cross_sectional", "arrest conditions", "irradiation time course"),
+         group = factor(ifelse(beats_null, "beats matched null", "rest"), levels = c("rest", "beats matched null")),
+         measure = "movement left after up and down offset")
+pl <- tests %>% mutate(dataset = ifelse(arm == "cross_sectional", "arrest conditions", "irradiation time course"),
+                       measure = ifelse(measure == "genes_same_way_as_set", "genes pushing the set's way",
+                                        "movement left after up and down offset"),
+                       lab = sprintf("rank-sum p = %.1e\nwithin-set shuffle p = %.1e%s", p_rank_sum, p_within_set_permutation,
+                                     ifelse(p_within_set_permutation <= 1 / (B + 1) + 1e-12, " (floor)", "")))
+pf <- ggplot(fd, aes(x = group, y = value)) +
+  geom_boxplot(outlier.shape = NA, width = 0.55, fill = "grey92") +
+  geom_jitter(width = 0.15, height = 0, size = 0.7, alpha = 0.45) +
+  geom_point(data = eq, aes(x = group, y = value), shape = 95, size = 14, colour = "#B2182B") +
+  geom_text(data = pl, aes(x = 1.5, y = Inf, label = lab), vjust = 1.3, size = 3.1, inherit.aes = FALSE) +
+  facet_grid(measure ~ dataset, scales = "free_y") +
+  scale_y_continuous(expand = expansion(mult = c(0.05, 0.28))) +
+  theme_bw(base_size = 12) + theme(strip.background = element_blank(), panel.grid.minor = element_blank()) +
+  labs(x = NULL, y = "% (one point per gene set in one condition or group)",
+       caption = "red dash: movement that would be left if every gene in the set moved by the same amount (median)")
+ggsave(file.path(RERUN_DIR, "figure_withinset_by_null.png"), pf, width = 9, height = 8, dpi = 300)
+cat("Saved -> withinset_cancellation_by_null_tests.csv, figure_withinset_by_null.png\n")
