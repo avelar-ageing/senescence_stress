@@ -12,8 +12,8 @@
 # reported contribution is a small difference of large opposing movements - but
 # that on its own does not say whether the contribution is more than expected.
 # Points are therefore outlined where the set beats its weight-matched random null
-# (p_emp < 0.05) and labelled where it clears the threshold the text discusses
-# (p < 0.004 cross-sectional, the eight strongest of 250). Reading the two together
+# (p_emp < 0.05, the comparisons 2.2.4 counts as beating it) and labelled where it
+# survives Benjamini-Hochberg within its family (* FDR < 5%, arrow FDR < 10%). Reading the two together
 # is the point: a set can survive heavy cancellation and still exceed its expected
 # share, and a set with little cancellation can still be unremarkable.
 #
@@ -29,6 +29,9 @@
 # Output: figure_withinset_cancellation.png            (arrest conditions)
 #         figure_withinset_cancellation_temporal.png   (irradiation time course)
 #         withinset_cancellation_summary.csv
+#         withinset_cancellation_by_null.csv     share of movement left after the up and
+#             down contributions offset, and share of genes pushing the same way as the
+#             set, for sets that beat their matched null vs the rest, at three thresholds
 
 source("R/config.R")
 suppressPackageStartupMessages({ library(dplyr); library(ggplot2) })
@@ -66,7 +69,8 @@ bh <- function(p) p.adjust(p, method = "BH")
 d <- d %>% group_by(arm) %>% mutate(q = bh(p_emp)) %>% ungroup() %>%
   mutate(fdr05 = !is.na(q) & q < 0.05,
          fdr10 = !is.na(q) & q < 0.10 & !fdr05,
-         any_fdr = fdr05 | fdr10)
+         any_fdr = fdr05 | fdr10,
+         beats_null = !is.na(p_emp) & p_emp < 0.05)
 cat("\nBH within each dataset's own family:\n")
 print(d %>% group_by(arm) %>%
         summarise(n_tests = n(), q_lt_05 = sum(fdr05),
@@ -85,15 +89,16 @@ plot_arm <- function(rows, levels_, file, width, height, xlab_note) {
     geom_segment(aes(x = set_sum_negative, xend = set_sum_positive, yend = set),
                  colour = "grey75", linewidth = 1.4) +
     geom_vline(xintercept = 0, linetype = "dashed", colour = "grey40") +
-    geom_point(aes(x = set_net, fill = set_net > 0, colour = any_fdr,
-                   size = any_fdr), shape = 21, stroke = 0.7) +
+    geom_point(aes(x = set_net, fill = set_net > 0, colour = beats_null,
+                   size = beats_null), shape = 21, stroke = 0.7) +
     geom_text(aes(x = set_net, label = ifelse(fdr05, "*", ifelse(fdr10, "\u2191", ""))),
               hjust = -0.4, vjust = 0.35, size = 4.4) +
     facet_wrap(~condition, nrow = if (length(levels_) > 5) 3 else 1) +
     scale_fill_manual(values = c(`TRUE` = "#B2182B", `FALSE` = "#2166AC"),
                       guide = "none") +
     scale_colour_manual(values = c(`TRUE` = "black", `FALSE` = "grey60"),
-                        labels = c(`TRUE` = "FDR < 10%", `FALSE` = "not significant"),
+                        labels = c(`TRUE` = "beats matched null, p < 0.05",
+                                   `FALSE` = "does not beat it"),
                         name = NULL) +
     scale_size_manual(values = c(`TRUE` = 2.4, `FALSE` = 1.5), guide = "none") +
     theme_bw(base_size = 13) +
@@ -108,16 +113,15 @@ plot_arm <- function(rows, levels_, file, width, height, xlab_note) {
 XL <- function(nfam) paste0(
   "Summed gene contributions within each set (grey) and the net surviving (point), mortality-clock units\n",
   "sets ordered by share of movement surviving, least at the bottom\n",
-  "against the weight-matched null, Benjamini-Hochberg within this family of ", nfam,
+  "black outline: beats the weight-matched null at p < 0.05;   Benjamini-Hochberg within this family of ", nfam,
   " tests:   * FDR < 5%,   \u2191 FDR < 10%")
 
 # One figure, both arms as facet columns/rows, rather than two files: the arms
 # are the same measurement on two datasets and are read against each other.
 # TWO FIGURES, not one. The merged version needed 20 x 26 inches to fit 14 facets
 # of 50 gene sets and was unusable at page size, so each dataset gets its own
-# file at a size that fits its own number of groups. The BH family is still
-# POOLED across both (700 tests, see above), so a set named in either section
-# carries the same error rate - only the rendering is split.
+# file at a size that fits its own number of groups. BH is applied within each
+# dataset's own family (250 and 450 tests, see above).
 plot_arm(d %>% filter(arm == "cross_sectional"), COND,
          "figure_withinset_cancellation.png", 15, 11, XL(250))
 plot_arm(d %>% filter(arm == "temporal"), TGROUP,
@@ -136,7 +140,27 @@ print(s %>% mutate(across(c(starts_with("surviving"), starts_with("frac")),
                           ~round(100 * .x, 1)),
                    across(starts_with("ratio"), ~round(.x, 1))))
 
-cat("\ndoes surviving share relate to beating the matched null?\n")
-print(d %>% group_by(arm, any_fdr) %>%
-        summarise(n = n(), surviving_pct = round(100 * median(surviving, na.rm = TRUE), 1),
-                  .groups = "drop"))
+# ---- sets that beat their matched null vs the rest --------------------------
+# 2.2.4 compares the two groups on (i) the share of a set's gene movement left
+# after its up and down contributions offset and (ii) the share of its genes
+# pushing the same way as the set as a whole. Written at the threshold the text
+# uses (p < 0.05, 74 of 450 time-course comparisons) and at both FDR levels, so
+# the reader can see the comparison does not depend on the threshold.
+by_null <- bind_rows(lapply(list(
+    list(crit = "p_emp < 0.05", f = function(x) x$beats_null),
+    list(crit = "BH q < 0.10",  f = function(x) x$any_fdr),
+    list(crit = "BH q < 0.05",  f = function(x) x$fdr05)), function(k) {
+  d %>% mutate(beats = k$f(d)) %>% group_by(arm, beats) %>%
+    summarise(criterion = k$crit, n = n(),
+              left_after_offset_median_pct = 100 * median(surviving, na.rm = TRUE),
+              left_after_offset_q25_pct = 100 * quantile(surviving, .25, na.rm = TRUE),
+              left_after_offset_q75_pct = 100 * quantile(surviving, .75, na.rm = TRUE),
+              genes_same_way_as_set_median_pct = 100 * median(frac_genes_with_set_net),
+              .groups = "drop")
+  })) %>%
+  mutate(group = ifelse(beats, "beats matched null", "rest")) %>%
+  select(arm, criterion, group, n, everything(), -beats) %>%
+  arrange(arm, criterion, desc(group == "beats matched null"))
+write.csv(by_null, file.path(RERUN_DIR, "withinset_cancellation_by_null.csv"), row.names = FALSE)
+cat("\nsets that beat their matched null vs the rest:\n")
+print(by_null %>% mutate(across(where(is.numeric) & !n, ~round(.x, 1))), n = Inf, width = Inf)

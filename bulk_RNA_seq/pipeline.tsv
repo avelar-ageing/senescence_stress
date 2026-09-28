@@ -35,7 +35,7 @@ C	exploratory/21_tage_modularity.R	mortality	tage_modularity_mortality.csv	-
 C	exploratory/23_decomposition_diagnostics.py	{RERUN} {MODELS}	decomposition_diagnostics.csv decomposition_subsampling.csv withinset_cancellation.csv	-
 C	exploratory/25_yardstick_calibration.py	{RERUN} {MODELS}	yardstick_recurrence.csv	-
 C	exploratory/27_composition_vs_magnitude.py	{RERUN} {MODELS}	composition_vs_magnitude.csv	-
-C	exploratory/28_figure_withinset_cancellation.R	-	withinset_cancellation_summary.csv figure_withinset_cancellation_temporal.png	-
+C	exploratory/28_figure_withinset_cancellation.R	-	withinset_cancellation_summary.csv withinset_cancellation_by_null.csv figure_withinset_cancellation_temporal.png	-
 C	exploratory/29_set_cancellation_structure.py	{RERUN} {MODELS}	set_cancellation_sides.csv	-
 C	exploratory/30_set_concordance_null.py	{RERUN} {MODELS}	set_concordance_null.csv	-
 C	exploratory/31_figure_cancellation_sides.R	-	figure_cancellation_sides_temporal.png	-
