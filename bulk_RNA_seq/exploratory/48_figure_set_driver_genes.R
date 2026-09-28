@@ -34,7 +34,8 @@ S <- read.csv(file.path(RERUN_DIR, "set_driver_summary.csv"))
 G$set <- sub("^HALLMARK ", "", G$pathway)
 G$removed_by_5pct_trim[is.na(G$removed_by_5pct_trim)] <- ""
 S$set <- sub("^HALLMARK ", "", S$pathway)
-S$holds_5pct <- !is.na(S$p_trim_5pct) & S$p_trim_5pct < 0.05
+# holds through the 5% trim: beats its null untrimmed, after 1 gene and after 5% per end
+S$holds_5pct <- S$holds_up_to %in% c("5%", "10%", "25%")
 G <- G %>% left_join(S %>% select(arm, group, pathway, holds_5pct), by = c("arm", "group", "pathway"))
 
 plot_arm <- function(arm_, file, n_groups_label) {
